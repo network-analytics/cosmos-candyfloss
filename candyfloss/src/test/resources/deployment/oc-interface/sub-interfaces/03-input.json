@@ -1,0 +1,58 @@
+{
+  "event_type": "log",
+  "seq": 1837,
+  "timestamp": "2022-09-05 09:47:30.633230",
+  "telemetry_node": "192.168.1.28",
+  "telemetry_port": 50662,
+  "label": {
+    "nkey": "rtr-pe-60",
+    "pkey": "HCC"
+  },
+  "telemetry_data": {
+    "node_id_str": "hcc-zbl1315-r-pe-60",
+    "subscription_id_str": "DAISY-SUBSCRIPTION",
+    "encoding_path": "openconfig-interfaces:interfaces",
+    "collection_id": "456711",
+    "collection_start_time": "1662364045598",
+    "collection_end_time": "1662364045631",
+    "msg_timestamp": "1662364050000",
+    "data_json": [
+      {
+        "timestamp": "1662364045613",
+        "content": {
+          "interface": {
+            "name": "TenGigE0/0/0/0",
+            "subinterfaces": {
+              "subinterface": {
+                "index": 300,
+                "state": {
+                  "index": 300,
+                  "counters": {
+                    "in-pkts": "110",
+                    "in-octets": "120",
+                    "out-pkts": "130",
+                    "out-octets": "140",
+                    "in-multicast-pkts": "150",
+                    "in-broadcast-pkts": "160",
+                    "out-multicast-pkts": "170",
+                    "out-broadcast-pkts": "180",
+                    "in-unknown-protos": 190,
+                    "in-errors": 200,
+                    "in-fcs-errors": 210,
+                    "out-errors": 220,
+                    "in-unicast-pkts": "230",
+                    "in-discards": "240",
+                    "out-unicast-pkts": "250",
+                    "out-discards": "260"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "serialization": "json_string",
+  "writer_id": "daisy64sttcpjson-left01c 20220829-0 (30874711)"
+}

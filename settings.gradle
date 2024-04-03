@@ -1,0 +1,51 @@
+pluginManagement {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+}
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            // Kafka related
+            library('kafka-streams', 'org.apache.kafka:kafka-streams:7.4.4-ccs')
+            library('kafka-streams-test-utils', 'org.apache.kafka:kafka-streams-test-utils:7.4.4-ccs')
+            library('kafka-clients', 'org.apache.kafka:kafka-streams:7.4.4-ccs')
+            library('avro-serde', 'io.confluent:kafka-streams-avro-serde:7.4.4')
+            library('avro-serializer', 'io.confluent:kafka-avro-serializer:7.4.4')
+            // Json related
+            library('jolt-core', 'com.bazaarvoice.jolt:jolt-core:0.1.7')
+            library('jolt-json-utils', 'com.bazaarvoice.jolt:json-utils:0.1.7')
+            library('json-path', 'com.jayway.jsonpath:json-path:2.8.0')
+            library('jackson-databind', 'com.fasterxml.jackson.core:jackson-databind:2.14.2')
+            library('jackson-core', 'com.fasterxml.jackson.core:jackson-core:2.14.2')
+            library('jackson-annotations', 'com.fasterxml.jackson.core:jackson-annotations:2.14.2')
+            // Protocol Buffers
+            library('protobuf-java', 'com.google.protobuf:protobuf-java:3.21.12')
+            library('protobuf-java-util', 'com.google.protobuf:protobuf-java-util:3.21.12')
+            // Programming utilities
+            library('lombok', 'org.projectlombok:lombok:1.18.30')
+            library('vavr', 'io.vavr:vavr:0.10.4')
+            library('typesafe', 'com.typesafe:config:1.4.2')
+            library('slf4j', 'org.slf4j:slf4j-api:2.0.6')
+            library('logback', 'ch.qos.logback:logback-classic:1.4.5')
+            // Testing
+            library('junit-jupiter-api', 'org.junit.jupiter:junit-jupiter-api:5.9.2')
+            library('junit-jupiter-engine', 'org.junit.jupiter:junit-jupiter-engine:5.9.2')
+            library('junit-jupiter-params', 'org.junit.jupiter:junit-jupiter-params:5.9.2')
+            library('jsonassert', 'org.skyscreamer:jsonassert:1.5.1')
+            library('mockito', 'org.mockito:mockito-core:5.10.0')
+            library('mockito-jupiter', 'org.mockito:mockito-junit-jupiter:5.10.0')
+            // Monitoring
+            library('micrometer', 'io.micrometer:micrometer-registry-jmx:1.10.3')
+        }
+    }
+}
+
+rootProject.name = 'cosmos-candyfloss'
+include('json-transformation')
+include('candyfloss')
+include 'protobuf-decoder'
+include 'test-utils'

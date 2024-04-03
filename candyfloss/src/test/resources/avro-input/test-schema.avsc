@@ -1,0 +1,13 @@
+{
+  "type": "record",
+  "name": "TestRecord",
+  "namespace": "com.example",
+  "fields": [
+    {
+      "name": "event",
+      "type": {
+        "type": "string"
+      }
+    }
+  ]
+}

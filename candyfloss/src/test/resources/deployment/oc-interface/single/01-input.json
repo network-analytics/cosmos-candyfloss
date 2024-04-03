@@ -1,0 +1,53 @@
+{
+  "event_type": "log",
+  "seq": 389088,
+  "timestamp": "2022-08-15 11:29:37.423286",
+  "telemetry_node": "fcba:be00:10::1",
+  "telemetry_port": 29223,
+  "label": {
+    "nkey": "ipt-zbl344-a-aet-41",
+    "pkey": "ngBAC"
+  },
+  "telemetry_data": {
+    "node_id_str": "ipt-zbl344-a-aet-41",
+    "subscription_id_str": "DAISY-SUBSCRIPTION",
+    "encoding_path": "openconfig-interfaces:interfaces",
+    "collection_id": "227567",
+    "collection_start_time": "1660555777354",
+    "msg_timestamp": "1660555777420",
+    "collection_end_time": "1660555777421",
+    "data_json": [
+      {
+        "timestamp": "1660555777366",
+        "content": {
+          "interface": {
+            "name": "Bundle-Ether100",
+            "state": {
+              "counters": {
+                "in-pkts": "100",
+                "in-octets": "110",
+                "out-pkts": "120",
+                "out-octets": "130",
+                "in-multicast-pkts": "140",
+                "in-broadcast-pkts": "150",
+                "out-multicast-pkts": "160",
+                "out-broadcast-pkts": "170",
+                "in-unknown-protos": 180,
+                "in-errors": 190,
+                "in-fcs-errors": 200,
+                "out-errors": 210,
+                "last-clear": "1657713273366000000",
+                "in-unicast-pkts": "230",
+                "in-discards": "240",
+                "out-unicast-pkts": "250",
+                "out-discards": "260"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "serialization": "json_string",
+  "writer_id": "daisy64sttcpjsonipv6-left01c 20220811-0 (854a7e82)"
+}

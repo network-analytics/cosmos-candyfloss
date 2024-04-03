@@ -1,0 +1,80 @@
+{
+  "event_type": "log",
+  "seq": 1837,
+  "timestamp": "2022-09-05 09:47:25.633230",
+  "telemetry_node": "192.168.1.28",
+  "telemetry_port": 50662,
+  "label": {
+    "nkey": "rtr-pe-60",
+    "pkey": "HCC"
+  },
+  "telemetry_data": {
+    "node_id_str": "hcc-zbl1315-r-pe-60",
+    "subscription_id_str": "DAISY-SUBSCRIPTION",
+    "encoding_path": "openconfig-interfaces:interfaces",
+    "collection_id": "456711",
+    "collection_start_time": "1662364045598",
+    "collection_end_time": "1662364045631",
+    "msg_timestamp": "1662364045631",
+    "data_json": [
+      {
+        "timestamp": "1662364045605",
+        "content": {
+          "interface": {
+            "name": "Bundle-Ether100",
+            "state": {
+              "counters": {
+                "in-pkts": "10",
+                "in-octets": "20",
+                "out-pkts": "30",
+                "out-octets": "40",
+                "in-multicast-pkts": "50",
+                "in-broadcast-pkts": "60",
+                "out-multicast-pkts": "70",
+                "out-broadcast-pkts": "80",
+                "in-unknown-protos": 90,
+                "in-errors": 100,
+                "in-fcs-errors": 110,
+                "out-errors": 120,
+                "in-unicast-pkts": "130",
+                "in-discards": "140",
+                "out-unicast-pkts": "150",
+                "out-discards": "160"
+              }
+            }
+          }
+        }
+      },
+      {
+        "timestamp": "1662364045607",
+        "content": {
+          "interface": {
+            "name": "Bundle-Ether200",
+            "state": {
+              "counters": {
+                "in-pkts": "170",
+                "in-octets": "180",
+                "out-pkts": "190",
+                "out-octets": "200",
+                "in-multicast-pkts": "210",
+                "in-broadcast-pkts": "220",
+                "out-multicast-pkts": "230",
+                "out-broadcast-pkts": "240",
+                "in-unknown-protos": 250,
+                "in-errors": 260,
+                "in-fcs-errors": 270,
+                "out-errors": 280,
+                "in-unicast-pkts": "290",
+                "in-discards": "300",
+                "out-unicast-pkts": "310",
+                "out-discards": "320"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "serialization": "json_string",
+  "writer_id": "daisy64sttcpjson-left01c 20220829-0 (30874711)"
+}

@@ -1,0 +1,13 @@
+{
+  "timestamp": "2022-03-14 13:32:00",
+  "telemetry_node": "192.168.0.42",
+  "telemetry_node_port": 20769,
+  "label": {
+    "nkey": "unknown",
+    "pkey": "unknown"
+  },
+  "event_type": "dump_init",
+  "dump_period": 60,
+  "seq": 21426791,
+  "writer_id": "daisy64stcisco1v01c/2479503"
+}

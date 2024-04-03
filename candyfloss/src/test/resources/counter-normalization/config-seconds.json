@@ -1,0 +1,57 @@
+{
+  "output.topic.name": "outputTest",
+  "match": {
+  },
+  "transform": [
+  ],
+  "normalizeCounters": {
+    "timestamp-extractor": {
+      "jsonpath": "$.msg_metadata.seconds-timestamp",
+      "timestamp-type": "EpochSeconds"
+    },
+    "counters": [
+      {
+        "match": {
+          "jsonpath": "$.telemetry_metadata.encoding_path",
+          "value": "openconfig-interfaces:interfaces"
+        },
+        "key": [
+          {
+            "jsonpath": "$.telemetry_metadata.node_id"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "constant": "u64-counter"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.state.u64-counter"
+        }
+      },
+      {
+        "match": {
+          "jsonpath": "$.telemetry_metadata.encoding_path",
+          "value": "openconfig-interfaces:interfaces"
+        },
+        "key": [
+          {
+            "jsonpath": "$.telemetry_metadata.node_id"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "constant": "u32-counter"
+          }
+        ],
+        "type": "u32",
+        "value": {
+          "jsonpath": "$.state.u32-counter"
+        }
+      }
+    ]
+  }
+}

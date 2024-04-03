@@ -1,0 +1,43 @@
+{
+  "event_type": "log",
+  "seq": 5431767,
+  "timestamp": "1687261834.123456",
+  "telemetry_node": "192.168.1.36",
+  "telemetry_port": 53503,
+  "label": {
+    "nkey": "ipc-zbl535-m-pe-36",
+    "pkey": "UCM"
+  },
+  "telemetry_data": {
+    "/init-time": "1687262824",
+    "/state/counters/carrier-transitions": "52820000",
+    "/state/counters/in-broadcast-pkts": "52820000",
+    "/state/counters/in-multicast-pkts": "52820000",
+    "/state/counters/in-octets": "52820000",
+    "/state/counters/in-pkts": "52820000",
+    "/state/counters/in-unicast-pkts": "52820000",
+    "/state/counters/out-broadcast-pkts": "52820000",
+    "/state/counters/out-multicast-pkts": "52820000",
+    "/state/counters/out-octets": "52820000",
+    "/state/counters/out-pkts": "52820000",
+    "/state/counters/out-unicast-pkts": "52820000",
+    "/state/high-speed": "100000",
+    "/state/parent-ae-name": "\"ae181\"",
+    "extension": "{\"systemId\":\"ipc-zbl535-m-pe-36\",\"componentId\":19,\"sensorName\":\"sensor_1004_1_3\",\"subscribedPath\":\"/interfaces/interface/\",\"streamedPath\":\"/junos/system/linecard/interface/traffic/\",\"component\":\"PFE\",\"sequenceNumber\":\"5669\",\"exportTimestamp\":\"1687261824120\",\"subSequenceNumber\":\"6\"}",
+    "notification_timestamp": 1687261834115000000,
+    "system_id": "ipc-zbl535-m-pe-36",
+    "sensor_path": [
+      {
+        "name": "interfaces"
+      },
+      {
+        "filters": {
+          "name": "et-19/0/1"
+        },
+        "name": "interface"
+      }
+    ]
+  },
+  "serialization": "json",
+  "writer_id": "daisy64stgrpc-right01c 20230607-1 (2a1d6ed0)"
+}

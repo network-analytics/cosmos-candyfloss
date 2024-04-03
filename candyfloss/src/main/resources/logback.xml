@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+    <contextName>json-streams</contextName>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%contextName: %date{ISO8601} [%thread] %level %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="java.nio" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.apache.kafka" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.apache.zookeeper" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="io.confluent.kafka" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

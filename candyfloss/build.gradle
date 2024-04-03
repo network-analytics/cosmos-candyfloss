@@ -1,0 +1,115 @@
+plugins {
+    id "java"
+    id "application"
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'com.google.cloud.tools.jib'
+apply plugin: 'de.undercouch.download'
+apply plugin: 'jacoco'
+
+version "0.1.0"
+
+application {
+    mainClass = 'com.swisscom.daisy.cosmos.candyfloss.CandyflossKStreamsApplication'
+}
+
+
+configurations.configureEach {
+    resolutionStrategy {
+        force "com.fasterxml.jackson.core:jackson-core:2.14.2"
+        force "com.fasterxml.jackson.core:jackson-annotations:2.14.2"
+        force "org.apache.commons:commons-compress:1.22"
+    }
+}
+
+
+dependencies {
+    implementation(libs.jackson.databind)
+    implementation(libs.jackson.annotations)
+    implementation(libs.jackson.core)
+    implementation libs.kafka.streams
+    implementation libs.kafka.streams.test.utils
+    implementation libs.kafka.clients
+    implementation libs.avro.serde
+    implementation libs.avro.serializer
+    implementation libs.protobuf.java
+    implementation libs.typesafe
+    implementation libs.slf4j
+    implementation libs.vavr
+    implementation libs.json.path
+    implementation libs.micrometer
+    implementation libs.logback
+    implementation project(":json-transformation")
+    implementation project(":protobuf-decoder")
+    implementation project(':test-utils')
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+
+    testCompileOnly libs.lombok
+    testAnnotationProcessor libs.lombok
+
+    testImplementation libs.mockito
+    testImplementation libs.mockito.jupiter
+    testImplementation libs.junit.jupiter.api
+    testRuntimeOnly libs.junit.jupiter.engine
+    testImplementation libs.junit.jupiter.params
+    testImplementation libs.jackson.databind
+    testImplementation libs.jsonassert
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+}
+
+task downloadPrometheusExporter(type: Download) {
+    src 'https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.16.1/jmx_prometheus_javaagent-0.16.1.jar'
+    dest new File("${project.projectDir}/src/main/jib", 'jmx_prometheus_javaagent.jar')
+}
+
+
+jar {
+    manifest {
+        attributes(
+                "Class-Path": configurations.compileClasspath.collect { it.getName() }.join(" "),
+                "Main-Class": "com.swisscom.daisy.cosmos.candyfloss.CandyflossKStreamsApplication"
+        )
+    }
+}
+
+
+
+runShadow {}
+
+jib {
+    from {
+        image = "TODO: define a base image"
+    }
+    to {
+        image = "TODO: DOCKER REPOSITORY DESTINATION"
+        tags = [version]
+    }
+    container {
+        // TODO: change user id and group ID based on the base image
+        user = "1000:1000"
+        creationTime = "USE_CURRENT_TIMESTAMP"
+        jvmFlags = [
+                '-Xms2048m',
+                '-Dconfig.override_with_env_vars=true',
+                '-Dcom.sun.management.jmxremote.port=5555',
+                '-Dcom.sun.management.jmxremote.local.only=true',
+                '-Dcom.sun.management.jmxremote.authenticate=false',
+                '-Dcom.sun.management.jmxremote.ssl=false',
+                '-javaagent:/jmx_prometheus_javaagent.jar=8090:/jmx_prometheus_exporter.yaml',
+        ]
+        mainClass = 'com.swisscom.daisy.cosmos.candyfloss.CandyflossKStreamsApplication'
+    }
+}
+
+tasks.jibDockerBuild.dependsOn tasks.downloadPrometheusExporter
+tasks.jib.dependsOn tasks.downloadPrometheusExporter

@@ -1,0 +1,55 @@
+{
+  "event_type": "log",
+  "seq": 29950,
+  "timestamp": "1687783385.977401",
+  "telemetry_node": "192.168.0.13",
+  "telemetry_port": 64132,
+  "label": {
+    "nkey": "ipc-zbl512-m-pe-13",
+    "pkey": "UCM"
+  },
+  "telemetry_data": {
+    "/ipv4/state/enabled": "0",
+    "/ipv4/unnumbered/interface-ref/state/interface": "\"\"",
+    "/ipv4/unnumbered/interface-ref/state/subinterface": "0",
+    "/ipv4/unnumbered/state/enabled": "0",
+    "/ipv6/state/enabled": "0",
+    "/ipv6/unnumbered/interface-ref/state/interface": "\"\"",
+    "/ipv6/unnumbered/interface-ref/state/subinterface": "0",
+    "/ipv6/unnumbered/state/enabled": "0",
+    "/state/admin-status": "\"UP\"",
+    "/state/description": "\"\"",
+    "/state/enabled": "1",
+    "/state/ifindex": "836",
+    "/state/index": "0",
+    "/state/last-change": "1684941595430943000",
+    "/state/logical": "1",
+    "/state/name": "\"et-0/0/1.0\"",
+    "/state/oper-status": "\"UP\"",
+    "extension": "{\"systemId\":\"ipc-zbl512-m-pe-13\",\"componentId\":65535,\"sensorName\":\"sensor_1004_5_1\",\"subscribedPath\":\"/interfaces/interface/\",\"streamedPath\":\"/interfaces/interface/\",\"component\":\"mib2d\",\"sequenceNumber\":\"17825\",\"payloadGetTimestamp\":\"1687783385784\",\"streamCreationTimestamp\":\"1687783326057\",\"exportTimestamp\":\"1687783385846\"}",
+    "notification_timestamp": 1687783385786173512,
+    "sensor_path": [
+      {
+        "name": "interfaces"
+      },
+      {
+        "filters": {
+          "name": "et-0/0/1"
+        },
+        "name": "interface"
+      },
+      {
+        "name": "subinterfaces"
+      },
+      {
+        "filters": {
+          "index": "0"
+        },
+        "name": "subinterface"
+      }
+    ],
+    "system_id": "ipc-zbl512-m-pe-13"
+  },
+  "serialization": "json",
+  "writer_id": "daisy64stgrpc-right01c 20230607-1 (2a1d6ed0)"
+}

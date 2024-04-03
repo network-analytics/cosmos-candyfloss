@@ -1,0 +1,36 @@
+{
+    "event_type": "log",
+    "seq": 2805,
+    "timestamp": "1701094190.296994",
+    "telemetry_node": "10.244.23.4",
+    "telemetry_port": 63842,
+    "label": {
+        "nkey": "rtr-r-al-01",
+        "pkey": "Sultan"
+    },
+    "telemetry_data": {
+        "collection_end_time": 1701094190385,
+        "collection_id": 172504,
+        "collection_start_time": 1701094102022,
+        "current_period": 60000,
+        "decoded": [
+            "{\"interface\":[{\"name\":\"Eth-Trunk246\",\"subinterfaces\":{\"subinterface\":[{\"state\":{\"adminStatus\":\"AdminStatus_UP\",\"description\":\"Business L3 interface\",\"enabled\":true,\"ifindex\":160,\"name\":\"Eth-Trunk246\",\"operStatus\":\"OperStatus_DOWN\"}}]}}]}",
+            "{\"interface\":[{\"name\":\"Eth-Trunk247\",\"subinterfaces\":{\"subinterface\":[{\"state\":{\"description\":\"Business L3 interface\",\"ifindex\":161,\"name\":\"Eth-Trunk247\",\"operStatus\":\"OperStatus_DOWN\"}}]}}]}",
+            "{\"interface\":[{\"name\":\"Eth-Trunk10\",\"subinterfaces\":{\"subinterface\":[{\"state\":{\"description\":\"**rtr-r-ac-43*Te0/0/0/0*tgdgyma2**\",\"ifindex\":2304,\"name\":\"Eth-Trunk10\",\"operStatus\":\"OperStatus_DOWN\"}}]}}]}",
+            "{\"interface\":[{\"name\":\"Eth-Trunk11\",\"subinterfaces\":{\"subinterface\":[{\"state\":{\"description\":\"**rtr-r-ac-44*Te0/0/0/0*tgdgyma2**\",\"ifindex\":2305,\"name\":\"Eth-Trunk11\",\"operStatus\":\"OperStatus_DOWN\"}}]}}]}",
+            "{\"interface\":[{\"name\":\"Eth-Trunk199\",\"subinterfaces\":{\"subinterface\":[{\"state\":{\"adminStatus\":\"AdminStatus_UP\",\"description\":\"temp SMK\",\"enabled\":true,\"ifindex\":2314,\"name\":\"Eth-Trunk199\",\"operStatus\":\"OperStatus_DOWN\"}},{\"index\":2,\"state\":{\"adminStatus\":\"AdminStatus_UP\",\"description\":\"tmp SMK\",\"enabled\":true,\"ifindex\":9353,\"index\":2,\"name\":\"Eth-Trunk199.2\",\"operStatus\":\"OperStatus_DOWN\"}},{\"index\":900,\"state\":{\"adminStatus\":\"AdminStatus_UP\",\"description\":\"**HPLATFORM_KEY04_TC*TestCenter*Ansible**\",\"enabled\":true,\"ifindex\":2317,\"index\":900,\"name\":\"Eth-Trunk199.900\",\"operStatus\":\"OperStatus_DOWN\"}}]}}]}",
+            "{\"interface\":[{\"name\":\"Eth-Trunk500\",\"subinterfaces\":{\"subinterface\":[{\"state\":{\"adminStatus\":\"AdminStatus_UP\",\"enabled\":true,\"ifindex\":5736,\"name\":\"Eth-Trunk500\",\"operStatus\":\"OperStatus_DOWN\"}}]}}]}"
+        ],
+        "encoding": 0,
+        "except_desc": "OK",
+        "msg_timestamp": 1701094190385,
+        "node_id_str": "rtr-r-al-01",
+        "product_name": "CE6875EI",
+        "proto_path": "openconfig_interfaces.Interfaces",
+        "sensor_path": "openconfig-interfaces:interfaces/interface/subinterfaces/subinterface/state",
+        "software_version": "",
+        "subscription_id_str": "DAISY"
+    },
+    "serialization": "json",
+    "writer_id": "devcolright01pmtelemetrydgrpchuaweiright01c 20230831.1.ec33571-2.el8"
+}

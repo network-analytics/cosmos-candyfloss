@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This config file is meant for use locally-->
+<configuration scan="true" scanPeriod="30 seconds">
+    <contextName>json-streams</contextName>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%contextName: %date{ISO8601} [%thread] %level %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="java.nio" level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.apache.kafka" level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.apache.zookeeper" level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="io.confluent.kafka" level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="com.swisscom.daisy" level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

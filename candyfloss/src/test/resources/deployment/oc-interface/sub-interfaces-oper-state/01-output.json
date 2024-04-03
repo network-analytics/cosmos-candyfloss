@@ -1,0 +1,53 @@
+[
+  {
+    "name": "TenGigE0/0/0/0.300",
+    "admin_status": "UP",
+    "description": "DAISY-DEV-SOUTH-LEFT-001",
+    "enabled": true,
+    "index": 300,
+    "ifindex": 150,
+    "oper_status": "UP",
+    "telemetry_node": "192.168.1.28",
+    "platform_id": "HCC",
+    "node_id": "rtr-pe-60",
+    "node_id_str": "hcc-zbl1315-r-pe-60",
+    "timestamp": "2022-09-05 09:48:44.198510",
+    "msg_timestamp": "1662364113793",
+    "subscription_id_str":"DAISY-SUBSCRIPTION",
+    "writer_id": "daisy64sttcpjson-left01c 20220829-0 (30874711)"
+  },
+  {
+    "name": "TenGigE0/0/0/0.301",
+    "admin_status": "UP",
+    "description": "DAISY-DEV-SOUTH-RIGHT-001",
+    "enabled": true,
+    "index": 301,
+    "ifindex": 151,
+    "oper_status": "UP",
+    "telemetry_node": "192.168.1.28",
+    "platform_id": "HCC",
+    "node_id": "rtr-pe-60",
+    "node_id_str": "hcc-zbl1315-r-pe-60",
+    "timestamp": "2022-09-05 09:48:44.198510",
+    "msg_timestamp": "1662364113793",
+    "subscription_id_str":"DAISY-SUBSCRIPTION",
+    "writer_id": "daisy64sttcpjson-left01c 20220829-0 (30874711)"
+  },
+  {
+    "name": "TenGigE0/0/0/0.302",
+    "admin_status": "UP",
+    "description": "DAISY-DEV-SOUTH-LEFT-002",
+    "enabled": true,
+    "index": 302,
+    "ifindex": 152,
+    "oper_status": "UP",
+    "telemetry_node": "192.168.1.28",
+    "platform_id": "HCC",
+    "node_id": "rtr-pe-60",
+    "node_id_str": "hcc-zbl1315-r-pe-60",
+    "timestamp": "2022-09-05 09:48:44.198510",
+    "msg_timestamp": "1662364113793",
+    "subscription_id_str":"DAISY-SUBSCRIPTION",
+    "writer_id": "daisy64sttcpjson-left01c 20220829-0 (30874711)"
+  }
+]

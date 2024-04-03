@@ -1,0 +1,33 @@
+[
+  {
+    "msg_timestamp": "1687783385786",
+    "admin_status": "UP",
+    "description": "\"\"",
+    "enabled": "1",
+    "ifindex": "836",
+    "last_change": "1684941595430943000",
+    "logical": "1",
+    "oper_status": "UP",
+    "event_type": "log",
+    "seq": 29950,
+    "timestamp": "1687783385.977401",
+    "telemetry_node": "192.168.0.13",
+    "telemetry_port": 64132,
+    "serialization": "json",
+    "writer_id": "daisy64stgrpc-right01c 20230607-1 (2a1d6ed0)",
+    "platform_id": "UCM",
+    "node_id": "ipc-zbl512-m-pe-13",
+    "node_id_str": "ipc-zbl512-m-pe-13",
+    "componentId": 65535,
+    "sensorName": "sensor_1004_5_1",
+    "subscribedPath": "/interfaces/interface/",
+    "streamedPath": "/interfaces/interface/",
+    "component": "mib2d",
+    "sequenceNumber": "17825",
+    "payloadGetTimestamp": "1687783385784",
+    "streamCreationTimestamp": "1687783326057",
+    "exportTimestamp": "1687783385846",
+    "name": "et-0/0/1.0",
+    "index": 0
+  }
+]

@@ -1,0 +1,55 @@
+[
+  {
+    "operation": "shift",
+    "spec": {
+      "serialization": {
+        "json_string": {
+          "@(2,event_type)": "event_type",
+          "@(2,seq)": "seq",
+          "@(2,timestamp)": "timestamp",
+          "@(2,telemetry_node)": "telemetry_node",
+          "@(2,telemetry_port)": "telemetry_port",
+          "@(2,label)": "label",
+          "@(2,telemetry_data)": "telemetry_data",
+          "@(2,serialization)": "serialization",
+          "@(2,writer_id)": "writer_id"
+        },
+        "json": {
+          "@(2,event_type)": "event_type",
+          "@(2,seq)": "seq",
+          "@(2,timestamp)": "timestamp",
+          "@(2,telemetry_node)": "telemetry_node",
+          "@(2,telemetry_port)": "telemetry_port",
+          "@(2,label)": "label",
+          "@(2,telemetry_data)": "telemetry_data",
+          "@(2,serialization)": "serialization",
+          "@(2,writer_id)": "writer_id"
+        }
+      }
+    }
+  },
+  {
+    "operation": "com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.DaisyModifier$Overwritr",
+    "spec": {
+      "telemetry_data": "=jsonStringToJson(@(1,telemetry_data))"
+    }
+  },
+  {
+    "operation": "com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.DaisyModifier$Overwritr",
+    "spec": {
+      "telemetry_data": {
+        "extension": "=jsonStringToJson(@(1,extension))"
+      }
+    }
+  },
+  {
+    "operation": "com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.DaisyModifier$Overwritr",
+    "spec": {
+      "telemetry_data": {
+        "decoded": {
+          "*": "=jsonStringToJson"
+        }
+      }
+    }
+  }
+]

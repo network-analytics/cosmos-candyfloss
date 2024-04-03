@@ -1,0 +1,60 @@
+{
+  "event_type": "dump",
+  "seq": 21426791,
+  "timestamp": "2022-03-14 13:32:00",
+  "telemetry_node": "192.168.1.22",
+  "telemetry_port": 55286,
+  "label": {
+    "nkey": "unknown",
+    "pkey": "unknown"
+  },
+  "serialization": "gpb",
+  "writer_id": "daisy64stcisco1v01c/2479503",
+  "telemetry_data": {
+    "collection_id": 914410,
+    "data_gpbkv": [
+      {
+        "fields": {
+          "keys": {
+            "node-name": "0/0/CPU0",
+            "np-name": "np0"
+          },
+          "content": {
+            "np-counter": {
+              "counter-type": "FWD",
+              "counter-name": "PARSE_UDLD",
+              "rate": 0,
+              "counter-index": 1442,
+              "counter-value": 150340
+            }
+          }
+        },
+        "timestamp": 1647261089437
+      },
+      {
+        "fields": {
+          "keys": {
+            "node-name": "0/0/CPU0",
+            "np-name": "np1"
+          },
+          "content": {
+            "np-counter": {
+              "counter-type": "FWD",
+              "counter-name": "PARSE_UDLD",
+              "rate": 0,
+              "counter-index": 1442,
+              "counter-value": 150342
+            }
+          }
+        },
+        "timestamp": 1647261089454
+      }
+    ],
+    "collection_end_time": 1647261089456,
+    "collection_start_time": 1647261089411,
+    "encoding_path": "Cisco-IOS-XR-asr9k-np-oper:hardware-module-np/nodes/node/nps/np/counters",
+    "subscription": "DAISY-SUBSCRIPTION",
+    "msg_timestamp": 1647261089412,
+    "node_id": "hoa01ro1010zoi"
+  }
+}

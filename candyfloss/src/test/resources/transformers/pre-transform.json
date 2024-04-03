@@ -1,0 +1,8 @@
+[
+  {
+    "operation": "com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.DaisyModifier$Overwritr",
+    "spec": {
+      "telemetry_data": "=jsonStringToJson(@(1,telemetry_data))"
+    }
+  }
+]

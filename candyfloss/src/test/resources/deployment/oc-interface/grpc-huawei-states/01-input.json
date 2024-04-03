@@ -1,0 +1,117 @@
+{
+    "event_type": "log",
+    "seq": 1,
+    "timestamp": "1699516303.485318",
+    "telemetry_node": "10.244.23.6",
+    "telemetry_port": 59767,
+    "label": {
+        "nkey": "rtr-al-02",
+        "pkey": "Sultan"
+    },
+    "telemetry_data": {
+        "collection_end_time": 1699516304500,
+        "collection_id": 318710,
+        "collection_start_time": 1699516263300,
+        "current_period": 60000,
+        "decoded": [
+            {
+                "interface": [
+                    {
+                        "name": "Eth-Trunk215",
+                        "subinterfaces": {
+                            "subinterface": [
+                                {
+                                    "state": {
+                                        "adminStatus": "AdminStatus_UP",
+                                        "description": "Business L3 interface",
+                                        "enabled": true,
+                                        "ifindex": 129,
+                                        "name": "Eth-Trunk215",
+                                        "operStatus": "OperStatus_DOWN"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                "interface": [
+                    {
+                        "name": "Eth-Trunk450",
+                        "subinterfaces": {
+                            "subinterface": [
+                                {
+                                    "state": {
+                                        "adminStatus": "AdminStatus_UP",
+                                        "description": "AC43_CES_TEST",
+                                        "enabled": true,
+                                        "ifindex": 1791,
+                                        "lastChange": "1698940217558000000",
+                                        "name": "Eth-Trunk450",
+                                        "operStatus": "OperStatus_UP"
+                                    }
+                                },
+                                {
+                                    "index": 25,
+                                    "state": {
+                                        "adminStatus": "AdminStatus_UP",
+                                        "enabled": true,
+                                        "ifindex": 1798,
+                                        "index": 25,
+                                        "lastChange": "1698940220491000000",
+                                        "name": "Eth-Trunk450.25",
+                                        "operStatus": "OperStatus_UP"
+                                    }
+                                },
+                                {
+                                    "index": 4042,
+                                    "state": {
+                                        "adminStatus": "AdminStatus_UP",
+                                        "enabled": true,
+                                        "ifindex": 1792,
+                                        "index": 4042,
+                                        "lastChange": "1698940220913000000",
+                                        "name": "Eth-Trunk450.4042",
+                                        "operStatus": "OperStatus_UP"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                "interface": [
+                    {
+                        "name": "Eth-Trunk2",
+                        "subinterfaces": {
+                            "subinterface": [
+                                {
+                                    "state": {
+                                        "adminStatus": "AdminStatus_UP",
+                                        "enabled": true,
+                                        "ifindex": 2529,
+                                        "name": "Eth-Trunk2",
+                                        "operStatus": "OperStatus_DOWN"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ],
+        "encoding": 0,
+        "except_desc": "OK",
+        "msg_timestamp": 1699516304500,
+        "node_id_str": "rtr-al-02",
+        "product_name": "CE6875EI",
+        "proto_path": "openconfig_interfaces.Interfaces",
+        "sensor_path": "openconfig-interfaces:interfaces/interface/subinterfaces/subinterface/state",
+        "software_version": "",
+        "subscription_id_str": "DAISY"
+    },
+    "serialization": "json",
+    "writer_id": "devcolleft01pmtelemetrydgrpchuaweileft01c 20230831.1.ec33571-1.el8"
+}

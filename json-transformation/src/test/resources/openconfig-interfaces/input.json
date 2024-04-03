@@ -1,0 +1,102 @@
+{
+  "event_type": "dump",
+  "seq": 21402290,
+  "timestamp": "2022-03-14 13:03:00",
+  "telemetry_node": "192.168.1.22",
+  "telemetry_port": 55286,
+  "label": {
+    "nkey": "unknown",
+    "pkey": "unknown"
+  },
+  "serialization": "gpb",
+  "writer_id": "daisy64stcisco1v01c/2437030",
+  "telemetry_data": {
+    "collection_id": 914026,
+    "data_gpbkv": [
+      {
+        "fields": {
+          "keys": null,
+          "content": {
+            "interface": {
+              "name": "Bundle-Ether50",
+              "subinterfaces": {
+                "subinterface": {
+                  "index": 2579,
+                  "state": {
+                    "counters": {
+                      "carrier-transitions": 0,
+                      "in-unknown-protos": 0,
+                      "out-pkts": 0,
+                      "last-clear": "2022-01-21T07:31:05Z",
+                      "out-broadcast-pkts": 0,
+                      "out-multicast-pkts": 0,
+                      "out-discards": 0,
+                      "in-broadcast-pkts": 0,
+                      "out-unicast-pkts": 0,
+                      "in-pkts": 0,
+                      "out-octets": 0,
+                      "in-octets": 0,
+                      "in-multicast-pkts": 0,
+                      "in-errors": 0,
+                      "in-discards": 0,
+                      "out-errors": 0,
+                      "in-unicast-pkts": 0,
+                      "in-fcs-errors": 0
+                    },
+                    "index": 2579
+                  }
+                }
+              }
+            }
+          }
+        },
+        "timestamp": 1647259347688
+      },
+      {
+        "fields": {
+          "keys": null,
+          "content": {
+            "interface": {
+              "name": "Bundle-Ether50",
+              "subinterfaces": {
+                "subinterface": {
+                  "index": 2580,
+                  "state": {
+                    "counters": {
+                      "carrier-transitions": 0,
+                      "in-unknown-protos": 0,
+                      "out-pkts": 0,
+                      "last-clear": "2022-01-21T07:31:05Z",
+                      "out-broadcast-pkts": 0,
+                      "out-multicast-pkts": 0,
+                      "out-discards": 0,
+                      "in-broadcast-pkts": 0,
+                      "out-unicast-pkts": 0,
+                      "in-pkts": 0,
+                      "out-octets": 0,
+                      "in-octets": 0,
+                      "in-multicast-pkts": 0,
+                      "in-errors": 0,
+                      "in-discards": 0,
+                      "out-errors": 0,
+                      "in-unicast-pkts": 0,
+                      "in-fcs-errors": 0
+                    },
+                    "index": 2580
+                  }
+                }
+              }
+            }
+          }
+        },
+        "timestamp": 1647259347688
+      }
+    ],
+    "collection_end_time": 0,
+    "collection_start_time": 0,
+    "encoding_path": "openconfig-interfaces:interfaces",
+    "subscription": "DAISY-SUBSCRIPTION",
+    "msg_timestamp": 1647259347771,
+    "node_id": "hoa01ro1010zoi"
+  }
+}

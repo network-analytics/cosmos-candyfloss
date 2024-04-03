@@ -1,0 +1,149 @@
+{
+  "event_type": "log",
+  "seq": 2,
+  "timestamp": "1699516304.591392",
+  "telemetry_node": "10.244.23.6",
+  "telemetry_port": 59767,
+  "label": {
+      "nkey": "rtr-al-02",
+      "pkey": "Sultan"
+  },
+  "telemetry_data": {
+      "collection_end_time": 1699516305576,
+      "collection_id": 318711,
+      "collection_start_time": 1699516305561,
+      "current_period": 60000,
+      "decoded": [
+          {
+              "interface": [
+                  {
+                      "name": "10GE1/0/34",
+                      "state": {
+                          "counters": {
+                              "inMulticastPkts": "149868403",
+                              "inOctets": "2298069007971",
+                              "inUnicastPkts": "2141235",
+                              "outMulticastPkts": "146578721",
+                              "outOctets": "15486994506",
+                              "outUnicastPkts": "584755"
+                          },
+                          "name": "10GE1/0/34"
+                      }
+                  }
+              ]
+          },
+          {
+              "interface": [
+                  {
+                      "name": "10GE1/0/17",
+                      "state": {
+                          "counters": {},
+                          "name": "10GE1/0/17"
+                      }
+                  }
+              ]
+          },
+          {
+              "interface": [
+                  {
+                      "name": "10GE1/0/18",
+                      "state": {
+                          "counters": {
+                              "inBroadcastPkts": "131821",
+                              "inMulticastPkts": "19752327",
+                              "inOctets": "3487437777",
+                              "inUnicastPkts": "3588396",
+                              "outBroadcastPkts": "1667988",
+                              "outMulticastPkts": "20071752",
+                              "outOctets": "3803161457",
+                              "outUnicastPkts": "7568950"
+                          },
+                          "name": "10GE1/0/18"
+                      }
+                  }
+              ]
+          },
+          {
+              "interface": [
+                  {
+                      "name": "10GE1/0/19",
+                      "state": {
+                          "counters": {
+                              "inBroadcastPkts": "2903568",
+                              "inErrors": "7",
+                              "inFcsErrors": "7",
+                              "inMulticastPkts": "23743781",
+                              "inOctets": "2427845546126",
+                              "inUnicastPkts": "2182229182",
+                              "outBroadcastPkts": "43820680",
+                              "outMulticastPkts": "301321301",
+                              "outOctets": "9373185653649",
+                              "outUnicastPkts": "6782957141"
+                          },
+                          "name": "10GE1/0/19"
+                      }
+                  }
+              ]
+          },
+          {
+              "interface": [
+                  {
+                      "name": "10GE1/0/9",
+                      "state": {
+                          "counters": {
+                              "inMulticastPkts": "637395",
+                              "inOctets": "85410930",
+                              "outMulticastPkts": "19756205",
+                              "outOctets": "2731456276"
+                          },
+                          "name": "10GE1/0/9"
+                      }
+                  }
+              ]
+          },
+          {
+              "interface": [
+                  {
+                      "name": "10GE1/0/29",
+                      "state": {
+                          "counters": {
+                              "inBroadcastPkts": "7039589",
+                              "inMulticastPkts": "48816132",
+                              "inOctets": "14781314498",
+                              "inUnicastPkts": "107866490"
+                          },
+                          "name": "10GE1/0/29"
+                      }
+                  }
+              ]
+          },
+          {
+              "interface": [
+                  {
+                      "name": "10GE1/0/35",
+                      "state": {
+                          "counters": {
+                              "outBroadcastPkts": "2611611128",
+                              "outMulticastPkts": "324155081",
+                              "outOctets": "67041349094348",
+                              "outUnicastPkts": "33860386347"
+                          },
+                          "name": "10GE1/0/35"
+                      }
+                  }
+              ]
+          }
+      ],
+      "encoding": 0,
+      "except_desc": "OK",
+      "msg_timestamp": 1699516305593,
+      "node_id_str": "rtr-al-02",
+      "product_name": "CE6875EI",
+      "proto_path": "openconfig_interfaces.Interfaces",
+      "sensor_path": "openconfig-interfaces:interfaces/interface/state/counters",
+      "software_version": "",
+      "subscription_id_str": "DAISY"
+  },
+  "serialization": "json",
+  "writer_id": "devcolleft01pmtelemetrydgrpchuaweileft01c 20230831.1.ec33571-1.el8"
+}

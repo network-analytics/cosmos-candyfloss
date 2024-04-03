@@ -1,0 +1,40 @@
+{
+  "event_type": "log",
+  "seq": 29948,
+  "timestamp": "1687783385.976494",
+  "telemetry_node": "192.168.0.13",
+  "telemetry_port": 64132,
+  "label": {
+    "nkey": "ipc-zbl512-m-pe-13",
+    "pkey": "UCM"
+  },
+  "telemetry_data": {
+    "/state/admin-status": "\"UP\"",
+    "/state/description": "\"**rtr-r-ml-01*100GE8/0/14*configured by Ansible**\"",
+    "/state/enabled": "1",
+    "/state/ifindex": "673",
+    "/state/last-change": "1684941740814990000",
+    "/state/logical": "0",
+    "/state/loopback-mode": "0",
+    "/state/mtu": "9212",
+    "/state/name": "\"et-0/0/0\"",
+    "/state/oper-status": "\"UP\"",
+    "/state/type": "\"ethernetCsmacd\"",
+    "extension": "{\"systemId\":\"ipc-zbl512-m-pe-13\",\"componentId\":65535,\"sensorName\":\"sensor_1004_5_1\",\"subscribedPath\":\"/interfaces/interface/\",\"streamedPath\":\"/interfaces/interface/\",\"component\":\"mib2d\",\"sequenceNumber\":\"17821\",\"payloadGetTimestamp\":\"1687783385776\",\"streamCreationTimestamp\":\"1687783326057\",\"exportTimestamp\":\"1687783385845\"}",
+    "notification_timestamp": 1687783385777410261,
+    "sensor_path": [
+      {
+        "name": "interfaces"
+      },
+      {
+        "filters": {
+          "name": "et-0/0/0"
+        },
+        "name": "interface"
+      }
+    ],
+    "system_id": "ipc-zbl512-m-pe-13"
+  },
+  "serialization": "json",
+  "writer_id": "daisy64stgrpc-right01c 20230607-1 (2a1d6ed0)"
+}

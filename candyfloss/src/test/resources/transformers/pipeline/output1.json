@@ -1,0 +1,41 @@
+{
+  "output.topic.name": "output1",
+  "match": {
+    "jsonpath": "$.telemetry_data.encoding_path",
+    "value": "Cisco-IOS-XR-asr9k-np-oper:hardware-module-np/nodes/node/nps/np/counters"
+  },
+  "transform": [
+    {
+      "operation": "shift",
+      "spec": {
+        "telemetry_data": {
+          "data_gpbkv": {
+            "*": {
+              "fields": {
+                "content": {
+                  "@(5,event_type)": "[&3].msg_metadata.event_type",
+                  "@(5,seq)": "[&3].msg_metadata.seq",
+                  "@(5,timestamp)": "[&3].msg_metadata.timestamp",
+                  "@(5,telemetry_node)": "[&3].msg_metadata.telemetry_node",
+                  "@(5,telemetry_port)": "[&3].msg_metadata.telemetry_port",
+                  "@(5,serialization)": "[&3].msg_metadata.serialization",
+                  "@(5,writer_id)": "[&3].msg_metadata.writer_id",
+                  "@(5,label)": "[&3].msg_metadata.label",
+                  "@(4,collection_id)": "[&3].telemetry_metadata.collection_id",
+                  "@(4,collection_end_time)": "[&3].telemetry_metadata.collection_end_time",
+                  "@(4,collection_start_time)": "[&3].telemetry_metadata.collection_start_time",
+                  "@(4,encoding_path)": "[&3].telemetry_metadata.encoding_path",
+                  "@(4,subscription)": "[&3].telemetry_metadata.subscription",
+                  "@(4,msg_timestamp)": "[&3].telemetry_metadata.msg_timestamp",
+                  "@(4,node_id)": "[&3].telemetry_metadata.node_id",
+                  "@(2,timestamp)": "[&3].timestamp",
+                  "np-counter": "[&3].np-counter"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

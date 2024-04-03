@@ -1,0 +1,46 @@
+{
+  "event_type": "log",
+  "seq": 5431759,
+  "timestamp": "1687261810.123456",
+  "telemetry_node": "192.168.1.36",
+  "telemetry_port": 53503,
+  "label": {
+    "nkey": "ipc-zbl535-m-pe-36",
+    "pkey": "UCM"
+  },
+  "telemetry_data": {
+    "/init-time": "1684749263",
+    "/state/counters/in-octets": "52810000",
+    "/state/counters/in-pkts": "52810000",
+    "/state/counters/in-unicast-pkts": "52810000",
+    "/state/counters/out-octets": "52810000",
+    "/state/counters/out-pkts": "52810000",
+    "/state/counters/out-unicast-pkts": "52810000",
+    "/state/parent-ae-name": "\"ae181.0\"",
+    "extension": "{\"systemId\":\"ipc-zbl535-m-pe-36\",\"componentId\":19,\"sensorName\":\"sensor_1004_1_1\",\"subscribedPath\":\"/interfaces/interface/\",\"streamedPath\":\"/junos/system/linecard/interface/logical/usage/\",\"component\":\"PFE\",\"sequenceNumber\":\"5669\",\"exportTimestamp\":\"1687261824116\",\"subSequenceNumber\":\"21\"}",
+    "notification_timestamp": 1687261810420000000,
+    "system_id": "ipc-zbl535-m-pe-36",
+    "sensor_path": [
+      {
+        "name": "interfaces"
+      },
+      {
+        "filters": {
+          "name": "et-19/0/1"
+        },
+        "name": "interface"
+      },
+      {
+        "name": "subinterfaces"
+      },
+      {
+        "filters": {
+          "index": "0"
+        },
+        "name": "subinterface"
+      }
+    ]
+  },
+  "serialization": "json",
+  "writer_id": "daisy64stgrpc-right01c 20230607-1 (2a1d6ed0)"
+}

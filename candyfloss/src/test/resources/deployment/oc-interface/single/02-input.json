@@ -1,0 +1,14 @@
+{
+  "event_type": "log",
+  "seq": 389088,
+  "timestamp": "2022-08-15 09:32:00.000000",
+  "telemetry_node": "fcba:be00:10::1",
+  "telemetry_port": 29223,
+  "label": {
+    "nkey": "ipt-zbl344-a-aet-41",
+    "pkey": "ngBAC"
+  },
+  "telemetry_data": "{\"node_id_str\":\"ipt-zbl344-a-aet-41\",\"subscription_id_str\":\"DAISY-SUBSCRIPTION\",\"encoding_path\":\"openconfig-interfaces:interfaces\",\"collection_id\":\"227567\",\"collection_start_time\":\"1659691800000\",\"msg_timestamp\":\"1660555778420\",\"collection_end_time\":\"1659691860000\",\"data_json\":[{\"timestamp\":\"1659691860000\",\"content\":{\"interface\":{\"name\":\"Bundle-Ether100\",\"state\":{\"counters\":{\"in-pkts\":\"110\",\"in-octets\":\"130\",\"out-pkts\":\"140\",\"out-octets\":\"190\",\"in-multicast-pkts\":\"190\",\"in-broadcast-pkts\":\"180\",\"out-multicast-pkts\":\"161\",\"out-broadcast-pkts\":\"180\",\"in-unknown-protos\":185,\"in-errors\":191,\"in-fcs-errors\":202,\"out-errors\":213,\"last-clear\":\"1657713273366000000\",\"in-unicast-pkts\":\"234\",\"in-discards\":\"246\",\"out-unicast-pkts\":\"258\",\"out-discards\":\"269\"}}}}}]}",
+  "serialization": "json_string",
+  "writer_id": "daisy64sttcpjsonipv6-left01c 20220811-0 (854a7e82)"
+}

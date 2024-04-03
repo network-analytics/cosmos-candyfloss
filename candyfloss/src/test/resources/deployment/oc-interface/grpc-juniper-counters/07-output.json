@@ -1,0 +1,33 @@
+[
+  {
+    "event_type": "log",
+    "seq": 5431759,
+    "timestamp": "1687261810.123456",
+    "node_id_str": "ipc-zbl535-m-pe-36",
+    "componentId": 19,
+    "sensorName": "sensor_1004_1_1",
+    "subscribedPath": "/interfaces/interface/",
+    "streamedPath": "/junos/system/linecard/interface/logical/usage/",
+    "component": "PFE",
+    "sequenceNumber": "5669",
+    "exportTimestamp": "1687261824116",
+    "subSequenceNumber": "21",
+    "platform_id": "UCM",
+    "node_id": "ipc-zbl535-m-pe-36",
+    "init_time": "1684749263",
+    "in_octets": null,
+    "in_pkts": null,
+    "in_unicast_pkts": null,
+    "out_octets": null,
+    "out_unicast_pkts": null,
+    "out_pkts": null,
+    "parent_ae_name": "\"ae181.0\"",
+    "name": "et-19/0/1.0",
+    "index": 0,
+    "msg_timestamp": "1687261810420",
+    "telemetry_node": "192.168.1.36",
+    "telemetry_port": 53503,
+    "serialization": "json",
+    "writer_id": "daisy64stgrpc-right01c 20230607-1 (2a1d6ed0)"
+  }
+]

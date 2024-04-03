@@ -1,0 +1,105 @@
+{
+  "event_type": "log",
+  "seq": 1849,
+  "timestamp": "2022-09-05 09:48:44.198510",
+  "telemetry_node": "192.168.1.28",
+  "telemetry_port": 50662,
+  "label": {
+    "nkey": "rtr-pe-60",
+    "pkey": "HCC"
+  },
+  "telemetry_data": {
+    "node_id_str": "hcc-zbl1315-r-pe-60",
+    "subscription_id_str": "DAISY-SUBSCRIPTION",
+    "encoding_path": "openconfig-interfaces:interfaces",
+    "collection_id": "456719",
+    "collection_start_time": "1662364104147",
+    "msg_timestamp": "1662364113793",
+    "data_json": [
+      {
+        "timestamp": "1662364113785",
+        "content": {
+          "interface": {
+            "name": "TenGigE0/0/0/0",
+            "subinterfaces": {
+              "subinterface": {
+                "index": 300,
+                "state": {
+                  "index": 300,
+                  "description": "DAISY-DEV-SOUTH-LEFT-001",
+                  "enabled": true,
+                  "name": "TenGigE0/0/0/0.300",
+                  "ifindex": 150,
+                  "admin-status": "UP",
+                  "oper-status": "UP",
+                  "last-change": "1661500702739766543",
+                  "logical": true,
+                  "counters": {
+                    "carrier-transitions": "2762675178428170245"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "timestamp": "1662364113788",
+        "content": {
+          "interface": {
+            "name": "TenGigE0/0/0/0",
+            "subinterfaces": {
+              "subinterface": {
+                "index": 301,
+                "state": {
+                  "index": 301,
+                  "description": "DAISY-DEV-SOUTH-RIGHT-001",
+                  "enabled": true,
+                  "name": "TenGigE0/0/0/0.301",
+                  "ifindex": 151,
+                  "admin-status": "UP",
+                  "oper-status": "UP",
+                  "last-change": "1661500702739745562",
+                  "logical": true,
+                  "counters": {
+                    "carrier-transitions": "2762675178428170245"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "timestamp": "1662364113792",
+        "content": {
+          "interface": {
+            "name": "TenGigE0/0/0/0",
+            "subinterfaces": {
+              "subinterface": {
+                "index": 302,
+                "state": {
+                  "index": 302,
+                  "description": "DAISY-DEV-SOUTH-LEFT-002",
+                  "enabled": true,
+                  "name": "TenGigE0/0/0/0.302",
+                  "ifindex": 152,
+                  "admin-status": "UP",
+                  "oper-status": "UP",
+                  "last-change": "1661500702739695371",
+                  "logical": true,
+                  "counters": {
+                    "carrier-transitions": "2763289667989143557"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ],
+    "collection_end_time": "1662364124197"
+  },
+  "serialization": "json_string",
+  "writer_id": "daisy64sttcpjson-left01c 20220829-0 (30874711)"
+}

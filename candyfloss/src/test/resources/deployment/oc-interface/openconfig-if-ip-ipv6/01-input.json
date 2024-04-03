@@ -1,0 +1,14 @@
+{
+  "event_type": "log",
+  "seq": 9728,
+  "timestamp": "2022-09-05 15:46:25.212588",
+  "telemetry_node": "192.168.1.28",
+  "telemetry_port": 50662,
+  "label": {
+    "nkey": "rtr-pe-60",
+    "pkey": "HCC"
+  },
+  "telemetry_data": "{\"node_id_str\":\"hcc-zbl1315-r-pe-60\",\"subscription_id_str\":\"DAISY-SUBSCRIPTION\",\"encoding_path\":\"openconfig-interfaces:interfaces\",\"collection_id\":\"463166\",\"collection_start_time\":\"1662385585206\",\"msg_timestamp\":\"1662385585212\",\"data_json\":[{\"timestamp\":\"1662385585209\",\"content\":{\"interface\":{\"name\":\"TenGigE0/0/0/0\",\"subinterfaces\":{\"subinterface\":{\"index\":300,\"openconfig-if-ip:ipv6\":{\"openconfig-if-ip-ext:autoconf\":{\"state\":{\"create-global-addresses\":false}}}}}}}},{\"timestamp\":\"1662385585211\",\"content\":{\"interface\":{\"name\":\"TenGigE0/0/0/0\",\"subinterfaces\":{\"subinterface\":{\"index\":301,\"openconfig-if-ip:ipv6\":{\"openconfig-if-ip-ext:autoconf\":{\"state\":{\"create-global-addresses\":false}}}}}}}}],\"collection_end_time\":\"1662385585212\"}",
+  "serialization": "json_string",
+  "writer_id": "daisy64sttcpjson-left01c 20220829-0 (30874711)"
+}

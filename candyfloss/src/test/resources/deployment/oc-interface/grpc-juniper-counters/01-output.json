@@ -1,0 +1,29 @@
+[
+  {
+    "event_type": "log",
+    "seq": 16428020,
+    "timestamp": "1686031900.200000",
+    "node_id_str": "ipc-zbl535-m-pe-36",
+    "componentId": 65535,
+    "sensorName": "sensor_1004_7_1",
+    "subscribedPath": "/interfaces/interface/",
+    "streamedPath": "/interfaces/interface/",
+    "component": "xmlproxyd",
+    "sequenceNumber": "154359",
+    "payloadGetTimestamp": "1686031905298",
+    "streamCreationTimestamp": "1686031905063",
+    "exportTimestamp": "1686031905341",
+    "platform_id": "UCM",
+    "node_id": "ipc-zbl535-m-pe-36",
+    "in_octets": null,
+    "in_pkts": null,
+    "out_octets": null,
+    "out_pkts": null,
+    "name": "em0",
+    "msg_timestamp": "1686031900420",
+    "telemetry_node": "192.168.1.36",
+    "telemetry_port": 52731,
+    "serialization": "json",
+    "writer_id": "daisy64stgrpc-right01c 20230519-0 (8e09ee56)"
+  }
+]

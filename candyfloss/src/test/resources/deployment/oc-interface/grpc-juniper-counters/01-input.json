@@ -1,0 +1,33 @@
+{
+  "event_type": "log",
+  "seq": 16428020,
+  "timestamp": "1686031900.200000",
+  "telemetry_node": "192.168.1.36",
+  "telemetry_port": 52731,
+  "label": {
+    "nkey": "ipc-zbl535-m-pe-36",
+    "pkey": "UCM"
+  },
+  "telemetry_data": {
+    "/state/counters/in-octets": "122977810000",
+    "/state/counters/in-pkts": "408410000",
+    "/state/counters/out-octets": "40420910000",
+    "/state/counters/out-pkts": "252110000",
+    "extension": "{\"systemId\":\"ipc-zbl535-m-pe-36\",\"componentId\":65535,\"sensorName\":\"sensor_1004_7_1\",\"subscribedPath\":\"/interfaces/interface/\",\"streamedPath\":\"/interfaces/interface/\",\"component\":\"xmlproxyd\",\"sequenceNumber\":\"154359\",\"payloadGetTimestamp\":\"1686031905298\",\"streamCreationTimestamp\":\"1686031905063\",\"exportTimestamp\":\"1686031905341\"}",
+    "notification_timestamp": 1686031900420000000,
+    "system_id": "ipc-zbl535-m-pe-36",
+    "sensor_path": [
+      {
+        "name": "interfaces"
+      },
+      {
+        "filters": {
+          "name": "em0"
+        },
+        "name": "interface"
+      }
+    ]
+  },
+  "serialization": "json",
+  "writer_id": "daisy64stgrpc-right01c 20230519-0 (8e09ee56)"
+}

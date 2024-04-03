@@ -1,0 +1,35 @@
+plugins {
+    id 'java-library'
+}
+
+apply plugin: 'jacoco'
+
+dependencies {
+    implementation(libs.jackson.core)
+    implementation(libs.jackson.databind)
+    implementation libs.jolt.core
+    implementation libs.jolt.json.utils
+    implementation libs.json.path
+    implementation(libs.slf4j)
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+
+
+    testCompileOnly libs.lombok
+    testAnnotationProcessor libs.lombok
+    testImplementation libs.jackson.databind
+    testImplementation libs.junit.jupiter.api
+    testRuntimeOnly libs.junit.jupiter.engine
+    testImplementation libs.jsonassert
+    testImplementation libs.logback
+    testImplementation project(':test-utils')
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+}

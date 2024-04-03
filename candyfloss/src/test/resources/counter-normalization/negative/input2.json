@@ -1,0 +1,32 @@
+{
+  "msg_metadata": {
+    "event_type": "dump",
+    "seq": 21196988,
+    "timestamp": "2022-03-14 09:00:01",
+    "telemetry_node": "192.168.1.22",
+    "telemetry_port": 55286,
+    "serialization": "gpb",
+    "writer_id": "daisy64stcisco1v01c/2080144",
+    "label": {
+      "nkey": "unknown",
+      "pkey": "unknown"
+    }
+  },
+  "telemetry_metadata": {
+    "collection_id": 910867,
+    "collection_end_time": 1647244767814,
+    "collection_start_time": 0,
+    "encoding_path": "openconfig-interfaces:interfaces",
+    "subscription": "DAISY-SUBSCRIPTION",
+    "msg_timestamp": 1647244767813,
+    "node_id": "hoa01ro1010zoi"
+  },
+  "timestamp": 1647244767278,
+  "name": "TenGigE0/0/0/0",
+  "state": {
+    "u64-counter": 3,
+    "u32-counter": 6,
+    "u32-value": 20,
+    "u64-value": 10
+  }
+}

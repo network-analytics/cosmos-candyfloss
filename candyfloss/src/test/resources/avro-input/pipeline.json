@@ -1,0 +1,12 @@
+{
+  "output.topic.name": "output1",
+  "match": {},
+  "transform": [
+    {
+      "operation": "shift",
+      "spec": {
+        "event": "[].transformed_event"
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "event_type": "log",
+  "seq": 1835,
+  "timestamp": "2022-09-05 09:47:25.588797",
+  "telemetry_node": "192.168.1.28",
+  "telemetry_port": 50662,
+  "label": {
+    "nkey": "rtr-pe-60",
+    "pkey": "HCC"
+  },
+  "telemetry_data": "{\"key\": 1}",
+  "serialization": "gbp",
+  "writer_id": "daisy64sttcpjson-left01c 20220829-0 (30874711)"
+}

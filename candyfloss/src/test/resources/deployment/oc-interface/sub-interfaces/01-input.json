@@ -1,0 +1,126 @@
+{
+  "event_type": "log",
+  "seq": 1837,
+  "timestamp": "2022-09-05 09:47:25.633230",
+  "telemetry_node": "192.168.1.28",
+  "telemetry_port": 50662,
+  "label": {
+    "nkey": "rtr-pe-60",
+    "pkey": "HCC"
+  },
+  "telemetry_data": {
+    "node_id_str": "hcc-zbl1315-r-pe-60",
+    "subscription_id_str": "DAISY-SUBSCRIPTION",
+    "encoding_path": "openconfig-interfaces:interfaces",
+    "collection_id": "456711",
+    "collection_start_time": "1662364045598",
+    "collection_end_time": "1662364045631",
+    "msg_timestamp": "1662364045631",
+    "data_json": [
+      {
+        "timestamp": "1662364045613",
+        "content": {
+          "interface": {
+            "name": "TenGigE0/0/0/0",
+            "subinterfaces": {
+              "subinterface": {
+                "index": 300,
+                "state": {
+                  "index": 300,
+                  "counters": {
+                    "in-pkts": "100",
+                    "in-octets": "100",
+                    "out-pkts": "100",
+                    "out-octets": "100",
+                    "in-multicast-pkts": "100",
+                    "in-broadcast-pkts": "100",
+                    "out-multicast-pkts": "100",
+                    "out-broadcast-pkts": "100",
+                    "in-unknown-protos": 100,
+                    "in-errors": 100,
+                    "in-fcs-errors": 100,
+                    "out-errors": 100,
+                    "in-unicast-pkts": "100",
+                    "in-discards": "100",
+                    "out-unicast-pkts": "100",
+                    "out-discards": "100"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "timestamp": "1662364045613",
+        "content": {
+          "interface": {
+            "name": "TenGigE0/0/0/0",
+            "subinterfaces": {
+              "subinterface": {
+                "index": 301,
+                "state": {
+                  "index": 301,
+                  "counters": {
+                    "in-pkts": "200",
+                    "in-octets": "200",
+                    "out-pkts": "200",
+                    "out-octets": "200",
+                    "in-multicast-pkts": "200",
+                    "in-broadcast-pkts": "200",
+                    "out-multicast-pkts": "200",
+                    "out-broadcast-pkts": "200",
+                    "in-unknown-protos": 200,
+                    "in-errors": 200,
+                    "in-fcs-errors": 200,
+                    "out-errors": 200,
+                    "in-unicast-pkts": "200",
+                    "in-discards": "200",
+                    "out-unicast-pkts": "200",
+                    "out-discards": "200"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "timestamp": "1662364045613",
+        "content": {
+          "interface": {
+            "name": "TenGigE0/0/0/0",
+            "subinterfaces": {
+              "subinterface": {
+                "index": 302,
+                "state": {
+                  "index": 302,
+                  "counters": {
+                    "in-pkts": "300",
+                    "in-octets": "300",
+                    "out-pkts": "300",
+                    "out-octets": "300",
+                    "in-multicast-pkts": "300",
+                    "in-broadcast-pkts": "300",
+                    "out-multicast-pkts": "300",
+                    "out-broadcast-pkts": "300",
+                    "in-unknown-protos": 300,
+                    "in-errors": 300,
+                    "in-fcs-errors": 300,
+                    "out-errors": 300,
+                    "in-unicast-pkts": "300",
+                    "in-discards": "300",
+                    "out-unicast-pkts": "300",
+                    "out-discards": "300"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "serialization": "json_string",
+  "writer_id": "daisy64sttcpjson-left01c 20220829-0 (30874711)"
+}

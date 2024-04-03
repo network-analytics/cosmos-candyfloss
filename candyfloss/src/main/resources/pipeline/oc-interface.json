@@ -1,0 +1,782 @@
+{
+  "match": {
+    "or": [
+      {
+        "jsonpath": "$.telemetry_data.encoding_path",
+        "value": "openconfig-interfaces:interfaces"
+      },
+      {
+        "jsonpath": "$.telemetry_data.extension.subscribedPath",
+        "value": "/interfaces/interface/"
+      },
+      {
+        "jsonpath": "$.telemetry_data.extension.subscribedPath",
+        "value": "/interfaces/"
+      },
+      {
+        "jsonpath": "$.telemetry_data.sensor_path",
+        "value": "openconfig-interfaces:interfaces/interface/subinterfaces/subinterface/state"
+      },
+      {
+        "jsonpath": "$.telemetry_data.sensor_path",
+        "value": "openconfig-interfaces:interfaces/interface/state/counters"
+      },
+      {
+        "jsonpath": "$.telemetry_data.sensor_path",
+        "value": "openconfig-interfaces:interfaces/interface/subinterfaces/subinterface/state/counters"
+      },
+      {
+        "jsonpath": "$.telemetry_data.sensor_path",
+        "value": "openconfig-interfaces:interfaces/interface/state"
+      }
+    ]
+  },
+  "transform": [
+    {
+      "operation": "shift",
+      "spec": {
+        "telemetry_data": {
+          "extension": {
+            "systemId": "a[0].b[0].c[0].node_id_str",
+            "componentId": "a[0].b[0].c[0].componentId",
+            "sensorName": "a[0].b[0].c[0].sensorName",
+            "subscribedPath": "a[0].b[0].c[0].subscribedPath",
+            "streamedPath": "a[0].b[0].c[0].streamedPath",
+            "component": "a[0].b[0].c[0].component",
+            "sequenceNumber": "a[0].b[0].c[0].sequenceNumber",
+            "payloadGetTimestamp": "a[0].b[0].c[0].payloadGetTimestamp",
+            "streamCreationTimestamp": "a[0].b[0].c[0].streamCreationTimestamp",
+            "exportTimestamp": "a[0].b[0].c[0].exportTimestamp",
+            "subSequenceNumber": "a[0].b[0].c[0].subSequenceNumber",
+            "@(1,/init-time)": "a[0].b[0].c[0].init_time",
+            "@(1,/state/counters/carrier-transitions)": "a[0].b[0].c[0].carrier_transitions",
+            "@(1,/state/counters/in-broadcast-pkts)": "a[0].b[0].c[0].in_broadcast_pkts",
+            "@(1,/state/counters/in-multicast-pkts)": "a[0].b[0].c[0].in_multicast_pkts",
+            "@(1,/state/counters/in-octets)": "a[0].b[0].c[0].in_octets",
+            "@(1,/state/counters/in-pkts)": "a[0].b[0].c[0].in_pkts",
+            "@(1,/state/counters/in-unicast-pkts)": "a[0].b[0].c[0].in_unicast_pkts",
+            "@(1,/state/counters/out-broadcast-pkts)": "a[0].b[0].c[0].out_broadcast_pkts",
+            "@(1,/state/counters/out-multicast-pkts)": "a[0].b[0].c[0].out_multicast_pkts",
+            "@(1,/state/counters/out-octets)": "a[0].b[0].c[0].out_octets",
+            "@(1,/state/counters/out-pkts)": "a[0].b[0].c[0].out_pkts",
+            "@(1,/state/counters/out-unicast-pkts)": "a[0].b[0].c[0].out_unicast_pkts",
+            "@(1,/state/high-speed)": "a[0].b[0].c[0].high_speed",
+            "@(1,/state/parent-ae-name)": "a[0].b[0].c[0].parent_ae_name",
+            "@(1,notification_timestamp)": "a[0].b[0].c[0].notification_timestamp",
+            "@(1,msg_timestamp)": "a[0].b[0].c[0].msg_timestamp",
+            "@(1,/state/admin-status)": "a[0].b[0].c[0].admin_status",
+            "@(1,/state/description)": "a[0].b[0].c[0].description",
+            "@(1,/state/enabled)": "a[0].b[0].c[0].enabled",
+            "@(1,/state/ifindex)": "a[0].b[0].c[0].ifindex",
+            "@(1,/state/last-change)": "a[0].b[0].c[0].last_change",
+            "@(1,/state/logical)": "a[0].b[0].c[0].logical",
+            "@(1,/state/loopback-mode)": "a[0].b[0].c[0].loopback_mode",
+            "@(1,/state/mtu)": "a[0].b[0].c[0].mtu",
+            "@(1,/state/oper-status)": "a[0].b[0].c[0].oper_status",
+            "@(1,/state/type)": "a[0].b[0].c[0].type",
+            "@(2,event_type)": "a[0].b[0].c[0].event_type",
+            "@(2,seq)": "a[0].b[0].c[0].seq",
+            "@(2,timestamp)": "a[0].b[0].c[0].timestamp",
+            "@(2,telemetry_node)": "a[0].b[0].c[0].telemetry_node",
+            "@(2,telemetry_port)": "a[0].b[0].c[0].telemetry_port",
+            "@(2,serialization)": "a[0].b[0].c[0].serialization",
+            "@(2,writer_id)": "a[0].b[0].c[0].writer_id",
+            "@(2,label.pkey)": "a[0].b[0].c[0].platform_id",
+            "@(2,label.nkey)": "a[0].b[0].c[0].node_id"
+          },
+          "sensor_path": {
+            "*": {
+              "filters": {
+                "name": "a[0].b[0].c[0].main_name",
+                "index": "a[0].b[0].c[0].&"
+              }
+            }
+          },
+          "data_json": {
+            "*": {
+              "content": {
+                "interface": {
+                  "state": {
+                    "@(1,name)": "a[0].b[0].c[&4].main_name",
+                    "type": "a[0].b[0].c[&4].type",
+                    "admin-status": "a[0].b[0].c[&4].admin_status",
+                    "oper-status": "a[0].b[0].c[&4].oper_status",
+                    "description": "a[0].b[0].c[&4].description",
+                    "ifindex": "a[0].b[0].c[&4].ifindex",
+                    "@(6,label.pkey)": "a[0].b[0].c[&4].platform_id",
+                    "@(6,label.nkey)": "a[0].b[0].c[&4].node_id",
+                    "@(6,telemetry_node)": "a[0].b[0].c[&4].telemetry_node",
+                    "@(5,node_id_str)": "a[0].b[0].c[&4].node_id_str",
+                    "@(5,subscription_id_str)": "a[0].b[0].c[&4].subscription_id_str",
+                    "@(6,timestamp)": "a[0].b[0].c[&4].timestamp",
+                    "@(5,msg_timestamp)": "a[0].b[0].c[&4].msg_timestamp",
+                    "@(6,writer_id)": "a[0].b[0].c[&4].writer_id",
+                    "counters": {
+                      "last-clear": "a[0].b[0].c[&5].last_clear",
+                      "in-broadcast-pkts": "a[0].b[0].c[&5].in_broadcast_pkts",
+                      "in-discards": "a[0].b[0].c[&5].in_discards",
+                      "in-errors": "a[0].b[0].c[&5].in_errors",
+                      "in-multicast-pkts": "a[0].b[0].c[&5].in_multicast_pkts",
+                      "in-octets": "a[0].b[0].c[&5].in_octets",
+                      "in-unicast-pkts": "a[0].b[0].c[&5].in_unicast_pkts",
+                      "in-unknown-protos": "a[0].b[0].c[&5].in_unknown_protos",
+                      "out-broadcast-pkts": "a[0].b[0].c[&5].out_broadcast_pkts",
+                      "out-discards": "a[0].b[0].c[&5].out_discards",
+                      "out-errors": "a[0].b[0].c[&5].out_errors",
+                      "out-multicast-pkts": "a[0].b[0].c[&5].out_multicast_pkts",
+                      "out-octets": "a[0].b[0].c[&5].out_octets",
+                      "out-unicast-pkts": "a[0].b[0].c[&5].out_unicast_pkts"
+                    }
+                  },
+                  "subinterfaces": {
+                    "subinterface": {
+                      "state": {
+                        "admin-status": "a[0].b[0].c[&6].admin_status",
+                        "description": "a[0].b[0].c[&6].description",
+                        "enabled": "a[0].b[0].c[&6].enabled",
+                        "oper-status": "a[0].b[0].c[&6].oper_status",
+                        "ifindex": "a[0].b[0].c[&6].ifindex",
+                        "name": "a[0].b[0].c[&6].subinterface_name",
+                        "@(3,name)": "a[0].b[0].c[&6].main_name",
+                        "@(1,index)": "a[0].b[0].c[&6].index",
+                        "index": "a[0].b[0].c[&6].index",
+                        "@(9,telemetry_node)": "a[0].b[0].c[&6].telemetry_node",
+                        "@(7,node_id_str)": "a[0].b[0].c[&6].node_id_str",
+                        "@(7,subscription_id_str)": "a[0].b[0].c[&6].subscription_id_str",
+                        "@(9,label.pkey)": "a[0].b[0].c[&6].platform_id",
+                        "@(9,label.nkey)": "a[0].b[0].c[&6].node_id",
+                        "@(9,timestamp)": "a[0].b[0].c[&6].timestamp",
+                        "@(7,msg_timestamp)": "a[0].b[0].c[&6].msg_timestamp",
+                        "@(9,writer_id)": "a[0].b[0].c[&6].writer_id",
+                        "counters": {
+                          "last-clear": "a[0].b[0].c[&7].last_clear",
+                          "in-broadcast-pkts": "a[0].b[0].c[&7].in_broadcast_pkts",
+                          "in-discards": "a[0].b[0].c[&7].in_discards",
+                          "in-errors": "a[0].b[0].c[&7].in_errors",
+                          "in-multicast-pkts": "a[0].b[0].c[&7].in_multicast_pkts",
+                          "in-octets": "a[0].b[0].c[&7].in_octets",
+                          "in-unicast-pkts": "a[0].b[0].c[&7].in_unicast_pkts",
+                          "in-unknown-protos": "a[0].b[0].c[&7].in_unknown_protos",
+                          "out-broadcast-pkts": "a[0].b[0].c[&7].out_broadcast_pkts",
+                          "out-discards": "a[0].b[0].c[&7].out_discards",
+                          "out-errors": "a[0].b[0].c[&7].out_errors",
+                          "out-multicast-pkts": "a[0].b[0].c[&7].out_multicast_pkts",
+                          "out-octets": "a[0].b[0].c[&7].out_octets",
+                          "out-unicast-pkts": "a[0].b[0].c[&7].out_unicast_pkts"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "decoded": {
+            "*": {
+              "interface": {
+                "*": {
+                  "state": {
+                    "counters": {
+                      "@(7,event_type)": "a[0].b[&5].c[&3].event_type",
+                      "@(7,seq)": "a[0].b[&5].c[&3].seq",
+                      "@(7,timestamp)": "a[0].b[&5].c[&3].timestamp",
+                      "@(7,telemetry_node)": "a[0].b[&5].c[&3].telemetry_node",
+                      "@(7,telemetry_port)": "a[0].b[&5].c[&3].telemetry_port",
+                      "@(7,label.pkey)": "a[0].b[&5].c[&3].platform_id",
+                      "@(7,label.nkey)": "a[0].b[&5].c[&3].node_id",
+                      "@(7,serialization)": "a[0].b[&5].c[&3].serialization",
+                      "@(7,writer_id)": "a[0].b[&5].c[&3].writer_id",
+                      "@(6,msg_timestamp)": "a[0].b[&5].c[&3].msg_timestamp",
+                      "@(6,node_id_str)": "a[0].b[&5].c[&3].node_id_str",
+                      "@(6,sensor_path)": "a[0].b[&5].c[&3].encoding_path",
+                      "@(6,subscription_id_str)": "a[0].b[&5].c[&3].subscription_id_str",
+                      "@(1,name)": "a[0].b[&5].c[&3].name",
+                      "@(0,inBroadcastPkts)": "a[0].b[&5].c[&3].in_broadcast_pkts",
+                      "@(0,inErrors)": "a[0].b[&5].c[&3].in_errors",
+                      "@(0,inFcsErrors)": "a[0].b[&5].c[&3].in_fcs_errors",
+                      "@(0,inMulticastPkts)": "a[0].b[&5].c[&3].in_multicast_pkts",
+                      "@(0,inOctets)": "a[0].b[&5].c[&3].in_octets",
+                      "@(0,inUnicastPkts)": "a[0].b[&5].c[&3].in_unicast_pkts",
+                      "@(0,outBroadcastPkts)": "a[0].b[&5].c[&3].out_broadcast_pkts",
+                      "@(0,outMulticastPkts)": "a[0].b[&5].c[&3].out_multicast_pkts",
+                      "@(0,outOctets)": "a[0].b[&5].c[&3].out_octets",
+                      "@(0,outUnicastPkts)": "a[0].b[&5].c[&3].out_unicast_pkts"
+                    }
+                  },
+                  "subinterfaces": {
+                    "subinterface": {
+                      "*": {
+                        "state": {
+                          "@(9,event_type)": "a[&7].b[&5].c[&2].event_type",
+                          "@(9,seq)": "a[&7].b[&5].c[&2].seq",
+                          "@(9,timestamp)": "a[&7].b[&5].c[&2].timestamp",
+                          "@(9,telemetry_node)": "a[&7].b[&5].c[&2].telemetry_node",
+                          "@(9,telemetry_port)": "a[&7].b[&5].c[&2].telemetry_port",
+                          "@(9,label.pkey)": "a[&7].b[&5].c[&2].platform_id",
+                          "@(9,label.nkey)": "a[&7].b[&5].c[&2].node_id",
+                          "@(9,serialization)": "a[&7].b[&5].c[&2].serialization",
+                          "@(9,writer_id)": "a[&7].b[&5].c[&2].writer_id",
+                          "@(8,msg_timestamp)": "a[&7].b[&5].c[&2].msg_timestamp",
+                          "@(8,node_id_str)": "a[&7].b[&5].c[&2].node_id_str",
+                          "@(8,sensor_path)": "a[&7].b[&5].c[&2].encoding_path",
+                          "@(8,subscription_id_str)": "a[&7].b[&5].c[&2].subscription_id_str",
+                          "@(4,name)": "a[&7].b[&5].c[&2].main_name",
+                          "@(0,name)": "a[&7].b[&5].c[&2].subinterface_name",
+                          "@(0,adminStatus)": "a[&7].b[&5].c[&2].admin_status",
+                          "@(0,description)": "a[&7].b[&5].c[&2].description",
+                          "@(0,enabled)": "a[&7].b[&5].c[&2].enabled",
+                          "@(0,ifindex)": "a[&7].b[&5].c[&2].ifindex",
+                          "@(0,lastChange)": "a[&7].b[&5].c[&2].lastChange",
+                          "@(0,operStatus)": "a[&7].b[&5].c[&2].oper_status",
+                          "counters": {
+                            "@(2,index)": "a[&8].b[&6].c[&3].index",
+                            "@(0,inOctets)": "a[&8].b[&6].c[&3].in_octets",
+                            "@(0,inUnicastPkts)": "a[&8].b[&6].c[&3].in_unicast_pkts",
+                            "@(0,outBroadcastPkts)": "a[&8].b[&6].c[&3].out_broadcast_pkts",
+                            "@(0,outMulticastPkts)": "a[&8].b[&6].c[&3].out_multicast_pkts",
+                            "@(0,outOctets)": "a[&8].b[&6].c[&3].out_octets",
+                            "@(0,outUnicastPkts)": "a[&8].b[&6].c[&3].out_unicast_pkts"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "operation": "shift",
+      "spec": {
+        "*": {
+          "*": {
+            "*": {
+              "*": {
+                "*": {
+                  "*": "[]"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "operation": "modify-overwrite-beta",
+      "spec": {
+        "*": {
+          "index": "=toLong"
+        }
+      }
+    },
+    {
+      "operation": "modify-overwrite-beta",
+      "spec": {
+        "*": {
+          "index": "=lastElement(@(1,index))",
+          "ifindex": "=lastElement(@(1,ifindex))"
+        }
+      }
+    },
+    {
+      "operation": "shift",
+      "spec": {
+        "*": {
+          "*": ".[&1].&",
+          "main_name": ".[&1].main_name",
+          "index": [
+            ".[&1].index",
+            ".[&1].main_name"
+          ]
+        }
+      }
+    },
+    {
+      "operation": "modify-overwrite-beta",
+      "spec": {
+        "*": {
+          "main_name": "=join('.',@(1,main_name))"
+        }
+      }
+    },
+    {
+      "operation": "shift",
+      "spec": {
+        "*": {
+          "*": ".[&1].&",
+          "main_name": ".[&1].name",
+          "subinterface_name": ".[&1].name"
+        }
+      }
+    },
+    {
+      "operation": "modify-overwrite-beta",
+      "spec": {
+        "*": {
+          "name": "=lastElement(@(1,name))"
+        }
+      }
+    },
+    {
+      "operation": "shift",
+      "spec": {
+        "*": {
+          "*": ".[&1].&",
+          "main_name": "",
+          "subinterface_name": ""
+        }
+      }
+    },
+    {
+      "operation": "modify-overwrite-beta",
+      "spec": {
+        "*": {
+          "notification_timestamp": "=divide(@(1,notification_timestamp),1000000)"
+        }
+      }
+    },
+    {
+      "operation": "modify-overwrite-beta",
+      "spec": {
+        "*": {
+          "notification_timestamp": "=toLong"
+        }
+      }
+    },
+    {
+      "operation": "modify-overwrite-beta",
+      "spec": {
+        "*": {
+          "notification_timestamp": "=toString"
+        }
+      }
+    },
+    {
+      "operation": "shift",
+      "spec": {
+        "*": {
+          "*": ".[&1].&",
+          "notification_timestamp": "[&1].msg_timestamp"
+        }
+      }
+    },
+    {
+      "operation": "cardinality",
+      "spec": {
+        "*": {
+          "msg_timestamp": "ONE"
+        }
+      }
+    },
+    {
+      "operation": "shift",
+      "spec": {
+        "*": {
+          "*": ".[&1].&",
+          "oper_status": {
+            "OperStatus_UP": {
+              "#UP": ".[&3].oper_status"
+            },
+            "OperStatus_DOWN": {
+              "#DOWN": ".[&3].oper_status"
+            },
+            "\"UP\"": {
+              "#UP": ".[&3].oper_status"
+            },
+            "\"DOWN\"": {
+              "#DOWN": ".[&3].oper_status"
+            },
+            "*": {
+              "$": ".[&3].oper_status"
+            }
+          },
+          "admin_status": {
+            "AdminStatus_UP": {
+              "#UP": ".[&3].admin_status"
+            },
+            "AdminStatus_DOWN": {
+              "#DOWN": ".[&3].admin_status"
+            },
+            "\"UP\"": {
+              "#UP": ".[&3].admin_status"
+            },
+            "\"DOWN\"": {
+              "#DOWN": ".[&3].admin_status"
+            },
+            "*": {
+              "$": ".[&3].admin_status"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "normalizeCounters": {
+    "timestamp-extractor": {
+      "jsonpath": "$.msg_timestamp",
+      "timestamp-type": "EpochMilli"
+    },
+    "counters": [
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "in_broadcast_pkts"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.in_broadcast_pkts"
+        }
+      },
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "in_discards"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.in_discards"
+        }
+      },
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "in_errors"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.in_errors"
+        }
+      },
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "in_fcs_errors"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.in_fcs_errors"
+        }
+      },
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "in_multicast_pkts"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.in_multicast_pkts"
+        }
+      },
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "in_octets"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.in_octets"
+        }
+      },
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "in_unicast_pkts"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.in_unicast_pkts"
+        }
+      },
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "in_unknown_protos"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.in_unknown_protos"
+        }
+      },
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "out_broadcast_pkts"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.out_broadcast_pkts"
+        }
+      },
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "out_discards"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.out_discards"
+        }
+      },
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "out_errors"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.out_errors"
+        }
+      },
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "out_multicast_pkts"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.out_multicast_pkts"
+        }
+      },
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "out_octets"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.out_octets"
+        }
+      },
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "out_unicast_pkts"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.out_unicast_pkts"
+        }
+      },
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "carrier_transitions"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.carrier_transitions"
+        }
+      },
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "in_pkts"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.in_pkts"
+        }
+      },
+      {
+        "match": {},
+        "key": [
+          {
+            "jsonpath": "$.telemetry_node"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "jsonpath": "$.index"
+          },
+          {
+            "constant": "out_pkts"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.out_pkts"
+        }
+      }
+    ]
+  }
+}

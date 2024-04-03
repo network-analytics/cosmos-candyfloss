@@ -1,0 +1,15 @@
+{
+  "output.topic.name": "output3",
+  "match": {
+    "jsonpath": "$.event_type",
+    "value": "dump_init"
+  },
+  "transform": [
+    {
+      "operation": "shift",
+      "spec": {
+        "*": "[0].&"
+      }
+    }
+  ]
+}

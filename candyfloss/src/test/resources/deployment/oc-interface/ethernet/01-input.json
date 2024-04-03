@@ -1,0 +1,14 @@
+{
+  "event_type": "log",
+  "seq": 1835,
+  "timestamp": "2022-09-05 09:47:25.588797",
+  "telemetry_node": "192.168.1.28",
+  "telemetry_port": 50662,
+  "label": {
+    "nkey": "rtr-pe-60",
+    "pkey": "HCC"
+  },
+  "telemetry_data": "{\"node_id_str\":\"hcc-zbl1315-r-pe-60\",\"subscription_id_str\":\"DAISY-SUBSCRIPTION\",\"encoding_path\":\"openconfig-interfaces:interfaces\",\"collection_id\":\"456709\",\"collection_start_time\":\"1662364045313\",\"collection_end_time\":\"1662364045587\",\"msg_timestamp\":\"1662364045586\",\"data_json\":[{\"timestamp\":\"1662364045326\",\"content\":{\"interface\":{\"name\":\"TenGigE0/0/0/0\",\"openconfig-if-ethernet:ethernet\":{\"state\":{\"mac-address\":\"ac:bb:de:1a:b2:a9\",\"auto-negotiate\":false,\"duplex-mode\":\"FULL\",\"port-speed\":\"SPEED_10GB\",\"enable-flow-control\":false,\"hw-mac-address\":\"ac:bb:00:99:b2:a9\",\"negotiated-port-speed\":\"SPEED_UNKNOWN\",\"counters\":{\"in-mac-pause-frames\":\"0\",\"in-oversize-frames\":\"683\",\"in-undersize-frames\":\"0\",\"in-jabber-frames\":\"0\",\"in-fragment-frames\":\"0\",\"in-8021q-frames\":\"0\",\"in-crc-errors\":\"0\",\"out-mac-pause-frames\":\"0\",\"out-8021q-frames\":\"0\",\"openconfig-if-ethernet-ext:in-distribution\":{\"in-frames-64-octets\":\"141955601\",\"in-frames-65-127-octets\":\"102955062\",\"in-frames-128-255-octets\":\"1775627\",\"in-frames-256-511-octets\":\"123213\",\"in-frames-512-1023-octets\":\"2984647\",\"in-frames-1024-1518-octets\":\"24681\"}}}}}}},{\"timestamp\":\"1662364045331\",\"content\":{\"interface\":{\"name\":\"TenGigE0/0/0/1\",\"openconfig-if-ethernet:ethernet\":{\"state\":{\"mac-address\":\"ac:bc:d9:11:22:a1\",\"auto-negotiate\":false,\"duplex-mode\":\"FULL\",\"port-speed\":\"SPEED_10GB\",\"enable-flow-control\":false,\"hw-mac-address\":\"ac:bc:d9:11:22:a1\",\"negotiated-port-speed\":\"SPEED_UNKNOWN\",\"counters\":{\"in-mac-pause-frames\":\"0\",\"in-oversize-frames\":\"0\",\"in-undersize-frames\":\"0\",\"in-jabber-frames\":\"0\",\"in-fragment-frames\":\"0\",\"in-8021q-frames\":\"0\",\"in-crc-errors\":\"0\",\"out-mac-pause-frames\":\"0\",\"out-8021q-frames\":\"0\",\"openconfig-if-ethernet-ext:in-distribution\":{\"in-frames-64-octets\":\"2415994\",\"in-frames-65-127-octets\":\"49242170\",\"in-frames-128-255-octets\":\"22092010\",\"in-frames-256-511-octets\":\"7506388\",\"in-frames-512-1023-octets\":\"10415803\",\"in-frames-1024-1518-octets\":\"100854529\"}}}}}}}]}",
+  "serialization": "json_string",
+  "writer_id": "daisy64sttcpjson-left01c 20220829-0 (30874711)"
+}

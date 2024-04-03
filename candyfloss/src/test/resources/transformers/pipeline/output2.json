@@ -1,0 +1,117 @@
+{
+  "output.topic.name": "output2",
+  "match": {
+    "jsonpath": "$.telemetry_data.encoding_path",
+    "value": "openconfig-interfaces:interfaces"
+  },
+  "transform": [
+    {
+      "operation": "shift",
+      "spec": {
+        "telemetry_data": {
+          "data_gpbkv": {
+            "*": {
+              "fields": {
+                "content": {
+                  "interface": {
+                    "subinterfaces": {
+                      "*": {
+                        "@(8,event_type)": "[&6].msg_metadata.event_type",
+                        "@(8,seq)": "[&6].msg_metadata.seq",
+                        "@(8,timestamp)": "[&6].msg_metadata.timestamp",
+                        "@(8,telemetry_node)": "[&6].msg_metadata.telemetry_node",
+                        "@(8,telemetry_port)": "[&6].msg_metadata.telemetry_port",
+                        "@(8,serialization)": "[&6].msg_metadata.serialization",
+                        "@(8,writer_id)": "[&6].msg_metadata.writer_id",
+                        "@(8,label)": "[&6].msg_metadata.label",
+                        "@(7,collection_id)": "[&6].telemetry_metadata.collection_id",
+                        "@(7,collection_end_time)": "[&6].telemetry_metadata.collection_end_time",
+                        "@(7,collection_start_time)": "[&6].telemetry_metadata.collection_start_time",
+                        "@(7,encoding_path)": "[&6].telemetry_metadata.encoding_path",
+                        "@(7,subscription)": "[&6].telemetry_metadata.subscription",
+                        "@(7,msg_timestamp)": "[&6].telemetry_metadata.msg_timestamp",
+                        "@(7,node_id)": "[&6].telemetry_metadata.node_id",
+                        "@(2,name)": "[&6].name",
+                        "@(5,timestamp)": "[&6].timestamp",
+                        "index": "[&6].index",
+                        "state": "[&6].state"
+                      }
+                    },
+                    "@(6,event_type)": "[&4].msg_metadata.event_type",
+                    "@(6,seq)": "[&4].msg_metadata.seq",
+                    "@(6,timestamp)": "[&4].msg_metadata.timestamp",
+                    "@(6,telemetry_node)": "[&4].msg_metadata.telemetry_node",
+                    "@(6,telemetry_port)": "[&4].msg_metadata.telemetry_port",
+                    "@(6,serialization)": "[&4].msg_metadata.serialization",
+                    "@(6,writer_id)": "[&4].msg_metadata.writer_id",
+                    "@(6,label)": "[&4].msg_metadata.label",
+                    "@(5,collection_id)": "[&4].telemetry_metadata.collection_id",
+                    "@(5,collection_end_time)": "[&4].telemetry_metadata.collection_end_time",
+                    "@(5,collection_start_time)": "[&4].telemetry_metadata.collection_start_time",
+                    "@(5,encoding_path)": "[&4].telemetry_metadata.encoding_path",
+                    "@(5,subscription)": "[&4].telemetry_metadata.subscription",
+                    "@(5,msg_timestamp)": "[&4].telemetry_metadata.msg_timestamp",
+                    "@(5,node_id)": "[&4].telemetry_metadata.node_id",
+                    "@(3,timestamp)": "[&4].timestamp",
+                    "name": "[&4].name",
+                    "state": "[&4].state"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "normalizeCounters": {
+    "timestamp-extractor": {
+      "jsonpath": "$.msg_metadata.timestamp",
+      "timestamp-type": "RFC2822"
+    },
+    "counters": [
+      {
+        "match": {
+          "jsonpath": "$.telemetry_metadata.encoding_path",
+          "value": "openconfig-interfaces:interfaces"
+        },
+        "key": [
+          {
+            "jsonpath": "$.telemetry_metadata.node_id"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "constant": "out-pkts"
+          }
+        ],
+        "type": "u64",
+        "value": {
+          "jsonpath": "$.state.counters.out-pkts"
+        }
+      },
+      {
+        "match": {
+          "jsonpath": "$.telemetry_metadata.encoding_path",
+          "value": "openconfig-interfaces:interfaces"
+        },
+        "key": [
+          {
+            "jsonpath": "$.telemetry_metadata.node_id"
+          },
+          {
+            "jsonpath": "$.name"
+          },
+          {
+            "constant": "in-pkts"
+          }
+        ],
+        "type": "u32",
+        "value": {
+          "jsonpath": "$.state.counters.in-pkts"
+        }
+      }
+    ]
+  }
+}

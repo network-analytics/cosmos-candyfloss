@@ -1,0 +1,142 @@
+{
+  "event_type": "log",
+  "seq": 1829,
+  "timestamp": "2022-09-05 09:47:25.103975",
+  "telemetry_node": "192.168.1.28",
+  "telemetry_port": 50662,
+  "label": {
+    "nkey": "rtr-pe-60",
+    "pkey": "HCC"
+  },
+  "telemetry_data": {
+    "node_id_str": "hcc-zbl1315-r-pe-60",
+    "subscription_id_str": "DAISY-SUBSCRIPTION",
+    "encoding_path": "openconfig-interfaces:interfaces",
+    "collection_id": "456703",
+    "collection_start_time": "1662364044760",
+    "collection_end_time": "1662364045102",
+    "msg_timestamp": "1662364045101",
+    "data_json": [
+      {
+        "timestamp": "1662364044770",
+        "content": {
+          "interface": {
+            "name": "Bundle-Ether100",
+            "state": {
+              "name": "Bundle-Ether100",
+              "type": "iana-if-type:ieee8023adLag",
+              "mtu": 9216,
+              "loopback-mode": false,
+              "description": "hcc-zbl1321-r-lf-09:BE20085",
+              "enabled": true,
+              "ifindex": 145,
+              "admin-status": "UP",
+              "oper-status": "UP",
+              "last-change": "1660823183645902699",
+              "logical": true,
+              "counters": {
+                "carrier-transitions": "2762676140500844545"
+              }
+            }
+          }
+        }
+      },
+      {
+        "timestamp": "1662364044781",
+        "content": {
+          "interface": {
+            "name": "HundredGigE0/0/0/10",
+            "state": {
+              "name": "HundredGigE0/0/0/10",
+              "type": "iana-if-type:ethernetCsmacd",
+              "mtu": 1514,
+              "loopback-mode": false,
+              "enabled": false,
+              "ifindex": 100,
+              "admin-status": "DOWN",
+              "oper-status": "DOWN",
+              "last-change": "0",
+              "logical": false,
+              "counters": {
+                "carrier-transitions": "0"
+              }
+            }
+          }
+        }
+      },
+      {
+        "timestamp": "1662364044806",
+        "content": {
+          "interface": {
+            "name": "Loopback0",
+            "state": {
+              "name": "Loopback0",
+              "type": "iana-if-type:softwareLoopback",
+              "mtu": 1500,
+              "loopback-mode": false,
+              "enabled": true,
+              "ifindex": 144,
+              "admin-status": "UP",
+              "oper-status": "UP",
+              "last-change": "1660816479298542962",
+              "logical": true,
+              "counters": {
+                "carrier-transitions": "1"
+              }
+            }
+          }
+        }
+      },
+      {
+        "timestamp": "1662364044811",
+        "content": {
+          "interface": {
+            "name": "MgmtEth0/RP0/CPU0/0",
+            "state": {
+              "name": "MgmtEth0/RP0/CPU0/0",
+              "type": "iana-if-type:ethernetCsmacd",
+              "mtu": 1514,
+              "loopback-mode": false,
+              "description": "Management",
+              "enabled": true,
+              "ifindex": 1,
+              "admin-status": "UP",
+              "oper-status": "UP",
+              "last-change": "1660052609947263026",
+              "logical": false,
+              "counters": {
+                "carrier-transitions": "2763356188442624001"
+              }
+            }
+          }
+        }
+      },
+      {
+        "timestamp": "1662364044829",
+        "content": {
+          "interface": {
+            "name": "TenGigE0/0/0/0",
+            "state": {
+              "name": "TenGigE0/0/0/0",
+              "type": "iana-if-type:ethernetCsmacd",
+              "mtu": 9014,
+              "loopback-mode": false,
+              "description": "ipz-zbl1315-s-vi-50 Eth1/26",
+              "enabled": true,
+              "ifindex": 101,
+              "admin-status": "UP",
+              "oper-status": "UP",
+              "last-change": "1661500702736226193",
+              "logical": false,
+              "counters": {
+                "carrier-transitions": "2762674491233402895"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "serialization": "json_string",
+  "writer_id": "daisy64sttcpjson-left01c 20220829-0 (30874711)"
+}
