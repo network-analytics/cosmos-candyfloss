@@ -3,8 +3,8 @@ FROM eclipse-temurin:21-jdk
 LABEL authors="ahmed.elhassany@swisscom.com"
 
 #Static un-privileged container user
-ENV DAISY_USER_GROUP_ID 1000
-ENV DAISY_USER_ID 1000
+ENV DAISY_USER_GROUP_ID 1001
+ENV DAISY_USER_ID 1001
 ENV DAISY_GROUP_NAME container-system-group
 ENV DAISY_USER_NAME container-system-user
 RUN groupadd ${DAISY_GROUP_NAME} --gid ${DAISY_USER_GROUP_ID}
