@@ -94,7 +94,6 @@ jobs:
           -Djib.from.image=${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}:${{ env.DOCKER_METADATA_OUTPUT_VERSION }}
           -Djib.to.image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           -Djib.to.tags=${{ env.FINAL_TAGS }}
-          -Djib.container.user="1001:1001"
       - name: Gather generated image digest for attestation
         run: |
           echo "FINAL_IMG_DIGEST=$(cat ./candyfloss/build/jib-image.digest)" >> $GITHUB_ENV
