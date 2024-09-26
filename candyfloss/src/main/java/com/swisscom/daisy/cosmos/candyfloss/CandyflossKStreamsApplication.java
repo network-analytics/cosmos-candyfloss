@@ -42,25 +42,6 @@ public class CandyflossKStreamsApplication {
     this.config = config;
   }
 
-  static void runKafkaStreams(final KafkaStreams streams) {
-    final CountDownLatch latch = new CountDownLatch(1);
-    streams.setStateListener(
-        (newState, oldState) -> {
-          if (oldState == KafkaStreams.State.RUNNING && newState != KafkaStreams.State.RUNNING) {
-            latch.countDown();
-          }
-        });
-
-    streams.start();
-
-    try {
-      latch.await();
-      logger.info("Cosmos Candyfloss gracefully shutdown");
-    } catch (final InterruptedException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   public static void main(String[] args)
       throws IOException, InvalidConfigurations, InvalidMatchConfiguration {
     // Setting up the metrics registry
@@ -75,14 +56,28 @@ public class CandyflossKStreamsApplication {
     System.out.println(topology.describe());
     logger.info("Topology configured, now starting it");
     var kafkaStreams = new KafkaStreams(topology, appConf.getKafkaProperties());
+
+    final CountDownLatch latch = new CountDownLatch(1);
+    // attach shutdown handler to catch control-c
     Runtime.getRuntime()
         .addShutdownHook(
-            new Thread(
-                () -> {
-                  kafkaStreams.close();
-                  logger.info("Cosmos Candyfloss shutdown");
-                }));
-    runKafkaStreams(kafkaStreams);
+            new Thread("streams-shutdown-hook") {
+              @Override
+              public void run() {
+                logger.info("Received shutdown signal, terminating Candyfloss");
+                kafkaStreams.close();
+                latch.countDown();
+              }
+            });
+
+    try {
+      kafkaStreams.start();
+      latch.await();
+      logger.info("Cosmos Candyfloss gracefully shutdown");
+    } catch (Throwable e) {
+      System.exit(1);
+    }
+    System.exit(0);
   }
 
   private String serializeAvroToJsonString(GenericRecord value) throws IOException {
