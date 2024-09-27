@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
@@ -371,23 +370,27 @@ public class CounterNormalizationTransformer
   /*** Extract the counter key that is used to locate in key/value store based on the user-provided configurations*/
   private Bytes getCounterKey(DocumentContext context, NormalizeCounterConfig counterConfig)
       throws InvalidCounterKeysConfigurations {
-    List<String> keyList =
-        counterConfig.getKey().getKeyExtractors().stream()
-            .map(
-                x -> {
-                  try {
-                    return x.getKey(context);
-                  } catch (Exception ex) {
-                    return "null";
-                  }
-                })
-            .sorted()
-            .toList();
-    if (keyList.isEmpty()) {
+    StringBuilder builder = new StringBuilder();
+    counterConfig.getKey().getKeyExtractors().stream()
+        .map(
+            x -> {
+              try {
+                return x.getKey(context);
+              } catch (Exception ex) {
+                return "null";
+              }
+            })
+        .forEach(
+            x -> {
+              builder.append(",");
+              builder.append(x);
+            });
+    String key = builder.toString();
+    if (key.isEmpty()) {
       throw new InvalidCounterKeysConfigurations(
           "Couldn't not extract any counter keys from the message.");
     }
-    return Bytes.wrap(String.join(",", keyList).getBytes(StandardCharsets.UTF_8));
+    return Bytes.wrap(key.getBytes(StandardCharsets.UTF_8));
   }
 
   @Override
