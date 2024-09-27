@@ -42,8 +42,7 @@ public class ToJsonTransformer
       } else {
         topicName = pipelineConfig.getSteps().get(value.getTag()).getOutputTopic();
       }
-      return KeyValue.pair(
-          key, new OutputMessage(topicName, objectMapper.writeValueAsString(value.getValue())));
+      return KeyValue.pair(key, new OutputMessage(topicName, value.getValue().jsonString()));
 
     } catch (Exception e) {
       counterError.increment();

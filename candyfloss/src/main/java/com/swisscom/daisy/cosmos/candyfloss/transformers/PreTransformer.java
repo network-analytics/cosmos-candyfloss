@@ -1,18 +1,18 @@
 package com.swisscom.daisy.cosmos.candyfloss.transformers;
 
+import com.jayway.jsonpath.DocumentContext;
 import com.swisscom.daisy.cosmos.candyfloss.messages.ErrorMessage;
 import com.swisscom.daisy.cosmos.candyfloss.messages.ValueErrorMessage;
 import io.micrometer.common.lang.Nullable;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
-import java.util.Map;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.Transformer;
 import org.apache.kafka.streams.processor.ProcessorContext;
 
 public class PreTransformer
     implements Transformer<
-        String, Map<String, Object>, KeyValue<String, ValueErrorMessage<Map<String, Object>>>> {
+        String, DocumentContext, KeyValue<String, ValueErrorMessage<DocumentContext>>> {
   private final Counter counterIn =
       Counter.builder("json_streams_pre_transformer_in")
           .description("Number of message incoming to the Json Pre-Transformer step")
@@ -41,8 +41,8 @@ public class PreTransformer
   public void close() {}
 
   @Override
-  public KeyValue<String, ValueErrorMessage<Map<String, Object>>> transform(
-      String key, Map<String, Object> value) {
+  public KeyValue<String, ValueErrorMessage<DocumentContext>> transform(
+      String key, DocumentContext value) {
     try {
       counterIn.increment();
       if (transformer == null) {

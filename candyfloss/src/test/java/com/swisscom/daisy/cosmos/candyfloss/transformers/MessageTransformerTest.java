@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.*;
 import com.swisscom.daisy.cosmos.candyfloss.config.PipelineConfig;
 import com.swisscom.daisy.cosmos.candyfloss.config.exceptions.InvalidConfigurations;
 import com.swisscom.daisy.cosmos.candyfloss.messages.ValueErrorMessage;
@@ -26,6 +27,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class MessageTransformerTest {
+  private static final Configuration configuration =
+      Configuration.builder().options(Option.SUPPRESS_EXCEPTIONS).build();
+
   private final ObjectMapper objectMapper =
       new ObjectMapper().configure(DeserializationFeature.USE_BIG_INTEGER_FOR_INTS, true);
   @Mock private ProcessorContext context;
@@ -33,12 +37,13 @@ class MessageTransformerTest {
 
   @Test
   public void testValidTelemetry()
-      throws IOException, JSONException, InvalidConfigurations, InvalidMatchConfiguration {
+      throws IOException, InvalidConfigurations, InvalidMatchConfiguration {
     var inputKey = "k1";
     var expectedKey = "k1";
     var input =
         JsonUtil.readJson(
             getClass().getClassLoader().getResourceAsStream("transformers/telemetry-decoded.json"));
+    DocumentContext inputContext = JsonPath.using(configuration).parse(input);
     var expected =
         JsonUtil.readJsonArray(
             getClass().getClassLoader().getResource("transformers/telemetry-transformed.json"));
@@ -49,7 +54,7 @@ class MessageTransformerTest {
     transformer = new MessageTransformer(pipelineConfig);
     transformer.init(context);
 
-    transformer.transform(inputKey, input);
+    transformer.transform(inputKey, inputContext);
 
     ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
     ArgumentCaptor<ValueErrorMessage> valueCaptor =
@@ -62,7 +67,8 @@ class MessageTransformerTest {
     assertEquals(
         objectMapper.writeValueAsString(expected),
         objectMapper.writeValueAsString(
-            ((TransformedMessage) valueCaptor.getAllValues().get(0).getValue()).getValue()));
+            ((TransformedMessage) valueCaptor.getAllValues().get(0).getValue())
+                .getValue().stream().map(WriteContext::json).toList()));
   }
 
   @Test
@@ -75,6 +81,7 @@ class MessageTransformerTest {
             getClass()
                 .getClassLoader()
                 .getResourceAsStream("transformers/telemetry-multi-match-input.json"));
+    DocumentContext inputContext = JsonPath.using(configuration).parse(input);
     var expectedValues =
         JsonUtil.readJson(
             getClass()
@@ -87,7 +94,7 @@ class MessageTransformerTest {
     transformer = new MessageTransformer(pipelineConfig);
     transformer.init(context);
 
-    transformer.transform(inputKey, input);
+    transformer.transform(inputKey, inputContext);
 
     ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
     ArgumentCaptor<ValueErrorMessage> valueCaptor =
@@ -103,7 +110,9 @@ class MessageTransformerTest {
 
     out.forEach(
         o -> {
-          var value = ((TransformedMessage) o.getValue()).getValue();
+          var value =
+              ((TransformedMessage) o.getValue())
+                  .getValue().stream().map(WriteContext::json).toList();
           var tag = ((TransformedMessage) o.getValue()).getTag();
           var expectedValue = expectedValues.getOrDefault(tag, null);
           assertNotNull(expectedValue);
@@ -119,6 +128,7 @@ class MessageTransformerTest {
     var input =
         JsonUtil.readJson(
             getClass().getClassLoader().getResourceAsStream("transformers/dump-init-input.json"));
+    DocumentContext inputContext = JsonPath.using(configuration).parse(input);
     var expected =
         objectMapper.readValue(
             JsonUtil.readFromInputStream(
@@ -132,7 +142,7 @@ class MessageTransformerTest {
     transformer = new MessageTransformer(pipelineConfig);
     transformer.init(context);
 
-    transformer.transform(inputKey, input);
+    transformer.transform(inputKey, inputContext);
 
     ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
     ArgumentCaptor<ValueErrorMessage> valueCaptor =
@@ -145,6 +155,7 @@ class MessageTransformerTest {
     assertEquals(
         objectMapper.writeValueAsString(expected),
         objectMapper.writeValueAsString(
-            ((TransformedMessage) valueCaptor.getAllValues().get(0).getValue()).getValue()));
+            ((TransformedMessage) valueCaptor.getAllValues().get(0).getValue())
+                .getValue().stream().map(WriteContext::json).toList()));
   }
 }

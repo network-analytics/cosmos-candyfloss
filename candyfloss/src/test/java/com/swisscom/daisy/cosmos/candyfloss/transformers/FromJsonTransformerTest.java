@@ -48,7 +48,7 @@ class FromJsonTransformerTest {
     assertEquals(expectedKey, transformed.key);
     Assertions.assertFalse(transformed.value.isError());
     JSONAssert.assertEquals(
-        expectedValue, objectMapper.writeValueAsString(transformed.value.getValue()), true);
+        expectedValue, objectMapper.writeValueAsString(transformed.value.getValue().json()), true);
   }
 
   @Test

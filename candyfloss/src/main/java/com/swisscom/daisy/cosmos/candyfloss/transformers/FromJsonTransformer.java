@@ -3,6 +3,10 @@ package com.swisscom.daisy.cosmos.candyfloss.transformers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
 import com.swisscom.daisy.cosmos.candyfloss.messages.ErrorMessage;
 import com.swisscom.daisy.cosmos.candyfloss.messages.ValueErrorMessage;
 import io.micrometer.core.instrument.Counter;
@@ -13,8 +17,9 @@ import org.apache.kafka.streams.kstream.Transformer;
 import org.apache.kafka.streams.processor.ProcessorContext;
 
 public class FromJsonTransformer
-    implements Transformer<
-        String, String, KeyValue<String, ValueErrorMessage<Map<String, Object>>>> {
+    implements Transformer<String, String, KeyValue<String, ValueErrorMessage<DocumentContext>>> {
+  private static final Configuration configuration =
+      Configuration.builder().options(Option.SUPPRESS_EXCEPTIONS).build();
   private final Counter counterIn =
       Counter.builder("json_streams_deserialize_json_in")
           .description("Number of message incoming to the json deserialization step")
@@ -38,8 +43,7 @@ public class FromJsonTransformer
   }
 
   @Override
-  public KeyValue<String, ValueErrorMessage<Map<String, Object>>> transform(
-      String key, String value) {
+  public KeyValue<String, ValueErrorMessage<DocumentContext>> transform(String key, String value) {
     try {
       counterIn.increment();
       return process(key, value);
@@ -51,11 +55,12 @@ public class FromJsonTransformer
   }
 
   @SuppressWarnings("unchecked")
-  private KeyValue<String, ValueErrorMessage<Map<String, Object>>> process(String key, String value)
+  private KeyValue<String, ValueErrorMessage<DocumentContext>> process(String key, String value)
       throws JsonProcessingException {
     Map<String, Object> jsonMap = objectMapper.readValue(value, Map.class);
+    DocumentContext context = JsonPath.using(configuration).parse(jsonMap);
     counterOut.increment();
-    return KeyValue.pair(key, new ValueErrorMessage<>(jsonMap, null));
+    return KeyValue.pair(key, new ValueErrorMessage<>(context, null));
   }
 
   @Override

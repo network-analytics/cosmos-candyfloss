@@ -1,9 +1,6 @@
 package com.swisscom.daisy.cosmos.candyfloss.transformers;
 
-import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.Option;
 import com.swisscom.daisy.cosmos.candyfloss.config.PipelineConfig;
 import com.swisscom.daisy.cosmos.candyfloss.messages.ErrorMessage;
 import com.swisscom.daisy.cosmos.candyfloss.messages.ValueErrorMessage;
@@ -13,7 +10,6 @@ import com.swisscom.daisy.cosmos.candyfloss.transformations.match.Match;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -23,7 +19,7 @@ import org.apache.kafka.streams.processor.ProcessorContext;
 
 public class MessageTransformer
     implements org.apache.kafka.streams.kstream.Transformer<
-        String, Map<String, Object>, KeyValue<String, ValueErrorMessage<TransformedMessage>>> {
+        String, DocumentContext, KeyValue<String, ValueErrorMessage<TransformedMessage>>> {
   private final Counter counterMsg =
       Counter.builder("json_streams_transformer_in")
           .description("Number of message incoming to the MessageTransformer step")
@@ -55,7 +51,7 @@ public class MessageTransformer
 
   @Override
   public KeyValue<String, ValueErrorMessage<TransformedMessage>> transform(
-      String key, Map<String, Object> value) {
+      String key, DocumentContext value) {
     try {
       counterMsg.increment();
 
@@ -68,16 +64,14 @@ public class MessageTransformer
 
     } catch (Exception e) {
       counterError.increment();
-      var error = ErrorMessage.getError(context, getClass().getName(), key, value, e.getMessage());
+      var error =
+          ErrorMessage.getError(context, getClass().getName(), key, value.json(), e.getMessage());
       return KeyValue.pair(key, new ValueErrorMessage<>(null, error));
     }
   }
 
   private List<KeyValue<String, ValueErrorMessage<TransformedMessage>>> process(
-      String key, Map<String, Object> value) {
-    DocumentContext context =
-        JsonPath.using(Configuration.builder().options(Option.SUPPRESS_EXCEPTIONS).build())
-            .parse(value);
+      String key, DocumentContext context) {
     var transformed =
         matchTransformPairs.stream()
             .parallel()
@@ -85,7 +79,7 @@ public class MessageTransformer
             .map(
                 x ->
                     new TransformedMessage(
-                        x.getTransformer().transformList(value), x.getMatch().getTag()))
+                        x.getTransformer().transformList(context), x.getMatch().getTag()))
             .map(x -> KeyValue.pair(key, new ValueErrorMessage<>(x)));
 
     var result =
@@ -95,7 +89,7 @@ public class MessageTransformer
             .orElse(
                 List.of(
                     KeyValue.pair(
-                        key, new ValueErrorMessage<>(new TransformedMessage(List.of(value))))));
+                        key, new ValueErrorMessage<>(new TransformedMessage(List.of(context))))));
 
     return result;
   }
