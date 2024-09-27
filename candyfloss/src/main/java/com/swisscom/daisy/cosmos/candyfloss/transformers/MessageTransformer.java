@@ -10,6 +10,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -53,7 +54,14 @@ public class MessageTransformer
       String key, Map<String, Object> value) {
     try {
       counterMsg.increment();
-      return process(key, value);
+
+      List<KeyValue<String, ValueErrorMessage<TransformedMessage>>> pairs = process(key, value);
+
+      for (KeyValue<String, ValueErrorMessage<TransformedMessage>> kv : pairs) {
+        context.forward(kv.key, kv.value);
+      }
+      return null;
+
     } catch (Exception e) {
       counterError.increment();
       var error = ErrorMessage.getError(context, getClass().getName(), key, value, e.getMessage());
@@ -61,7 +69,7 @@ public class MessageTransformer
     }
   }
 
-  private KeyValue<String, ValueErrorMessage<TransformedMessage>> process(
+  private List<KeyValue<String, ValueErrorMessage<TransformedMessage>>> process(
       String key, Map<String, Object> value) {
     var transformed =
         matchTransformPairs.stream()
@@ -70,10 +78,18 @@ public class MessageTransformer
                 x ->
                     new TransformedMessage(
                         x.getTransformer().transformList(value), x.getMatch().getTag()))
-            .map(x -> KeyValue.pair(key, new ValueErrorMessage<>(x)))
-            .findFirst();
-    return transformed.orElseGet(
-        () -> KeyValue.pair(key, new ValueErrorMessage<>(new TransformedMessage(List.of(value)))));
+            .map(x -> KeyValue.pair(key, new ValueErrorMessage<>(x)));
+
+    var result =
+        Optional.of(
+                transformed.map(x -> KeyValue.pair(x.key, x.value)).collect(Collectors.toList()))
+            .filter(l -> !l.isEmpty())
+            .orElse(
+                List.of(
+                    KeyValue.pair(
+                        key, new ValueErrorMessage<>(new TransformedMessage(List.of(value))))));
+
+    return result;
   }
 
   @Override
