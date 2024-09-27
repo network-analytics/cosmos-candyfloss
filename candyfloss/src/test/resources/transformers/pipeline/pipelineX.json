@@ -1,0 +1,303 @@
+{
+  "output.topic.name": "outputX",
+  "match": {},
+  "transform": [
+    {
+      "operation": "shift",
+      "spec": {
+        "*": "&",
+        "telemetry_data": {
+          "encoding_path": {
+            "Cisco-IOS-XR-sysadmin-asr9k-envmon-ui:environment/oper/fan/location/fan_attributes": {
+              "@(3,telemetry_data)": "xr-envmon-oper-fan_attributes"
+            },
+            "Cisco-IOS-XR-sysadmin-fretta-envmon-ui:environment/oper/fan/location/fan_attributes": {
+              "@(3,telemetry_data)": "xr-envmon-oper-fan_attributes"
+            },
+            "Cisco-IOS-XR-envmon-oper:environmental-monitoring/rack/nodes/node/sensor-types/sensor-type/sensor-names/sensor-name": {
+              "@(3,telemetry_data)": "xr-envmon-oper-sensor"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operation": "shift",
+      "spec": {
+        "*": "&",
+        "xr-envmon-oper-fan_attributes": {
+          "*": "xr-envmon-oper-fan_attributes.&",
+          "data_json": {
+            "*": {
+              "*": "xr-envmon-oper-fan_attributes.data_json.[&1].&",
+              "keys": {
+                "*": {
+                  "*": "xr-envmon-oper-fan_attributes.data_json.[&3].&"
+                }
+              }
+            }
+          }
+        },
+        "xr-envmon-oper-sensor": {
+          "*": "xr-envmon-oper-sensor.&",
+          "data_json": {
+            "*": {
+              "*": "xr-envmon-oper-sensor.data_json.[&1].&",
+              "keys": {
+                "*": {
+                  "*": "xr-envmon-oper-sensor.data_json.[&3].&"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "operation": "shift",
+      "spec": {
+        "xr-envmon-oper-fan_attributes": {
+          "data_json": {
+            "*": {
+              "content": {
+                "@(4,event_type)": "a[0].b[&2].event_type",
+                "@(4,seq)": "a[0].b[&2].seq",
+                "@(4,timestamp)": "a[0].b[&2].timestamp",
+                "@(4,telemetry_node)": "a[0].b[&2].telemetry_node",
+                "@(4,telemetry_port)": "a[0].b[&2].telemetry_port",
+                "@(4,label.nkey)": "a[0].b[&2].node_id",
+                "@(4,label.pkey)": "a[0].b[&2].platform_id",
+                "@(4,writer_id)": "a[0].b[&2].writer_id",
+                "@(4,serialization)": "a[0].b[&2].serialization",
+                "@(3,collection_id)": "a[0].b[&2].process_id",
+                "@(3,subscription_id_str)": "a[0].b[&2].subscription_id_str",
+                "@(3,encoding_path)": "a[0].b[&2].encoding_path",
+                "@(3,node_id_str)": "a[0].b[&2].node_id_str",
+                "@(3,collection_start_time)": "a[0].b[&2].collection_start_time",
+                "@(3,collection_end_time)": "a[0].b[&2].collection_end_time",
+                "@(3,msg_timestamp)": "a[0].b[&2].msg_timestamp",
+                "@(1,timestamp)": "a[0].b[&2].extracted_timestamp",
+                "@(1,logical-slot)": "a[0].b[&2].logical-slot",
+                "@(1,location)": "a[0].b[&2].location",
+                "loc-header": "a[0].b[&2].loc-header",
+                "print-fan-header": {
+                  "value": "a[0].b[&3].print-fan-header"
+                },
+                "fru-pid": {
+                  "value": "a[0].b[&3].fru-pid"
+                },
+                "fans-speed": {
+                  "value": "a[0].b[&3].fans-speed"
+                },
+                "fan-header": "a[0].b[&2].fan-header",
+                "speed-space": "a[0].b[&2].speed-space"
+              }
+            }
+          }
+        },
+        "xr-envmon-oper-sensor": {
+          "data_json": {
+            "*": {
+              "type": {
+                "fan": {
+                  "@(5,event_type)": "a[0].b[&3].event_type",
+                  "@(5,seq)": "a[0].b[&3].seq",
+                  "@(5,timestamp)": "a[0].b[&3].timestamp",
+                  "@(5,telemetry_node)": "a[0].b[&3].telemetry_node",
+                  "@(5,telemetry_port)": "a[0].b[&3].telemetry_port",
+                  "@(5,label.nkey)": "a[0].b[&3].node_id",
+                  "@(5,label.pkey)": "a[0].b[&3].platform_id",
+                  "@(5,writer_id)": "a[0].b[&3].writer_id",
+                  "@(5,serialization)": "a[0].b[&3].serialization",
+                  "@(4,collection_id)": "a[0].b[&3].collection_id",
+                  "@(4,subscription_id_str)": "a[0].b[&3].subscription_id_str",
+                  "@(4,encoding_path)": "a[0].b[&3].encoding_path",
+                  "@(4,node_id_str)": "a[0].b[&3].node_id_str",
+                  "@(4,collection_start_time)": "a[0].b[&3].collection_start_time",
+                  "@(4,collection_end_time)": "a[0].b[&3].collection_end_time",
+                  "@(4,msg_timestamp)": "a[0].b[&3].msg_timestamp",
+                  "@(2,timestamp)": "a[0].b[&3].extracted_timestamp",
+                  "@(2,node)": "a[0].b[&3].node",
+                  "@(2,type)": "a[0].b[&3].type",
+                  "@(2,name.[1])": "a[0].b[&3].name",
+                  "@(2,content.sensor-value)": "a[0].b[&3].sensor-value",
+                  "@(2,content.critical-low-threshold)": "a[0].b[&3].critical-low-threshold",
+                  "@(2,content.critical-high-threshold)": "a[0].b[&3].critical-high-threshold",
+                  "@(2,content.major-low-threshold)": "a[0].b[&3].major-low-threshold",
+                  "@(2,content.major-high-threshold)": "a[0].b[&3].major-high-threshold",
+                  "@(2,content.minor-low-threshold)": "a[0].b[&3].minor-low-threshold",
+                  "@(2,content.minor-high-threshold)": "a[0].b[&3].minor-high-threshold",
+                  "@(2,content.name-xr)": "a[0].b[&3].name-xr",
+                  "@(2,content.location)": "a[0].b[&3].location",
+                  "@(2,content.status)": "a[0].b[&3].status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "operation": "shift",
+      "spec": {
+        "*": {
+          "*": {
+            "*": {
+              "*": "[]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operation": "shift",
+      "spec": {
+        "*": {
+          "null": null,
+          "*": {
+            "@0": "&2.&1"
+          }
+        }
+      }
+    },
+    {
+      "operation": "shift",
+      "spec": {
+        "*": {
+          "*": "[#2].&"
+        }
+      }
+    },
+    {
+      "operation": "modify-overwrite-beta",
+      "spec": {
+        "*": {
+          "fans-speed": "=split(' ', @(1,fans-speed))"
+        }
+      }
+    },
+    {
+      "operation": "shift",
+      "spec": {
+        "*": {
+          "*": "[&1].&",
+          "fans-speed": {
+            "*": {
+              "": null,
+              "*": {
+                "$": "[&4].fans-speed[]"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "operation": "shift",
+      "spec": {
+        "*": {
+          "fans-speed": {
+            "*": {
+              "@(2,location)": "a[&3].b[&1].location",
+              "@(2,logical-slot)": "a[&3].b[&1].logical-slot",
+              "@(2,event_type)": "a[&3].b[&1].event_type",
+              "@(2,seq)": "a[&3].b[&1].seq",
+              "@(2,timestamp)": "a[&3].b[&1].timestamp",
+              "@(2,telemetry_node)": "a[&3].b[&1].telemetry_node",
+              "@(2,telemetry_port)": "a[&3].b[&1].telemetry_port",
+              "@(2,node_id)": "a[&3].b[&1].node_id",
+              "@(2,platform_id)": "a[&3].b[&1].platform_id",
+              "@(2,writer_id)": "a[&3].b[&1].writer_id",
+              "@(2,serialization)": "a[&3].b[&1].serialization",
+              "@(2,process_id)": "a[&3].b[&1].process_id",
+              "@(2,subscription_id_str)": "a[&3].b[&1].subscription_id_str",
+              "@(2,encoding_path)": "a[&3].b[&1].encoding_path",
+              "@(2,node_id_str)": "a[&3].b[&1].node_id_str",
+              "@(2,collection_start_time)": "a[&3].b[&1].collection_start_time",
+              "@(2,collection_end_time)": "a[&3].b[&1].collection_end_time",
+              "@(2,msg_timestamp)": "a[&3].b[&1].msg_timestamp",
+              "@(2,extracted_timestamp)": "a[&3].b[&1].extracted_timestamp",
+              "@(2,print-fan-header)": "a[&3].b[&1].print-fan-header",
+              "@(2,fru-pid)": "a[&3].b[&1].fru-pid",
+              "@(2,fan-header)": "a[&3].b[&1].fan-header",
+              "@(2,speed-space)": "a[&3].b[&1].speed-space",
+              "*": {
+                "$": "a[&4].b[&2].fans-speed"
+              }
+            }
+          },
+          "encoding_path": {
+            "Cisco-IOS-XR-envmon-oper:environmental-monitoring/rack/nodes/node/sensor-types/sensor-type/sensor-names/sensor-name": {
+              "@(2,event_type)": "a[0].b[&3].event_type",
+              "@(2,seq)": "a[0].b[&3].seq",
+              "@(2,timestamp)": "a[0].b[&3].timestamp",
+              "@(2,telemetry_node)": "a[0].b[&3].telemetry_node",
+              "@(2,telemetry_port)": "a[0].b[&3].telemetry_port",
+              "@(2,label.nkey)": "a[0].b[&3].node_id",
+              "@(2,label.pkey)": "a[0].b[&3].platform_id",
+              "@(2,writer_id)": "a[0].b[&3].writer_id",
+              "@(2,serialization)": "a[0].b[&3].serialization",
+              "@(2,collection_id)": "a[0].b[&3].collection_id",
+              "@(2,subscription_id_str)": "a[0].b[&3].subscription_id_str",
+              "@(2,encoding_path)": "a[0].b[&3].encoding_path",
+              "@(2,node_id_str)": "a[0].b[&3].node_id_str",
+              "@(2,collection_start_time)": "a[0].b[&3].collection_start_time",
+              "@(2,collection_end_time)": "a[0].b[&3].collection_end_time",
+              "@(2,msg_timestamp)": "a[0].b[&3].msg_timestamp",
+              "@(2,node)": "a[0].b[&3].node",
+              "@(2,type)": "a[0].b[&3].type",
+              "@(2,name.[1])": "a[0].b[&3].name",
+              "@(2,sensor-value)": "a[0].b[&3].sensor-value",
+              "@(2,critical-low-threshold)": "a[0].b[&3].critical-low-threshold",
+              "@(2,critical-high-threshold)": "a[0].b[&3].critical-high-threshold",
+              "@(2,major-low-threshold)": "a[0].b[&3].major-low-threshold",
+              "@(2,major-high-threshold)": "a[0].b[&3].major-high-threshold",
+              "@(2,minor-low-threshold)": "a[0].b[&3].minor-low-threshold",
+              "@(2,minor-high-threshold)": "a[0].b[&3].minor-high-threshold",
+              "@(2,name-xr)": "a[0].b[&3].name-xr",
+              "@(2,location)": "a[0].b[&3].location",
+              "@(2,status)": "a[0].b[&3].status"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operation": "shift",
+      "spec": {
+        "*": {
+          "*": {
+            "*": {
+              "*": "[]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "operation": "modify-default-beta",
+      "spec": {
+        "*": {
+          "fans-speed_integer": "=toInteger(@(1,fans-speed))"
+        }
+      }
+    },
+    {
+      "operation": "remove",
+      "spec": {
+        "*": {
+          "fans-speed": ""
+        }
+      }
+    },
+    {
+      "operation": "shift",
+      "spec": {
+        "*": {
+          "*": "[&1].&",
+          "fans-speed_integer": "[&1].fans-speed"
+        }
+      }
+    }
+  ]
+}

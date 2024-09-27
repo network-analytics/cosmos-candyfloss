@@ -81,7 +81,9 @@ abstract class AbstractDeploymentTest {
       throws JSONException, JsonProcessingException {
     List<KeyValue<String, String>> returned =
         topic == null ? List.of() : topic.readKeyValuesToList();
-    returned.stream().map(x -> x.value).forEach(y -> logger.info("Produced message: {}", y));
+    returned.stream()
+        .map(x -> x.value)
+        .forEach(y -> logger.info("Produced message on topic {}: {}", topic, y));
     if (expectedOutput.isPresent()) {
       var expected = expectedOutput.get();
       assertEquals(
@@ -188,8 +190,28 @@ abstract class AbstractDeploymentTest {
     inputTopic.pipeInput(testKey, input, zoned.toInstant());
 
     checkOutput(outputTopic, expectedOutput);
+    checkOtherOutput(inputResourcePath, outputTopic);
     checkOutput(discardTopic, expectedDiscard);
     checkOutput(dlqTopic, expectedDlq);
+  }
+
+  private void checkOtherOutput(
+      Path inputPath, TestOutputTopic<String, String> currentOutputTopic) {
+    outputTopics.values().stream()
+        .filter(t -> t != currentOutputTopic)
+        .toList()
+        .forEach(
+            topic -> {
+              var recordList = topic.readRecordsToList();
+              if (!recordList.isEmpty()) {
+                logger.warn(
+                    "Other config's topic "
+                        + topic
+                        + " also has output from input file: "
+                        + inputPath.subpath(inputPath.getNameCount() - 3, inputPath.getNameCount())
+                        + ". Please check if it's expected.");
+              }
+            });
   }
 
   /*** Run the tests in testFixturesPath (aka a single folder in the test folder). */

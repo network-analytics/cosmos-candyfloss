@@ -1,0 +1,344 @@
+{
+  "event_type": "log",
+  "seq": 12331918,
+  "timestamp": "1701862567.180665",
+  "telemetry_node": "138.187.56.100",
+  "telemetry_port": 49073,
+  "label": {
+    "nkey": "unknown",
+    "pkey": "unknown"
+  },
+  "telemetry_data": {
+    "node_id_str": "nu-mob-ch-cis-r-001",
+    "subscription_id_str": "DAISY-SUBSCRIPTION",
+    "encoding_path": "Cisco-IOS-XR-envmon-oper:environmental-monitoring/rack/nodes/node/sensor-types/sensor-type/sensor-names/sensor-name",
+    "collection_id": "4787709",
+    "collection_start_time": "1701862566935",
+    "msg_timestamp": "1701862566986",
+    "data_json": [
+      {
+        "timestamp": "1701862566981",
+        "keys": [
+          {
+            "name": "0"
+          },
+          {
+            "node": "0/RP0/CPU0"
+          },
+          {
+            "type": "temperature"
+          },
+          {
+            "name": "X86_PACKAGE_TEMP_SENSOR"
+          }
+        ],
+        "content": {
+          "sensor-value": 45,
+          "critical-low-threshold": -40,
+          "critical-high-threshold": 93,
+          "major-low-threshold": -25,
+          "major-high-threshold": 90,
+          "minor-low-threshold": -10,
+          "minor-high-threshold": 85,
+          "name-xr": "X86_PACKAGE_TEMP_SENSOR",
+          "location": "0/RP0/CPU0",
+          "status": 1
+        }
+      },
+      {
+        "timestamp": "1701862525671",
+        "keys": [
+          {
+            "name": "0"
+          },
+          {
+            "node": "0/PM2"
+          },
+          {
+            "type": "power"
+          },
+          {
+            "name": "Output_Power"
+          }
+        ],
+        "content": {
+          "sensor-value": 423,
+          "critical-low-threshold": -32767,
+          "critical-high-threshold": -32767,
+          "major-low-threshold": -32767,
+          "major-high-threshold": -32767,
+          "minor-low-threshold": -32767,
+          "minor-high-threshold": -32767,
+          "name-xr": "Output_Power",
+          "location": "0/PM2",
+          "status": 1
+        }
+      },
+      {
+        "timestamp": "1701862566989",
+        "keys": [
+          {
+            "name": "0"
+          },
+          {
+            "node": "0/RP0/CPU0"
+          },
+          {
+            "type": "voltage"
+          },
+          {
+            "name": "ADM1266_VH1_12V"
+          }
+        ],
+        "content": {
+          "sensor-value": 12050,
+          "critical-low-threshold": 10560,
+          "critical-high-threshold": 13440,
+          "major-low-threshold": 10680,
+          "major-high-threshold": 13320,
+          "minor-low-threshold": 10800,
+          "minor-high-threshold": 13200,
+          "name-xr": "ADM1266_VH1_12V",
+          "location": "0/RP0/CPU0",
+          "status": 1
+        }
+      },
+      {
+        "timestamp": "1701862567005",
+        "keys": [
+          {
+            "name": "0"
+          },
+          {
+            "node": "0/RP0/CPU0"
+          },
+          {
+            "type": "current"
+          },
+          {
+            "name": "P1V15_CPU_CORE_IIN"
+          }
+        ],
+        "content": {
+          "sensor-value": 62,
+          "critical-low-threshold": -32768,
+          "critical-high-threshold": -32768,
+          "major-low-threshold": -32768,
+          "major-high-threshold": -32768,
+          "minor-low-threshold": -32768,
+          "minor-high-threshold": -32768,
+          "name-xr": "P1V15_CPU_CORE_IIN",
+          "location": "0/RP0/CPU0",
+          "status": 1
+        }
+      },
+      {
+        "timestamp": "1701862567032",
+        "keys": [
+          {
+            "name": "0"
+          },
+          {
+            "node": "0/RP0/CPU0"
+          },
+          {
+            "type": "altitude"
+          },
+          {
+            "name": "MB-ALTITUDE Sensor"
+          }
+        ],
+        "content": {
+          "sensor-value": 404,
+          "critical-low-threshold": 0,
+          "critical-high-threshold": 0,
+          "major-low-threshold": 0,
+          "major-high-threshold": 0,
+          "minor-low-threshold": 0,
+          "minor-high-threshold": 0,
+          "name-xr": "MB-ALTITUDE Sensor",
+          "location": "0/RP0/CPU0",
+          "status": 1
+        }
+      },
+      {
+        "timestamp": "1701862567149",
+        "keys": [
+          {
+            "name": "0"
+          },
+          {
+            "node": "0/FT0"
+          },
+          {
+            "type": "fan"
+          },
+          {
+            "name": "FAN_0 Speed"
+          }
+        ],
+        "content": {
+          "sensor-value": 10680,
+          "critical-low-threshold": -32768,
+          "critical-high-threshold": -32768,
+          "major-low-threshold": -32768,
+          "major-high-threshold": -32768,
+          "minor-low-threshold": -32768,
+          "minor-high-threshold": -32768,
+          "name-xr": "FAN_0 Speed",
+          "location": "0/FT0",
+          "fru-type": "N540-FAN",
+          "status": 1
+        }
+      },
+      {
+        "timestamp": "1701862525661",
+        "keys": [
+          {
+            "name": "0"
+          },
+          {
+            "node": "0/PM1"
+          },
+          {
+            "type": "power"
+          },
+          {
+            "name": "Output_Power"
+          }
+        ],
+        "content": {
+          "sensor-value": 422,
+          "critical-low-threshold": -32768,
+          "critical-high-threshold": -32768,
+          "major-low-threshold": -32768,
+          "major-high-threshold": -32768,
+          "minor-low-threshold": -32768,
+          "minor-high-threshold": -32768,
+          "name-xr": "Output_Power",
+          "location": "0/PM1",
+          "status": 1
+        }
+      },
+      {
+        "timestamp": "1701862566989",
+        "keys": [
+          {
+            "name": "0"
+          },
+          {
+            "node": "0/RP0/CPU1"
+          },
+          {
+            "type": "voltage"
+          },
+          {
+            "name": "ADM1266_VH2_12V"
+          }
+        ],
+        "content": {
+          "sensor-value": 12051,
+          "critical-low-threshold": 10561,
+          "critical-high-threshold": 13441,
+          "major-low-threshold": 10681,
+          "major-high-threshold": 13321,
+          "minor-low-threshold": 10801,
+          "minor-high-threshold": 13201,
+          "name-xr": "ADM1266_VH2_12V",
+          "location": "0/RP0/CPU1",
+          "status": 1
+        }
+      },
+      {
+        "timestamp": "1701862567005",
+        "keys": [
+          {
+            "name": "0"
+          },
+          {
+            "node": "0/RP0/CPU1"
+          },
+          {
+            "type": "current"
+          },
+          {
+            "name": "P1V16_CPU_CORE_IIN"
+          }
+        ],
+        "content": {
+          "sensor-value": 63,
+          "critical-low-threshold": -32766,
+          "critical-high-threshold": -32766,
+          "major-low-threshold": -32766,
+          "major-high-threshold": -32766,
+          "minor-low-threshold": -32766,
+          "minor-high-threshold": -32766,
+          "name-xr": "P1V16_CPU_CORE_IIN",
+          "location": "0/RP0/CPU1",
+          "status": 1
+        }
+      },
+      {
+        "timestamp": "1701862566981",
+        "keys": [
+          {
+            "name": "0"
+          },
+          {
+            "node": "0/RP0/CPU5"
+          },
+          {
+            "type": "temperature"
+          },
+          {
+            "name": "X86_PACKAGE_TEMP_SENSOR"
+          }
+        ],
+        "content": {
+          "sensor-value": 46,
+          "critical-low-threshold": -40,
+          "critical-high-threshold": 93,
+          "major-low-threshold": -25,
+          "major-high-threshold": 90,
+          "minor-low-threshold": -10,
+          "minor-high-threshold": 85,
+          "name-xr": "X86_PACKAGE_TEMP_SENSOR",
+          "location": "0/RP0/CPU5",
+          "status": 1
+        }
+      },
+      {
+        "timestamp": "1701862567149",
+        "keys": [
+          {
+            "name": "0"
+          },
+          {
+            "node": "0/FT5"
+          },
+          {
+            "type": "fan"
+          },
+          {
+            "name": "FAN_0 Speed"
+          }
+        ],
+        "content": {
+          "sensor-value": 10680,
+          "critical-low-threshold": -32768,
+          "critical-high-threshold": -32768,
+          "major-low-threshold": -32768,
+          "major-high-threshold": -32768,
+          "minor-low-threshold": -32768,
+          "minor-high-threshold": -32768,
+          "name-xr": "FAN_0 Speed",
+          "location": "0/FT5",
+          "fru-type": "N540-FAN",
+          "status": 1
+        }
+      }
+    ]
+  },
+  "serialization": "json_string",
+  "writer_id": "devcolleft01pmtelemetrydtcpjsonleft01c 20231117.1.d26bfa1-1.el8"
+}
