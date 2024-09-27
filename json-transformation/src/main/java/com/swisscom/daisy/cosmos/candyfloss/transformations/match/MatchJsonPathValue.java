@@ -1,5 +1,6 @@
 package com.swisscom.daisy.cosmos.candyfloss.transformations.match;
 
+import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import lombok.AllArgsConstructor;
@@ -18,5 +19,10 @@ public class MatchJsonPathValue implements Match {
     } catch (PathNotFoundException e) {
       return false;
     }
+  }
+
+  public boolean matchContext(DocumentContext context) {
+    var matched = context.read(path);
+    return matched != null && matched.equals(value);
   }
 }

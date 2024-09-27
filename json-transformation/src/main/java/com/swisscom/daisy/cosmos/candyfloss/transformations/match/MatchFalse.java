@@ -1,5 +1,6 @@
 package com.swisscom.daisy.cosmos.candyfloss.transformations.match;
 
+import com.jayway.jsonpath.DocumentContext;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,6 +14,11 @@ public class MatchFalse implements Match {
 
   @Override
   public boolean match(Object jsonObject) {
+    return false;
+  }
+
+  @Override
+  public boolean matchContext(DocumentContext context) {
     return false;
   }
 }
