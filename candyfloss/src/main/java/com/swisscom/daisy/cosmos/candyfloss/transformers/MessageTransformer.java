@@ -9,8 +9,8 @@ import com.swisscom.daisy.cosmos.candyfloss.transformations.Transformer;
 import com.swisscom.daisy.cosmos.candyfloss.transformations.match.Match;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -54,11 +54,16 @@ public class MessageTransformer
       String key, DocumentContext value) {
     try {
       counterMsg.increment();
-
-      List<KeyValue<String, ValueErrorMessage<TransformedMessage>>> pairs = process(key, value);
-
-      for (KeyValue<String, ValueErrorMessage<TransformedMessage>> kv : pairs) {
+      Iterator<KeyValue<String, ValueErrorMessage<TransformedMessage>>> pairs = process(key, value);
+      var counter = 0;
+      while (pairs.hasNext()) {
+        KeyValue<String, ValueErrorMessage<TransformedMessage>> kv = pairs.next();
         context.forward(kv.key, kv.value);
+        counter++;
+      }
+      // If no pipeline matches the message, then pass it down as it is
+      if (counter == 0) {
+        context.forward(key, new ValueErrorMessage<>(new TransformedMessage(List.of(value), null)));
       }
       return null;
 
@@ -70,28 +75,17 @@ public class MessageTransformer
     }
   }
 
-  private List<KeyValue<String, ValueErrorMessage<TransformedMessage>>> process(
+  private Iterator<KeyValue<String, ValueErrorMessage<TransformedMessage>>> process(
       String key, DocumentContext context) {
-    var transformed =
-        matchTransformPairs.stream()
-            .parallel()
-            .filter(x -> x.getMatch().matchContext(context))
-            .map(
-                x ->
-                    new TransformedMessage(
-                        x.getTransformer().transformList(context), x.getMatch().getTag()))
-            .map(x -> KeyValue.pair(key, new ValueErrorMessage<>(x)));
-
-    var result =
-        Optional.of(
-                transformed.map(x -> KeyValue.pair(x.key, x.value)).collect(Collectors.toList()))
-            .filter(l -> !l.isEmpty())
-            .orElse(
-                List.of(
-                    KeyValue.pair(
-                        key, new ValueErrorMessage<>(new TransformedMessage(List.of(context))))));
-
-    return result;
+    return matchTransformPairs.stream()
+        .parallel()
+        .filter(x -> x.getMatch().matchContext(context))
+        .map(
+            x ->
+                new TransformedMessage(
+                    x.getTransformer().transformList(context), x.getMatch().getTag()))
+        .map(x -> KeyValue.pair(key, new ValueErrorMessage<>(x)))
+        .iterator();
   }
 
   @Override
