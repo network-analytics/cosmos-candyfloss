@@ -1,6 +1,6 @@
 package com.swisscom.daisy.cosmos.candyfloss.messages;
 
-import java.util.Map;
+import com.jayway.jsonpath.DocumentContext;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,6 +11,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class FlattenedMessage {
-  private final Map<String, Object> value;
+  private final DocumentContext value;
   private final String tag;
 }

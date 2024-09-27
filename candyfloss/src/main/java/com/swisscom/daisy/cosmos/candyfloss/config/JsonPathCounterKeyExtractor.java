@@ -1,5 +1,6 @@
 package com.swisscom.daisy.cosmos.candyfloss.config;
 
+import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.JsonPathException;
 import com.swisscom.daisy.cosmos.candyfloss.messages.FlattenedMessage;
@@ -18,6 +19,12 @@ public class JsonPathCounterKeyExtractor implements CounterKeyExtractor {
   @Override
   public String getKey(FlattenedMessage message) throws JsonPathException {
     var ret = jsonPath.read(message.getValue());
+    return ret instanceof String ? (String) ret : ret.toString();
+  }
+
+  @Override
+  public String getKey(DocumentContext context) {
+    var ret = context.read(jsonPath);
     return ret instanceof String ? (String) ret : ret.toString();
   }
 }

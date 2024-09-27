@@ -107,7 +107,7 @@ class CounterNormalizationTransformerTest {
             .mapValues(
                 value -> {
                   try {
-                    return objectMapper.writeValueAsString(value);
+                    return objectMapper.writeValueAsString(value.json());
                   } catch (Exception e) {
                     return null;
                   }

@@ -1,7 +1,7 @@
 package com.swisscom.daisy.cosmos.candyfloss.transformations;
 
+import com.jayway.jsonpath.DocumentContext;
 import java.util.List;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,10 +14,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class TransformedMessage {
-  private final List<Map<String, Object>> value;
+  private final List<DocumentContext> value;
   private final String tag;
 
-  public TransformedMessage(List<Map<String, Object>> value) {
+  public TransformedMessage(List<DocumentContext> value) {
     this.value = value;
     tag = null;
   }

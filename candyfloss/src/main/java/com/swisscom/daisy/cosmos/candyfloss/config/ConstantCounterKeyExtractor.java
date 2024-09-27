@@ -1,5 +1,6 @@
 package com.swisscom.daisy.cosmos.candyfloss.config;
 
+import com.jayway.jsonpath.DocumentContext;
 import com.swisscom.daisy.cosmos.candyfloss.messages.FlattenedMessage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +12,11 @@ public class ConstantCounterKeyExtractor implements CounterKeyExtractor {
 
   @Override
   public String getKey(FlattenedMessage message) {
+    return constantKey;
+  }
+
+  @Override
+  public String getKey(DocumentContext context) {
     return constantKey;
   }
 }

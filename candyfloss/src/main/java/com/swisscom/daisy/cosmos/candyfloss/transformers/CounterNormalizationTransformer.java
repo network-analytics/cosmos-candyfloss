@@ -1,7 +1,6 @@
 package com.swisscom.daisy.cosmos.candyfloss.transformers;
 
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.Option;
+import com.jayway.jsonpath.DocumentContext;
 import com.swisscom.daisy.cosmos.candyfloss.config.NormalizeCounterConfig;
 import com.swisscom.daisy.cosmos.candyfloss.config.PipelineConfig;
 import com.swisscom.daisy.cosmos.candyfloss.config.TimeExtractorConfig;
@@ -21,7 +20,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.Transformer;
@@ -51,10 +49,6 @@ public class CounterNormalizationTransformer
   private final long counterWrapAroundTimeMs;
   private final BigInteger maxUnsignedInt = new BigInteger(Integer.toUnsignedString(-1));
   private final BigInteger maxUnsignedLong = new BigInteger(Long.toUnsignedString(-1L));
-
-  // Return null instead of throwing an exception when key path is not found
-  private final Configuration jsonPathConfig =
-      Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL);
 
   private final Timer timer =
       Timer.builder("json_streams_old_counter_cleaner_duration")
@@ -128,43 +122,46 @@ public class CounterNormalizationTransformer
 
   @Override
   public KeyValue<String, ValueErrorMessage<FlattenedMessage>> transform(
-      String key, FlattenedMessage value) {
-    if (value.getTag() == null) {
-      return KeyValue.pair(key, new ValueErrorMessage<>(value));
+      String key, FlattenedMessage flattenedMessage) {
+    if (flattenedMessage.getTag() == null) {
+      return KeyValue.pair(key, new ValueErrorMessage<>(flattenedMessage));
     }
     try {
-      return process(key, value);
+      return process(key, flattenedMessage);
     } catch (Exception e) {
       counterError.increment();
-      var error = ErrorMessage.getError(context, getClass().getName(), key, value, e.getMessage());
-      return KeyValue.pair(key, new ValueErrorMessage<>(value, error));
+      var error =
+          ErrorMessage.getError(
+              context, getClass().getName(), key, flattenedMessage, e.getMessage());
+      return KeyValue.pair(key, new ValueErrorMessage<>(flattenedMessage, error));
     }
   }
 
   private KeyValue<String, ValueErrorMessage<FlattenedMessage>> process(
-      String key, FlattenedMessage value)
+      String key, FlattenedMessage flattenedMessage)
       throws InvalidCounterValue, InvalidCounterKeysConfigurations {
     var normalizeCountersConfig =
-        pipelineConfig.getSteps().get(value.getTag()).getNormalizeCountersConfig();
+        pipelineConfig.getSteps().get(flattenedMessage.getTag()).getNormalizeCountersConfig();
 
     if (normalizeCountersConfig.isPresent()) {
       for (var counterConfig : normalizeCountersConfig.get().getCounterConfigs()) {
-        if (counterConfig.getMatch().match(value.getValue())) {
-          normalizeCounter(value, counterConfig);
+        if (counterConfig.getMatch().matchContext(flattenedMessage.getValue())) {
+          normalizeCounter(flattenedMessage, counterConfig);
         }
       }
     }
-    return KeyValue.pair(key, new ValueErrorMessage<>(value));
+    return KeyValue.pair(key, new ValueErrorMessage<>(flattenedMessage));
   }
 
-  private void normalizeCounter(FlattenedMessage inputMessage, NormalizeCounterConfig counterConfig)
+  private void normalizeCounter(
+      FlattenedMessage flattenedMessage, NormalizeCounterConfig counterConfig)
       throws InvalidCounterKeysConfigurations, InvalidCounterValue {
     // Extract the message timestamp
-    Instant timestamp = getTimestamp(inputMessage);
+    Instant timestamp = getTimestamp(flattenedMessage.getTag(), flattenedMessage.getValue());
     // Extract the counter key used in the key/value store
-    Bytes counterKey = getCounterKey(inputMessage, counterConfig);
+    Bytes counterKey = getCounterKey(flattenedMessage.getValue(), counterConfig);
     // Extract the counter value from the input message
-    BigInteger counterValue = getCounterValue(inputMessage, counterConfig);
+    BigInteger counterValue = getCounterValue(flattenedMessage.getValue(), counterConfig);
     // The message doesn't contain the counter, return
     if (counterValue == null) {
       return;
@@ -174,7 +171,7 @@ public class CounterNormalizationTransformer
         counterKey,
         counterValue,
         timestamp,
-        inputMessage.getValue());
+        flattenedMessage.getValue().json());
     // Find the old value of the counter in the store state.
     // if no value exists then the same counter value is returned
     ValueAndTimestamp<Bytes> savedCounterState =
@@ -185,13 +182,13 @@ public class CounterNormalizationTransformer
           counterKey,
           savedCounterState.value(),
           savedCounterState.timestamp(),
-          inputMessage);
+          flattenedMessage.getValue().json());
       if (timestamp.toEpochMilli() < savedCounterState.timestamp()) {
         logger.warn(
             "Received a message with a timestamp {} older than saved in the counter store {}. Message: {}",
             timestamp.toEpochMilli(),
             savedCounterState.timestamp(),
-            inputMessage);
+            flattenedMessage.getValue().json());
         savedCounterState = null;
       } else {
         // Save the new counterValue to the store
@@ -207,7 +204,7 @@ public class CounterNormalizationTransformer
         counterKey,
         counterValue,
         timestamp,
-        inputMessage.getValue());
+        flattenedMessage.getValue().json());
 
     // Normalize the counter
     BigInteger normalizedValue = null;
@@ -247,24 +244,23 @@ public class CounterNormalizationTransformer
     }
 
     // overwrite the counter value in the message with the normalized value
-    counterConfig
-        .getValuePath()
+    flattenedMessage
+        .getValue()
         .set(
-            inputMessage.getValue(),
-            normalizedValue == null ? null : normalizedValue.longValue(),
-            Configuration.builder().build());
+            counterConfig.getValuePath(),
+            normalizedValue == null ? null : normalizedValue.longValue());
   }
 
   /*** Extract the time stamp from the message */
-  private Instant getTimestamp(FlattenedMessage inputMessage) {
+  private Instant getTimestamp(String tag, DocumentContext context) {
     var timeExtractorConfig =
         pipelineConfig
             .getSteps()
-            .get(inputMessage.getTag())
+            .get(tag)
             .getNormalizeCountersConfig()
             .get()
             .getTimeExtractorConfig();
-    Object extractedTimestamp = timeExtractorConfig.getJsonPath().read(inputMessage.getValue());
+    Object extractedTimestamp = context.read(timeExtractorConfig.getJsonPath());
 
     if (timeExtractorConfig.getValueType() == TimeExtractorConfig.TimestampType.RFC2822) {
       var dateTimeString = (String) extractedTimestamp;
@@ -347,12 +343,10 @@ public class CounterNormalizationTransformer
   }
 
   /*** Extract the counter value that is used to locate in key/value store based on the user-provided configurations*/
-  private BigInteger getCounterValue(
-      FlattenedMessage inputMessage, NormalizeCounterConfig counterConfig)
+  private BigInteger getCounterValue(DocumentContext context, NormalizeCounterConfig counterConfig)
       throws InvalidCounterValue {
     // at this point we don't know the value type
-    Object rawCounterValue =
-        counterConfig.getValuePath().read(inputMessage.getValue(), jsonPathConfig);
+    Object rawCounterValue = context.read(counterConfig.getValuePath());
 
     // Message doesn't contain the counter, return
     if (rawCounterValue == null) {
@@ -375,19 +369,20 @@ public class CounterNormalizationTransformer
   }
 
   /*** Extract the counter key that is used to locate in key/value store based on the user-provided configurations*/
-  private Bytes getCounterKey(FlattenedMessage inputMessage, NormalizeCounterConfig counterConfig)
+  private Bytes getCounterKey(DocumentContext context, NormalizeCounterConfig counterConfig)
       throws InvalidCounterKeysConfigurations {
     List<String> keyList =
         counterConfig.getKey().getKeyExtractors().stream()
             .map(
                 x -> {
                   try {
-                    return x.getKey(inputMessage);
+                    return x.getKey(context);
                   } catch (Exception ex) {
-                    return null;
+                    return "null";
                   }
                 })
-            .collect(Collectors.toList());
+            .sorted()
+            .toList();
     if (keyList.isEmpty()) {
       throw new InvalidCounterKeysConfigurations(
           "Couldn't not extract any counter keys from the message.");
