@@ -71,7 +71,7 @@ class MatchBuilderTest {
   public void testMatchOr() throws IOException, InvalidMatchConfiguration {
     Map<String, Object> configTrue =
         Map.of(
-            "and",
+            "or",
             List.of(
                 Map.of(
                     "jsonpath",
@@ -79,7 +79,7 @@ class MatchBuilderTest {
                     "value",
                     "openconfig-interfaces:interfaces")));
     Map<String, Object> configFalse =
-        Map.of("and", List.of(Map.of("constant", false), Map.of("constant", false)));
+        Map.of("or", List.of(Map.of("constant", false), Map.of("constant", false)));
     var matchTrue = MatchBuilder.fromJson(configTrue, "t1");
     var matchFalse = MatchBuilder.fromJson(configFalse, "t1");
     var input =

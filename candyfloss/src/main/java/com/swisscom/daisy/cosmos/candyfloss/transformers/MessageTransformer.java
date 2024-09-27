@@ -1,5 +1,9 @@
 package com.swisscom.daisy.cosmos.candyfloss.transformers;
 
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
 import com.swisscom.daisy.cosmos.candyfloss.config.PipelineConfig;
 import com.swisscom.daisy.cosmos.candyfloss.messages.ErrorMessage;
 import com.swisscom.daisy.cosmos.candyfloss.messages.ValueErrorMessage;
@@ -71,9 +75,13 @@ public class MessageTransformer
 
   private List<KeyValue<String, ValueErrorMessage<TransformedMessage>>> process(
       String key, Map<String, Object> value) {
+    DocumentContext context =
+        JsonPath.using(Configuration.builder().options(Option.SUPPRESS_EXCEPTIONS).build())
+            .parse(value);
     var transformed =
         matchTransformPairs.stream()
-            .filter(x -> x.getMatch().match(value))
+            .parallel()
+            .filter(x -> x.getMatch().matchContext(context))
             .map(
                 x ->
                     new TransformedMessage(

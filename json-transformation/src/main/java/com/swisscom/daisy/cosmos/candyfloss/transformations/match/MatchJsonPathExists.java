@@ -1,5 +1,6 @@
 package com.swisscom.daisy.cosmos.candyfloss.transformations.match;
 
+import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import java.util.List;
@@ -21,5 +22,12 @@ public class MatchJsonPathExists implements Match {
     } catch (PathNotFoundException e) {
       return false;
     }
+  }
+
+  public boolean matchContext(DocumentContext context) {
+    var ret = context.read(path);
+    if (ret == null) {
+      return false;
+    } else return !(ret instanceof List) || !((List<?>) ret).isEmpty();
   }
 }
