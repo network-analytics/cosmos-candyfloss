@@ -131,7 +131,7 @@ public class CandyflossKStreamsApplication {
     // We are using timestamped, so we can clean up the old unused keys.
     var storeBuilder =
         Stores.timestampedKeyValueStoreBuilder(
-            Stores.persistentTimestampedKeyValueStore(config.getStateStoreName()),
+            Stores.inMemoryKeyValueStore(config.getStateStoreName()),
             Serdes.Bytes(),
             Serdes.Bytes());
     builder.addStateStore(storeBuilder);
