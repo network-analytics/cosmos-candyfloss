@@ -176,12 +176,16 @@ abstract class AbstractDeploymentTest {
                 .toFormatter();
         var time = LocalDateTime.parse(dateTimeString, formatter);
         zoned = time.atZone(ZoneId.of(ZoneId.SHORT_IDS.get("ECT")));
-      } else {
+      } else if (dateTimeString.contains(".")) {
         var split = dateTimeString.split("\\.");
         var instance =
             Instant.ofEpochSecond(
                 Long.parseUnsignedLong(split[0]), Long.parseUnsignedLong(split[1]));
         zoned = instance.atZone(ZoneId.of(ZoneId.SHORT_IDS.get("ECT")));
+      } else {
+        zoned =
+            Instant.ofEpochMilli(Long.parseUnsignedLong(dateTimeString))
+                .atZone(ZoneId.of(ZoneId.SHORT_IDS.get("ECT")));
       }
     } else {
       zoned = ZonedDateTime.now();
