@@ -1,5 +1,7 @@
 package com.swisscom.daisy.cosmos.candyfloss.transformers;
 
+import static com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.CustomFunctions.factory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,8 +17,6 @@ import java.util.Map;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.Transformer;
 import org.apache.kafka.streams.processor.ProcessorContext;
-
-import static com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.CustomFunctions.factory;
 
 public class FromJsonTransformer
     implements Transformer<String, String, KeyValue<String, ValueErrorMessage<DocumentContext>>> {
