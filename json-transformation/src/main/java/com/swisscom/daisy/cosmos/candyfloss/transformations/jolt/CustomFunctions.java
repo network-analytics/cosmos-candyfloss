@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CustomFunctions {
   public static final JsonFactory factory =
-          JsonFactory.builder().enable(JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
+      JsonFactory.builder().enable(JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
 
   public static final class jsonStringToJson extends Function.SingleFunction<Object> {
     private static final Logger logger = LoggerFactory.getLogger(CustomFunctions.class);
