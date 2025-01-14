@@ -1,5 +1,7 @@
 package com.swisscom.daisy.cosmos.candyfloss.testutils;
 
+import static com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.CustomFunctions.factory;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,8 +11,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.CustomFunctions.factory;
 
 /***
  * Json helper functions to read test fixtures
