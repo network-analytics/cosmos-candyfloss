@@ -1,4 +1,7 @@
 {
+  /*
+  Note that this config is comprehensive and contains "match", "transform" and "normalization"
+  */
   "match": {
     "or": [
       {
@@ -417,7 +420,7 @@
   "normalizeCounters": {
     "timestamp-extractor": {
       "jsonpath": "$.msg_timestamp",
-      "timestamp-type": "EpochMilli"
+      "timestamp-type": "EpochMilli"  // Note: most timestamp is in milliseconds format
     },
     "counters": [
       {
@@ -438,7 +441,7 @@
         ],
         "type": "u64",
         "value": {
-          "jsonpath": "$.in_broadcast_pkts"
+          "jsonpath": "$.in_broadcast_pkts" // Important: Metric must be numerical so that can be "normalized".
         }
       },
       {

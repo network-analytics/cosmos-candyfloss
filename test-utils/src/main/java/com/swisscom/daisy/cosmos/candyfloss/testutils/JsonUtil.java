@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.CustomFunctions.factory;
+
 /***
  * Json helper functions to read test fixtures
  */
@@ -30,7 +32,7 @@ public class JsonUtil {
       throw new NullPointerException("inputStream is null");
     }
     var jsonString = JsonUtil.readFromInputStream(inputStream);
-    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectMapper objectMapper = new ObjectMapper(factory);
     return objectMapper.readValue(jsonString, Map.class);
   }
 
@@ -43,7 +45,7 @@ public class JsonUtil {
 
   public static List<Map<String, Object>> readJsonArray(InputStream inputStream)
       throws IOException {
-    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectMapper objectMapper = new ObjectMapper(factory);
     List<Map<String, Object>> result = new ArrayList<>();
     var jsonString = JsonUtil.readFromInputStream(inputStream);
     var iterator = objectMapper.readerFor(Map.class).readValues(jsonString);

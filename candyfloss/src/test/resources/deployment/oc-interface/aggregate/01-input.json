@@ -9,6 +9,6 @@
     "pkey": "HCC"
   },
   "telemetry_data": "{\"node_id_str\":\"hcc-zbl1315-r-pe-60\",\"subscription_id_str\":\"DAISY-SUBSCRIPTION\",\"encoding_path\":\"openconfig-interfaces:interfaces\",\"collection_id\":\"456710\",\"collection_start_time\":\"1662364045589\",\"msg_timestamp\":\"1662364045598\",\"data_json\":[{\"timestamp\":\"1662364045596\",\"content\":{\"interface\":{\"name\":\"Bundle-Ether100\",\"openconfig-if-aggregate:aggregation\":{\"state\":{\"lag-type\":\"LACP\",\"min-links\":1,\"lag-speed\":10000000,\"member\":[\"TenGigE0/0/0/1\"]}}}}},{\"timestamp\":\"1662364045596\",\"content\":{\"interface\":{\"name\":\"TenGigE0/0/0/1\",\"openconfig-if-ethernet:ethernet\":{\"state\":{\"openconfig-if-aggregate:aggregate-id\":\"Bundle-Ether100\"}}}}},{\"timestamp\":\"1662364045596\",\"content\":{\"interface\":{\"name\":\"Bundle-Ether200\",\"openconfig-if-aggregate:aggregation\":{\"state\":{\"lag-type\":\"LACP\",\"min-links\":1,\"lag-speed\":10000000,\"member\":[\"TenGigE0/0/0/2\"]}}}}},{\"timestamp\":\"1662364045596\",\"content\":{\"interface\":{\"name\":\"TenGigE0/0/0/2\",\"openconfig-if-ethernet:ethernet\":{\"state\":{\"openconfig-if-aggregate:aggregate-id\":\"Bundle-Ether200\"}}}}}],\"collection_end_time\":\"1662364045598\"}",
-  "serialization": "json_string",
+  "serialization": "json_string",  // this leaf should be here so that it assures message will go into the pipeline
   "writer_id": "daisy64sttcpjson-left01c 20220829-0 (30874711)"
 }

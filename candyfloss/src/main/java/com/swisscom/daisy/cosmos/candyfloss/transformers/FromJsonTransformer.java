@@ -16,6 +16,8 @@ import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.Transformer;
 import org.apache.kafka.streams.processor.ProcessorContext;
 
+import static com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.CustomFunctions.factory;
+
 public class FromJsonTransformer
     implements Transformer<String, String, KeyValue<String, ValueErrorMessage<DocumentContext>>> {
   private static final Configuration configuration =
@@ -34,7 +36,7 @@ public class FromJsonTransformer
           .register(Metrics.globalRegistry);
 
   private final ObjectMapper objectMapper =
-      new ObjectMapper().configure(DeserializationFeature.USE_BIG_INTEGER_FOR_INTS, true);
+      new ObjectMapper(factory).configure(DeserializationFeature.USE_BIG_INTEGER_FOR_INTS, true);
   private ProcessorContext context;
 
   @Override
