@@ -3,6 +3,8 @@ package com.swisscom.daisy.cosmos.candyfloss.transformations.jolt;
 import com.bazaarvoice.jolt.common.Optional;
 import com.bazaarvoice.jolt.modifier.function.Function;
 import com.bazaarvoice.jolt.modifier.function.Objects;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
@@ -13,10 +15,13 @@ import org.slf4j.LoggerFactory;
  * Custom functions to be used in Jolt transformations.
  */
 public class CustomFunctions {
+  public static final JsonFactory factory =
+      JsonFactory.builder().enable(JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
+
   public static final class jsonStringToJson extends Function.SingleFunction<Object> {
     private static final Logger logger = LoggerFactory.getLogger(CustomFunctions.class);
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper(factory);
 
     @Override
     protected Optional<Object> applySingle(Object arg) {

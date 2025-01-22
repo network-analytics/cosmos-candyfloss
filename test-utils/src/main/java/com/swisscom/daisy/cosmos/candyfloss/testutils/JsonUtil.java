@@ -1,5 +1,7 @@
 package com.swisscom.daisy.cosmos.candyfloss.testutils;
 
+import static com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.CustomFunctions.factory;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,7 +32,7 @@ public class JsonUtil {
       throw new NullPointerException("inputStream is null");
     }
     var jsonString = JsonUtil.readFromInputStream(inputStream);
-    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectMapper objectMapper = new ObjectMapper(factory);
     return objectMapper.readValue(jsonString, Map.class);
   }
 
@@ -43,7 +45,7 @@ public class JsonUtil {
 
   public static List<Map<String, Object>> readJsonArray(InputStream inputStream)
       throws IOException {
-    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectMapper objectMapper = new ObjectMapper(factory);
     List<Map<String, Object>> result = new ArrayList<>();
     var jsonString = JsonUtil.readFromInputStream(inputStream);
     var iterator = objectMapper.readerFor(Map.class).readValues(jsonString);

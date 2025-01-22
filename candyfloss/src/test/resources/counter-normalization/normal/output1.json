@@ -24,7 +24,7 @@
   "timestamp": 1647244767278,
   "name": "TenGigE0/0/0/0",
   "state": {
-    "u64-counter": null,
+    "u64-counter": null, // no previous counter to be compared, therefore, it's null
     "u32-counter": null,
     "u32-value": 4294967295,
     "u64-value": 18446744073709551615

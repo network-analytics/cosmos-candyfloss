@@ -1,4 +1,7 @@
 [
+  /*
+  This transformation makes sure (door keeper) that we only process valid messages.
+  */
   {
     "operation": "shift",
     "spec": {

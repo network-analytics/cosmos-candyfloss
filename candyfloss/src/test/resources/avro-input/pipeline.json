@@ -3,6 +3,7 @@
   "match": {},
   "transform": [
     {
+      // Note: this transformation is for avro input
       "operation": "shift",
       "spec": {
         "event": "[].transformed_event"

@@ -1,5 +1,7 @@
 package com.swisscom.daisy.cosmos.candyfloss.transformers;
 
+import static com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.CustomFunctions.factory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,7 +36,7 @@ public class FromJsonTransformer
           .register(Metrics.globalRegistry);
 
   private final ObjectMapper objectMapper =
-      new ObjectMapper().configure(DeserializationFeature.USE_BIG_INTEGER_FOR_INTS, true);
+      new ObjectMapper(factory).configure(DeserializationFeature.USE_BIG_INTEGER_FOR_INTS, true);
   private ProcessorContext context;
 
   @Override
