@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.apache.kafka.streams.processor.ProcessorContext;
+import org.apache.kafka.common.header.internals.RecordHeaders;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.internals.ProcessorRecordContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,29 +32,12 @@ public class ErrorMessage {
 
   private static final ObjectMapper objectMapper = new ObjectMapper();
 
-  public ErrorMessage(
-      ProcessorContext context,
-      String processingStep,
-      String key,
-      String errorMessage,
-      String failedValue) {
-    this(
-        context.timestamp(),
-        context.applicationId(),
-        context.taskId().toString(),
-        context.partition(),
-        context.offset(),
-        processingStep,
-        key,
-        errorMessage,
-        failedValue);
-  }
-
-  public static ErrorMessage getError(
-      final ProcessorContext context,
+  public <KForward, VForward> ErrorMessage(
+      final ProcessorContext<KForward, VForward> context,
       final String processingStep,
       final String key,
       final Object value,
+      final long ts,
       final String errorMessage) {
 
     var originalMessage = "";
@@ -64,10 +49,28 @@ public class ErrorMessage {
     logger.error(
         "Encounter error (processingStep={}, partition={}, offset={}): {} on message: {}",
         processingStep,
-        context.partition(),
-        context.offset(),
+        context
+            .recordMetadata()
+            .orElse(new ProcessorRecordContext(-1L, -1L, -1, null, new RecordHeaders()))
+            .partition(),
+        context
+            .recordMetadata()
+            .orElse(new ProcessorRecordContext(-1L, -1L, -1, null, new RecordHeaders()))
+            .offset(),
         errorMessage,
         originalMessage);
-    return new ErrorMessage(context, processingStep, key, errorMessage, originalMessage);
+    this.timestamp = ts;
+    this.applicationId = context.applicationId();
+    this.taskId = context.taskId().toString();
+    this.partition = context.taskId().partition();
+    this.offset =
+        context
+            .recordMetadata()
+            .orElse(new ProcessorRecordContext(-1L, -1L, -1, null, new RecordHeaders()))
+            .offset();
+    this.processingStep = processingStep;
+    this.key = key;
+    this.errorMessage = errorMessage;
+    this.failedValue = originalMessage;
   }
 }

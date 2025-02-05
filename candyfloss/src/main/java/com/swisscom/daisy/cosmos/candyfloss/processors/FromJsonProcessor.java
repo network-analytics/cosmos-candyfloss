@@ -1,4 +1,4 @@
-package com.swisscom.daisy.cosmos.candyfloss.transformers;
+package com.swisscom.daisy.cosmos.candyfloss.processors;
 
 import static com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.CustomFunctions.factory;
 
@@ -15,11 +15,12 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import java.util.Map;
 import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.kstream.Transformer;
-import org.apache.kafka.streams.processor.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Processor;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
 
-public class FromJsonTransformer
-    implements Transformer<String, String, KeyValue<String, ValueErrorMessage<DocumentContext>>> {
+public class FromJsonProcessor
+    implements Processor<String, String, String, ValueErrorMessage<DocumentContext>> {
   private static final Configuration configuration =
       Configuration.builder().options(Option.SUPPRESS_EXCEPTIONS).build();
   private final Counter counterIn =
@@ -37,28 +38,16 @@ public class FromJsonTransformer
 
   private final ObjectMapper objectMapper =
       new ObjectMapper(factory).configure(DeserializationFeature.USE_BIG_INTEGER_FOR_INTS, true);
-  private ProcessorContext context;
+  private ProcessorContext<String, ValueErrorMessage<DocumentContext>> context;
 
   @Override
-  public void init(ProcessorContext context) {
+  public void init(ProcessorContext<String, ValueErrorMessage<DocumentContext>> context) {
     this.context = context;
   }
 
-  @Override
-  public KeyValue<String, ValueErrorMessage<DocumentContext>> transform(String key, String value) {
-    try {
-      counterIn.increment();
-      return process(key, value);
-    } catch (Exception e) {
-      counterError.increment();
-      var error = ErrorMessage.getError(context, getClass().getName(), key, value, e.getMessage());
-      return KeyValue.pair(key, new ValueErrorMessage<>(null, error));
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  private KeyValue<String, ValueErrorMessage<DocumentContext>> process(String key, String value)
-      throws JsonProcessingException {
+  private KeyValue<String, ValueErrorMessage<DocumentContext>> handleRecord(
+      String key, String value) throws JsonProcessingException {
+    @SuppressWarnings("unchecked")
     Map<String, Object> jsonMap = objectMapper.readValue(value, Map.class);
     DocumentContext context = JsonPath.using(configuration).parse(jsonMap);
     counterOut.increment();
@@ -66,5 +55,20 @@ public class FromJsonTransformer
   }
 
   @Override
-  public void close() {}
+  public void process(Record<String, String> record) {
+    String key = record.key();
+    String value = record.value();
+    long ts = record.timestamp();
+
+    try {
+      counterIn.increment();
+      KeyValue<String, ValueErrorMessage<DocumentContext>> kv = handleRecord(key, value);
+
+      context.forward(new Record<>(kv.key, kv.value, record.timestamp()));
+    } catch (Exception e) {
+      counterError.increment();
+      var error = new ErrorMessage(context, getClass().getName(), key, value, ts, e.getMessage());
+      context.forward(new Record<>(key, new ValueErrorMessage<>(null, error), record.timestamp()));
+    }
+  }
 }
