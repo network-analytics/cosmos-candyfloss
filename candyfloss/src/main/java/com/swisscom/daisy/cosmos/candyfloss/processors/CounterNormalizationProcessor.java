@@ -1,4 +1,4 @@
-package com.swisscom.daisy.cosmos.candyfloss.transformers;
+package com.swisscom.daisy.cosmos.candyfloss.processors;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.swisscom.daisy.cosmos.candyfloss.config.NormalizeCounterConfig;
@@ -7,8 +7,8 @@ import com.swisscom.daisy.cosmos.candyfloss.config.TimeExtractorConfig;
 import com.swisscom.daisy.cosmos.candyfloss.messages.ErrorMessage;
 import com.swisscom.daisy.cosmos.candyfloss.messages.FlattenedMessage;
 import com.swisscom.daisy.cosmos.candyfloss.messages.ValueErrorMessage;
-import com.swisscom.daisy.cosmos.candyfloss.transformers.exceptions.InvalidCounterKeysConfigurations;
-import com.swisscom.daisy.cosmos.candyfloss.transformers.exceptions.InvalidCounterValue;
+import com.swisscom.daisy.cosmos.candyfloss.processors.exceptions.InvalidCounterKeysConfigurations;
+import com.swisscom.daisy.cosmos.candyfloss.processors.exceptions.InvalidCounterValue;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Metrics;
@@ -21,19 +21,19 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.kstream.Transformer;
-import org.apache.kafka.streams.processor.ProcessorContext;
 import org.apache.kafka.streams.processor.PunctuationType;
+import org.apache.kafka.streams.processor.api.Processor;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.TimestampedKeyValueStore;
 import org.apache.kafka.streams.state.ValueAndTimestamp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CounterNormalizationTransformer
-    implements Transformer<
-        String, FlattenedMessage, KeyValue<String, ValueErrorMessage<FlattenedMessage>>> {
+public class CounterNormalizationProcessor
+    implements Processor<String, FlattenedMessage, String, ValueErrorMessage<FlattenedMessage>> {
 
-  private final Logger logger = LoggerFactory.getLogger(CounterNormalizationTransformer.class);
+  private final Logger logger = LoggerFactory.getLogger(CounterNormalizationProcessor.class);
 
   private final Counter counterError =
       Counter.builder("json_streams_counter_normalization_error")
@@ -69,9 +69,9 @@ public class CounterNormalizationTransformer
   private final Duration maxCounterAge;
   private final Duration scanFrequency;
 
-  private ProcessorContext context;
+  private ProcessorContext<String, ValueErrorMessage<FlattenedMessage>> context;
 
-  public CounterNormalizationTransformer(
+  public CounterNormalizationProcessor(
       PipelineConfig pipelineConfig,
       String stateStoreName,
       long maxCounterCacheAge,
@@ -112,44 +112,36 @@ public class CounterNormalizationTransformer
   }
 
   @Override
-  public void init(ProcessorContext context) {
+  public void init(ProcessorContext<String, ValueErrorMessage<FlattenedMessage>> context) {
     this.context = context;
     this.stateStore = context.getStateStore(stateStoreName);
     context.schedule(
         scanFrequency, PunctuationType.STREAM_TIME, timer.record(() -> this::cleanOldKeys));
   }
 
-  @Override
-  public KeyValue<String, ValueErrorMessage<FlattenedMessage>> transform(
-      String key, FlattenedMessage flattenedMessage) {
+  public KeyValue<String, ValueErrorMessage<FlattenedMessage>> handleRecord(
+      String key, FlattenedMessage flattenedMessage, long ts) {
     if (flattenedMessage.getTag() == null) {
       return KeyValue.pair(key, new ValueErrorMessage<>(flattenedMessage));
     }
     try {
-      return process(key, flattenedMessage);
+      var normalizeCountersConfig =
+          pipelineConfig.getSteps().get(flattenedMessage.getTag()).getNormalizeCountersConfig();
+      if (normalizeCountersConfig.isPresent()) {
+        for (var counterConfig : normalizeCountersConfig.get().getCounterConfigs()) {
+          if (counterConfig.getMatch().matchContext(flattenedMessage.getValue())) {
+            normalizeCounter(flattenedMessage, counterConfig);
+          }
+        }
+      }
+      return KeyValue.pair(key, new ValueErrorMessage<>(flattenedMessage));
     } catch (Exception e) {
       counterError.increment();
       var error =
-          ErrorMessage.getError(
-              context, getClass().getName(), key, flattenedMessage, e.getMessage());
+          new ErrorMessage(
+              context, getClass().getName(), key, flattenedMessage, ts, e.getMessage());
       return KeyValue.pair(key, new ValueErrorMessage<>(flattenedMessage, error));
     }
-  }
-
-  private KeyValue<String, ValueErrorMessage<FlattenedMessage>> process(
-      String key, FlattenedMessage flattenedMessage)
-      throws InvalidCounterValue, InvalidCounterKeysConfigurations {
-    var normalizeCountersConfig =
-        pipelineConfig.getSteps().get(flattenedMessage.getTag()).getNormalizeCountersConfig();
-
-    if (normalizeCountersConfig.isPresent()) {
-      for (var counterConfig : normalizeCountersConfig.get().getCounterConfigs()) {
-        if (counterConfig.getMatch().matchContext(flattenedMessage.getValue())) {
-          normalizeCounter(flattenedMessage, counterConfig);
-        }
-      }
-    }
-    return KeyValue.pair(key, new ValueErrorMessage<>(flattenedMessage));
   }
 
   private void normalizeCounter(
@@ -394,5 +386,13 @@ public class CounterNormalizationTransformer
   }
 
   @Override
-  public void close() {}
+  public void process(Record<String, FlattenedMessage> record) {
+    var key = record.key();
+    var value = record.value();
+    var ts = record.timestamp();
+
+    KeyValue<String, ValueErrorMessage<FlattenedMessage>> kv = handleRecord(key, value, ts);
+
+    context.forward(new Record<>(kv.key, kv.value, record.timestamp()));
+  }
 }

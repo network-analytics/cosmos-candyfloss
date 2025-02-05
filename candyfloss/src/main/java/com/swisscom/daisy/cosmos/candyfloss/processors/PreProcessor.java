@@ -1,4 +1,4 @@
-package com.swisscom.daisy.cosmos.candyfloss.transformers;
+package com.swisscom.daisy.cosmos.candyfloss.processors;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.swisscom.daisy.cosmos.candyfloss.messages.ErrorMessage;
@@ -7,12 +7,12 @@ import io.micrometer.common.lang.Nullable;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.kstream.Transformer;
-import org.apache.kafka.streams.processor.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Processor;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
 
-public class PreTransformer
-    implements Transformer<
-        String, DocumentContext, KeyValue<String, ValueErrorMessage<DocumentContext>>> {
+public class PreProcessor
+    implements Processor<String, DocumentContext, String, ValueErrorMessage<DocumentContext>> {
   private final Counter counterIn =
       Counter.builder("json_streams_pre_transformer_in")
           .description("Number of message incoming to the Json Pre-Transformer step")
@@ -23,26 +23,31 @@ public class PreTransformer
           .description("Number of error messages that are discarded to dlq topic")
           .register(Metrics.globalRegistry);
 
-  private ProcessorContext context;
+  private ProcessorContext<String, ValueErrorMessage<DocumentContext>> context;
 
   private final com.swisscom.daisy.cosmos.candyfloss.transformations.Transformer transformer;
 
-  public PreTransformer(
+  public PreProcessor(
       @Nullable com.swisscom.daisy.cosmos.candyfloss.transformations.Transformer transformer) {
     this.transformer = transformer;
   }
 
   @Override
-  public void init(ProcessorContext context) {
+  public void init(ProcessorContext<String, ValueErrorMessage<DocumentContext>> context) {
     this.context = context;
   }
 
   @Override
-  public void close() {}
+  public void process(Record<String, DocumentContext> record) {
+    var key = record.key();
+    var value = record.value();
+    var ts = record.timestamp();
+    var kv = handleRecord(key, value, ts);
+    context.forward(new Record<>(kv.key, kv.value, ts));
+  }
 
-  @Override
-  public KeyValue<String, ValueErrorMessage<DocumentContext>> transform(
-      String key, DocumentContext value) {
+  public KeyValue<String, ValueErrorMessage<DocumentContext>> handleRecord(
+      String key, DocumentContext value, long ts) {
     try {
       counterIn.increment();
       if (transformer == null) {
@@ -53,7 +58,7 @@ public class PreTransformer
       }
     } catch (Exception e) {
       counterError.increment();
-      var error = ErrorMessage.getError(context, getClass().getName(), key, value, e.getMessage());
+      var error = new ErrorMessage(context, getClass().getName(), key, value, ts, e.getMessage());
       return KeyValue.pair(key, new ValueErrorMessage<>(null, error));
     }
   }

@@ -1,4 +1,4 @@
-package com.swisscom.daisy.cosmos.candyfloss.transformers.exceptions;
+package com.swisscom.daisy.cosmos.candyfloss.processors.exceptions;
 
 public class InvalidCounterKeysConfigurations extends Exception {
   public InvalidCounterKeysConfigurations() {}

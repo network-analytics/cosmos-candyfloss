@@ -3,9 +3,9 @@ package com.swisscom.daisy.cosmos.candyfloss;
 import com.swisscom.daisy.cosmos.candyfloss.config.JsonKStreamApplicationConfig;
 import com.swisscom.daisy.cosmos.candyfloss.config.exceptions.InvalidConfigurations;
 import com.swisscom.daisy.cosmos.candyfloss.messages.ValueErrorMessage;
+import com.swisscom.daisy.cosmos.candyfloss.processors.*;
 import com.swisscom.daisy.cosmos.candyfloss.transformations.Transformer;
 import com.swisscom.daisy.cosmos.candyfloss.transformations.match.exceptions.InvalidMatchConfiguration;
-import com.swisscom.daisy.cosmos.candyfloss.transformers.*;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
@@ -141,7 +141,7 @@ public class CandyflossKStreamsApplication {
 
     var jsonStream =
         inputStream
-            .transform(FromJsonTransformer::new, Named.as("deserialize"))
+            .process(FromJsonProcessor::new, Named.as("deserialize"))
             .split(Named.as("deserializeBranchError"))
             .branch(
                 (k, v) -> v.isError(),
@@ -154,16 +154,16 @@ public class CandyflossKStreamsApplication {
             .get("deserializeBranchError0")
             .mapValues(ValueErrorMessage::getValue);
 
-    final Transformer preTransformer;
+    final Transformer preProcessor;
     if (config.getPreTransform().isEmpty()) {
-      preTransformer = null;
+      preProcessor = null;
     } else {
-      preTransformer = new Transformer(config.getPreTransform());
+      preProcessor = new Transformer(config.getPreTransform());
     }
 
     var preTransformedStream =
         jsonStream
-            .transform(() -> new PreTransformer(preTransformer), Named.as("preTransformer"))
+            .process(() -> new PreProcessor(preProcessor), Named.as("preTransformer"))
             .split(Named.as("preTransformerBranchError"))
             .branch(
                 (k, v) -> v.isError(),
@@ -181,7 +181,7 @@ public class CandyflossKStreamsApplication {
 
     var transformedStream =
         preTransformedStream
-            .transform(() -> new MessageTransformer(config.getPipeline()), Named.as("transform"))
+            .process(() -> new MessageProcessor(config.getPipeline()), Named.as("transform"))
             .split(Named.as("transformBranchError"))
             .branch(
                 (k, v) -> v.isError(),
@@ -196,7 +196,7 @@ public class CandyflossKStreamsApplication {
 
     var flattenStream =
         transformedStream
-            .flatTransform(FlattenTransformer::new, Named.as("flatten"))
+            .process(FlattenProcessor::new, Named.as("flatten"))
             .split(Named.as("flattenBranchError"))
             .branch(
                 (k, v) -> v.isError(),
@@ -211,9 +211,9 @@ public class CandyflossKStreamsApplication {
 
     var counterNormalizedStream =
         flattenStream
-            .transform(
+            .process(
                 () ->
-                    new CounterNormalizationTransformer(
+                    new CounterNormalizationProcessor(
                         config.getPipeline(),
                         config.getStateStoreName(),
                         config.getMaxCounterCacheAge(),
@@ -237,9 +237,9 @@ public class CandyflossKStreamsApplication {
             .mapValues(ValueErrorMessage::getValue);
 
     var stringStream =
-        counterNormalizedStream.transform(
+        counterNormalizedStream.process(
             () ->
-                new ToJsonTransformer(
+                new ToJsonProcessor(
                     config.getDlqTopicName(), config.getDiscardTopicName(), config.getPipeline()),
             Named.as("serialize"));
     stringStream.to(

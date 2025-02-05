@@ -1,4 +1,4 @@
-package com.swisscom.daisy.cosmos.candyfloss.transformers;
+package com.swisscom.daisy.cosmos.candyfloss.processors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -10,13 +10,14 @@ import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Timer;
 import java.util.Map;
 import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.kstream.Transformer;
-import org.apache.kafka.streams.processor.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Processor;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
 
 @Deprecated
-public class ProtoBufDecodingTransformer
-    implements Transformer<
-        String, Map<String, Object>, KeyValue<String, ValueErrorMessage<Map<String, Object>>>> {
+public class ProtoBufDecodingProcessor
+    implements Processor<
+        String, Map<String, Object>, String, ValueErrorMessage<Map<String, Object>>> {
   private final Counter counterError =
       Counter.builder("json_streams_protobuf_decode_error")
           .description("Number of error messages that are discarded to dlq topic")
@@ -29,16 +30,15 @@ public class ProtoBufDecodingTransformer
           .register(Metrics.globalRegistry);
 
   private final ProtoBufDecoder protoBufDecoder = new ProtoBufDecoder();
-  private ProcessorContext context;
+  private ProcessorContext<String, ValueErrorMessage<Map<String, Object>>> context;
 
   @Override
-  public void init(ProcessorContext context) {
+  public void init(ProcessorContext<String, ValueErrorMessage<Map<String, Object>>> context) {
     this.context = context;
   }
 
-  @Override
-  public KeyValue<String, ValueErrorMessage<Map<String, Object>>> transform(
-      String key, Map<String, Object> value) {
+  public KeyValue<String, ValueErrorMessage<Map<String, Object>>> handleRecord(
+      String key, Map<String, Object> value, long ts) {
     return timer.record(
         () -> {
           try {
@@ -46,7 +46,7 @@ public class ProtoBufDecodingTransformer
           } catch (Exception e) {
             counterError.increment();
             var error =
-                ErrorMessage.getError(context, getClass().getName(), key, value, e.getMessage());
+                new ErrorMessage(context, getClass().getName(), key, value, ts, e.getMessage());
             return KeyValue.pair(key, new ValueErrorMessage<>(null, error));
           }
         });
@@ -60,5 +60,12 @@ public class ProtoBufDecodingTransformer
   }
 
   @Override
-  public void close() {}
+  public void process(Record<String, Map<String, Object>> record) {
+    var key = record.key();
+    var value = record.value();
+    var ts = record.timestamp();
+
+    var kv = handleRecord(key, value, ts);
+    context.forward(new Record<>(kv.key, kv.value, ts));
+  }
 }

@@ -1,4 +1,4 @@
-package com.swisscom.daisy.cosmos.candyfloss.transformers;
+package com.swisscom.daisy.cosmos.candyfloss.processors;
 
 import com.swisscom.daisy.cosmos.candyfloss.messages.ErrorMessage;
 import com.swisscom.daisy.cosmos.candyfloss.messages.FlattenedMessage;
@@ -9,14 +9,12 @@ import io.micrometer.core.instrument.Metrics;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.kstream.Transformer;
-import org.apache.kafka.streams.processor.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Processor;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
 
-public class FlattenTransformer
-    implements Transformer<
-        String,
-        TransformedMessage,
-        Iterable<KeyValue<String, ValueErrorMessage<FlattenedMessage>>>> {
+public class FlattenProcessor
+    implements Processor<String, TransformedMessage, String, ValueErrorMessage<FlattenedMessage>> {
   private final Counter counterIn =
       Counter.builder("json_streams_flatten_in")
           .description("Number of message incoming to the Json Flatten step")
@@ -33,25 +31,30 @@ public class FlattenTransformer
           .description("Number of error messages that are discarded to dlq topic")
           .register(Metrics.globalRegistry);
 
-  private ProcessorContext context;
+  private ProcessorContext<String, ValueErrorMessage<FlattenedMessage>> context;
 
   @Override
-  public void init(ProcessorContext context) {
+  public void init(ProcessorContext<String, ValueErrorMessage<FlattenedMessage>> context) {
     this.context = context;
   }
 
   @Override
-  public void close() {}
+  public void process(Record<String, TransformedMessage> record) {
+    var key = record.key();
+    var value = record.value();
+    var ts = record.timestamp();
 
-  @Override
-  public Iterable<KeyValue<String, ValueErrorMessage<FlattenedMessage>>> transform(
-      String key, TransformedMessage value) {
+    handleRecord(key, value, ts).forEach(kv -> context.forward(new Record<>(kv.key, kv.value, ts)));
+  }
+
+  public Iterable<KeyValue<String, ValueErrorMessage<FlattenedMessage>>> handleRecord(
+      String key, TransformedMessage value, long ts) {
     try {
       counterIn.increment();
       return flattenMessage(key, value);
     } catch (Exception e) {
       counterError.increment();
-      var error = ErrorMessage.getError(context, getClass().getName(), key, value, e.getMessage());
+      var error = new ErrorMessage(context, getClass().getName(), key, value, ts, e.getMessage());
       return List.of(KeyValue.pair(key, new ValueErrorMessage<>(null, error)));
     }
   }

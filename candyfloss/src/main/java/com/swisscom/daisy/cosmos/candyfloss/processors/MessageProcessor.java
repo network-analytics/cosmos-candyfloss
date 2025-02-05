@@ -1,4 +1,4 @@
-package com.swisscom.daisy.cosmos.candyfloss.transformers;
+package com.swisscom.daisy.cosmos.candyfloss.processors;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.swisscom.daisy.cosmos.candyfloss.config.PipelineConfig;
@@ -15,11 +15,12 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.processor.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Processor;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
 
-public class MessageTransformer
-    implements org.apache.kafka.streams.kstream.Transformer<
-        String, DocumentContext, KeyValue<String, ValueErrorMessage<TransformedMessage>>> {
+public class MessageProcessor
+    implements Processor<String, DocumentContext, String, ValueErrorMessage<TransformedMessage>> {
   private final Counter counterMsg =
       Counter.builder("json_streams_transformer_in")
           .description("Number of message incoming to the MessageTransformer step")
@@ -31,65 +32,71 @@ public class MessageTransformer
 
   private final PipelineConfig pipelineConfig;
   private final List<MatchTransformPair> matchTransformPairs;
-  private ProcessorContext context;
+  private ProcessorContext<String, ValueErrorMessage<TransformedMessage>> context;
 
-  public MessageTransformer(PipelineConfig pipelineConfig) {
+  public MessageProcessor(PipelineConfig pipelineConfig) {
     this.pipelineConfig = pipelineConfig;
     this.matchTransformPairs =
         this.pipelineConfig.getSteps().values().stream()
             .map(
                 x ->
-                    new MessageTransformer.MatchTransformPair(
+                    new MessageProcessor.MatchTransformPair(
                         x.getMatch(), new Transformer(x.getTransform())))
             .collect(Collectors.toList());
   }
 
   @Override
-  public void init(ProcessorContext context) {
+  public void init(ProcessorContext<String, ValueErrorMessage<TransformedMessage>> context) {
     this.context = context;
   }
 
+  private Iterator<KeyValue<String, ValueErrorMessage<TransformedMessage>>> handleRecord(
+      String key, DocumentContext context) {
+    var transformed =
+        matchTransformPairs.stream()
+            .parallel()
+            .filter(x -> x.getMatch().matchContext(context))
+            .map(
+                x ->
+                    new TransformedMessage(
+                        x.getTransformer().transformList(context), x.getMatch().getTag()))
+            .map(x -> KeyValue.pair(key, new ValueErrorMessage<>(x)))
+            .iterator();
+    return transformed;
+  }
+
   @Override
-  public KeyValue<String, ValueErrorMessage<TransformedMessage>> transform(
-      String key, DocumentContext value) {
+  public void process(Record<String, DocumentContext> record) {
+    String key = record.key();
+    DocumentContext value = record.value();
+    long ts = record.timestamp();
+
     try {
       counterMsg.increment();
-      Iterator<KeyValue<String, ValueErrorMessage<TransformedMessage>>> pairs = process(key, value);
+      Iterator<KeyValue<String, ValueErrorMessage<TransformedMessage>>> pairs =
+          handleRecord(key, value);
+
       var counter = 0;
       while (pairs.hasNext()) {
         KeyValue<String, ValueErrorMessage<TransformedMessage>> kv = pairs.next();
-        context.forward(kv.key, kv.value);
+        context.forward(new Record<>(kv.key, kv.value, record.timestamp()));
         counter++;
       }
       // If no pipeline matches the message, then pass it down as it is
       if (counter == 0) {
-        context.forward(key, new ValueErrorMessage<>(new TransformedMessage(List.of(value), null)));
+        context.forward(
+            new Record<>(
+                key,
+                new ValueErrorMessage<>(new TransformedMessage(List.of(value), null)),
+                record.timestamp()));
       }
-      return null;
-
     } catch (Exception e) {
       counterError.increment();
       var error =
-          ErrorMessage.getError(context, getClass().getName(), key, value.json(), e.getMessage());
-      return KeyValue.pair(key, new ValueErrorMessage<>(null, error));
+          new ErrorMessage(context, getClass().getName(), key, value.json(), ts, e.getMessage());
+      context.forward(new Record<>(key, new ValueErrorMessage<>(null, error), record.timestamp()));
     }
   }
-
-  private Iterator<KeyValue<String, ValueErrorMessage<TransformedMessage>>> process(
-      String key, DocumentContext context) {
-    return matchTransformPairs.stream()
-        .parallel()
-        .filter(x -> x.getMatch().matchContext(context))
-        .map(
-            x ->
-                new TransformedMessage(
-                    x.getTransformer().transformList(context), x.getMatch().getTag()))
-        .map(x -> KeyValue.pair(key, new ValueErrorMessage<>(x)))
-        .iterator();
-  }
-
-  @Override
-  public void close() {}
 
   @Getter
   @AllArgsConstructor

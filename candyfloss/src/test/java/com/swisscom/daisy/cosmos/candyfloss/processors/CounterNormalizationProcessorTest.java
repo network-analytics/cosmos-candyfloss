@@ -1,4 +1,4 @@
-package com.swisscom.daisy.cosmos.candyfloss.transformers;
+package com.swisscom.daisy.cosmos.candyfloss.processors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,7 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 @ExtendWith(MockitoExtension.class)
-class CounterNormalizationTransformerTest {
+class CounterNormalizationProcessorTest {
 
   private TopologyTestDriver topologyTestDriver;
   private TestInputTopic<String, String> inputTopic;
@@ -78,16 +78,16 @@ class CounterNormalizationTransformerTest {
             Serdes.Bytes(),
             Serdes.Bytes());
     builder.addStateStore(storeBuilder);
-    var jsonStream = inputStream.transform(FromJsonTransformer::new);
+    var jsonStream = inputStream.process(FromJsonProcessor::new);
     var flattenedStream =
         jsonStream.mapValues(
             value -> new ValueErrorMessage<>(new FlattenedMessage(value.getValue(), "testStep")));
     var normalized =
         flattenedStream
             .mapValues(ValueErrorMessage::getValue)
-            .transform(
+            .process(
                 () ->
-                    new CounterNormalizationTransformer(
+                    new CounterNormalizationProcessor(
                         appConf.getPipeline(),
                         appConf.getStateStoreName(),
                         appConf.getMaxCounterCacheAge(),

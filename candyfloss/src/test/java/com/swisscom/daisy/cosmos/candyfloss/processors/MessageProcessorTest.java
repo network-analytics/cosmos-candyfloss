@@ -1,8 +1,6 @@
-package com.swisscom.daisy.cosmos.candyfloss.transformers;
+package com.swisscom.daisy.cosmos.candyfloss.processors;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,24 +14,32 @@ import com.swisscom.daisy.cosmos.candyfloss.transformations.match.exceptions.Inv
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
-import org.apache.kafka.streams.processor.ProcessorContext;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class MessageTransformerTest {
+class MessageProcessorTest {
   private static final Configuration configuration =
       Configuration.builder().options(Option.SUPPRESS_EXCEPTIONS).build();
 
   private final ObjectMapper objectMapper =
       new ObjectMapper().configure(DeserializationFeature.USE_BIG_INTEGER_FOR_INTS, true);
-  @Mock private ProcessorContext context;
-  private MessageTransformer transformer;
+  @Mock private ProcessorContext<String, ValueErrorMessage<TransformedMessage>> context;
+
+  @Captor
+  private ArgumentCaptor<Record<String, ValueErrorMessage<TransformedMessage>>> argumentCaptor;
+
+  private MessageProcessor msgProcessor;
 
   @Test
   public void testValidTelemetry()
@@ -51,23 +57,27 @@ class MessageTransformerTest {
     Config config = ConfigFactory.load("transformers/application.conf");
     var pipelineConfig = PipelineConfig.fromConfig(config.getConfig("kstream.pipeline"));
 
-    transformer = new MessageTransformer(pipelineConfig);
-    transformer.init(context);
+    msgProcessor = new MessageProcessor(pipelineConfig);
+    msgProcessor.init(context);
 
-    transformer.transform(inputKey, inputContext);
+    msgProcessor.process(new Record<>(inputKey, inputContext, 0L));
 
-    ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
-    ArgumentCaptor<ValueErrorMessage> valueCaptor =
-        ArgumentCaptor.forClass(ValueErrorMessage.class);
-    verify(context).forward(keyCaptor.capture(), valueCaptor.capture());
+    Mockito.verify(context, Mockito.times(1)).forward(argumentCaptor.capture());
 
-    assertEquals(1, valueCaptor.getAllValues().size());
-    assertEquals(expectedKey, keyCaptor.getValue());
-    assertFalse(valueCaptor.getValue().isError());
+    List<Record<String, ValueErrorMessage<TransformedMessage>>> output =
+        argumentCaptor.getAllValues();
+
+    assertEquals(1, output.size());
+
+    var processedKey = output.get(0).key();
+    assertEquals(expectedKey, processedKey);
+
+    var processedValue = output.get(0).value();
+    assertFalse(processedValue.isError());
     assertEquals(
         objectMapper.writeValueAsString(expected),
         objectMapper.writeValueAsString(
-            ((TransformedMessage) valueCaptor.getAllValues().get(0).getValue())
+            ((TransformedMessage) processedValue.getValue())
                 .getValue().stream().map(WriteContext::json).toList()));
   }
 
@@ -91,29 +101,24 @@ class MessageTransformerTest {
     Config config = ConfigFactory.load("transformers/application-multi-match.conf");
     var pipelineConfig = PipelineConfig.fromConfig(config.getConfig("kstream.pipeline"));
 
-    transformer = new MessageTransformer(pipelineConfig);
-    transformer.init(context);
+    msgProcessor = new MessageProcessor(pipelineConfig);
+    msgProcessor.init(context);
 
-    transformer.transform(inputKey, inputContext);
+    msgProcessor.process(new Record<>(inputKey, inputContext, 0L));
 
-    ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
-    ArgumentCaptor<ValueErrorMessage> valueCaptor =
-        ArgumentCaptor.forClass(ValueErrorMessage.class);
-    verify(context, times(2)).forward(keyCaptor.capture(), valueCaptor.capture());
+    Mockito.verify(context, Mockito.times(2)).forward(argumentCaptor.capture());
 
-    var out = valueCaptor.getAllValues();
+    List<Record<String, ValueErrorMessage<TransformedMessage>>> output =
+        argumentCaptor.getAllValues();
 
-    // only 2 outputs have values
-    assertEquals(2, out.size());
-    assertEquals(expectedKey, keyCaptor.getValue());
-    assertFalse(valueCaptor.getValue().isError());
+    assertEquals(2, output.size());
 
-    out.forEach(
+    output.forEach(
         o -> {
           var value =
-              ((TransformedMessage) o.getValue())
+              ((TransformedMessage) o.value().getValue())
                   .getValue().stream().map(WriteContext::json).toList();
-          var tag = ((TransformedMessage) o.getValue()).getTag();
+          var tag = ((TransformedMessage) o.value().getValue()).getTag();
           var expectedValue = expectedValues.getOrDefault(tag, null);
           assertNotNull(expectedValue);
           assertEquals(expectedValue, value);
@@ -139,23 +144,28 @@ class MessageTransformerTest {
     Config config = ConfigFactory.load("transformers/application.conf");
     var pipelineConfig = PipelineConfig.fromConfig(config.getConfig("kstream.pipeline"));
 
-    transformer = new MessageTransformer(pipelineConfig);
-    transformer.init(context);
+    msgProcessor = new MessageProcessor(pipelineConfig);
+    msgProcessor.init(context);
 
-    transformer.transform(inputKey, inputContext);
+    msgProcessor.process(new Record<>(inputKey, inputContext, 0L));
 
-    ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
-    ArgumentCaptor<ValueErrorMessage> valueCaptor =
-        ArgumentCaptor.forClass(ValueErrorMessage.class);
-    verify(context).forward(keyCaptor.capture(), valueCaptor.capture());
+    Mockito.verify(context, Mockito.times(1)).forward(argumentCaptor.capture());
 
-    assertEquals(1, valueCaptor.getAllValues().size());
-    assertEquals(expectedKey, keyCaptor.getValue());
-    assertFalse(valueCaptor.getValue().isError());
+    List<Record<String, ValueErrorMessage<TransformedMessage>>> output =
+        argumentCaptor.getAllValues();
+
+    assertEquals(1, output.size());
+
+    var processedValue = output.get(0).value();
+    assertFalse(processedValue.isError());
+
+    var processedKey = output.get(0).key();
+    assertEquals(expectedKey, processedKey);
+
     assertEquals(
         objectMapper.writeValueAsString(expected),
         objectMapper.writeValueAsString(
-            ((TransformedMessage) valueCaptor.getAllValues().get(0).getValue())
+            ((TransformedMessage) processedValue.getValue())
                 .getValue().stream().map(WriteContext::json).toList()));
   }
 }
