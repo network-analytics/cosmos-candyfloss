@@ -157,23 +157,29 @@ public class CounterNormalizationProcessor
     if (counterValue == null) {
       return;
     }
-    logger.debug(
-        "Extracted counter key '{}' and value '{}' with timestamp '{}' from message: '{}'",
-        counterKey,
-        counterValue,
-        timestamp,
-        flattenedMessage.getValue().json());
+
+    if (logger.isDebugEnabled()) {
+      logger.debug(
+              "Extracted counter key '{}' and value '{}' with timestamp '{}' from message: '{}'",
+              counterKey,
+              counterValue,
+              timestamp,
+              flattenedMessage.getValue().json());
+    }
+
     // Find the old value of the counter in the store state.
     // if no value exists then the same counter value is returned
     ValueAndTimestamp<Bytes> savedCounterState =
         getCounterSavedState(counterKey, counterValue, timestamp);
     if (savedCounterState != null) {
-      logger.debug(
-          "Value in stateStore for counter key '{}' is '{}' with timestamp '{}' from message: '{}'",
-          counterKey,
-          savedCounterState.value(),
-          savedCounterState.timestamp(),
-          flattenedMessage.getValue().json());
+      if (logger.isDebugEnabled()) {
+        logger.debug(
+                "Value in stateStore for counter key '{}' is '{}' with timestamp '{}' from message: '{}'",
+                counterKey,
+                savedCounterState.value(),
+                savedCounterState.timestamp(),
+                flattenedMessage.getValue().json());
+      }
       if (timestamp.toEpochMilli() < savedCounterState.timestamp()) {
         logger.warn(
             "Received a message with a timestamp {} older than saved in the counter store {}. Message: {}",
@@ -190,12 +196,14 @@ public class CounterNormalizationProcessor
                 timestamp.toEpochMilli()));
       }
     }
-    logger.debug(
-        "Saved counter key '{}' and value '{}' with timestamp '{}' for message: '{}'",
-        counterKey,
-        counterValue,
-        timestamp,
-        flattenedMessage.getValue().json());
+    if (logger.isDebugEnabled()) {
+      logger.debug(
+              "Saved counter key '{}' and value '{}' with timestamp '{}' for message: '{}'",
+              counterKey,
+              counterValue,
+              timestamp,
+              flattenedMessage.getValue().json());
+    }
 
     // Normalize the counter
     BigInteger normalizedValue = null;
