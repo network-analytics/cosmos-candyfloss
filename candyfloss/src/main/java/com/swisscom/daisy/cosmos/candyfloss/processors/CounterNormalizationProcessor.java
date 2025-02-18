@@ -160,11 +160,11 @@ public class CounterNormalizationProcessor
 
     if (logger.isDebugEnabled()) {
       logger.debug(
-              "Extracted counter key '{}' and value '{}' with timestamp '{}' from message: '{}'",
-              counterKey,
-              counterValue,
-              timestamp,
-              flattenedMessage.getValue().json());
+          "Extracted counter key '{}' and value '{}' with timestamp '{}' from message: '{}'",
+          counterKey,
+          counterValue,
+          timestamp,
+          flattenedMessage.getValue().json());
     }
 
     // Find the old value of the counter in the store state.
@@ -174,11 +174,11 @@ public class CounterNormalizationProcessor
     if (savedCounterState != null) {
       if (logger.isDebugEnabled()) {
         logger.debug(
-                "Value in stateStore for counter key '{}' is '{}' with timestamp '{}' from message: '{}'",
-                counterKey,
-                savedCounterState.value(),
-                savedCounterState.timestamp(),
-                flattenedMessage.getValue().json());
+            "Value in stateStore for counter key '{}' is '{}' with timestamp '{}' from message: '{}'",
+            counterKey,
+            savedCounterState.value(),
+            savedCounterState.timestamp(),
+            flattenedMessage.getValue().json());
       }
       if (timestamp.toEpochMilli() < savedCounterState.timestamp()) {
         logger.warn(
@@ -198,11 +198,11 @@ public class CounterNormalizationProcessor
     }
     if (logger.isDebugEnabled()) {
       logger.debug(
-              "Saved counter key '{}' and value '{}' with timestamp '{}' for message: '{}'",
-              counterKey,
-              counterValue,
-              timestamp,
-              flattenedMessage.getValue().json());
+          "Saved counter key '{}' and value '{}' with timestamp '{}' for message: '{}'",
+          counterKey,
+          counterValue,
+          timestamp,
+          flattenedMessage.getValue().json());
     }
 
     // Normalize the counter
