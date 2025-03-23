@@ -9,10 +9,8 @@ import com.swisscom.daisy.cosmos.candyfloss.messages.FlattenedMessage;
 import com.swisscom.daisy.cosmos.candyfloss.messages.ValueErrorMessage;
 import com.swisscom.daisy.cosmos.candyfloss.processors.exceptions.InvalidCounterKeysConfigurations;
 import com.swisscom.daisy.cosmos.candyfloss.processors.exceptions.InvalidCounterValue;
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.Gauge;
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.*;
+import io.micrometer.core.instrument.Timer.Sample;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.*;
@@ -32,6 +30,9 @@ import org.slf4j.LoggerFactory;
 
 public class CounterNormalizationProcessor
     implements Processor<String, FlattenedMessage, String, ValueErrorMessage<FlattenedMessage>> {
+  private static final String metricTag = "pipeline";
+
+  private static final String timerMetric = "latency_normalization";
 
   private final Logger logger = LoggerFactory.getLogger(CounterNormalizationProcessor.class);
 
@@ -56,15 +57,6 @@ public class CounterNormalizationProcessor
           .register(Metrics.globalRegistry);
   private final AtomicInteger numKeysTotal = new AtomicInteger(0);
   private final AtomicInteger numKeysCleaned = new AtomicInteger(0);
-  private final Gauge numKeysGauge =
-      Gauge.builder("json_streams_old_counter_total_keys", () -> numKeysTotal)
-          .description("Number of counter keys saved in the state store")
-          .register(Metrics.globalRegistry);
-
-  private final Gauge numKeysGaugeCleaned =
-      Gauge.builder("json_streams_old_counter_cleaned_keys", () -> numKeysCleaned)
-          .description("Number of old counter keys deleted from the state store")
-          .register(Metrics.globalRegistry);
 
   private final Duration maxCounterAge;
   private final Duration scanFrequency;
@@ -395,6 +387,8 @@ public class CounterNormalizationProcessor
 
   @Override
   public void process(Record<String, FlattenedMessage> record) {
+    Sample timer = Timer.start(Metrics.globalRegistry);
+
     var key = record.key();
     var value = record.value();
     var ts = record.timestamp();
@@ -402,5 +396,9 @@ public class CounterNormalizationProcessor
     KeyValue<String, ValueErrorMessage<FlattenedMessage>> kv = handleRecord(key, value, ts);
 
     context.forward(new Record<>(kv.key, kv.value, record.timestamp()));
+
+    timer.stop(
+            Metrics.globalRegistry.timer(
+                    timerMetric, metricTag, value.getTag() == null ? "" : value.getTag()));
   }
 }

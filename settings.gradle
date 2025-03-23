@@ -39,7 +39,8 @@ dependencyResolutionManagement {
             library('mockito', 'org.mockito:mockito-core:5.10.0')
             library('mockito-jupiter', 'org.mockito:mockito-junit-jupiter:5.10.0')
             // Monitoring
-            library('micrometer', 'io.micrometer:micrometer-registry-jmx:1.10.3')
+            library('micrometer-prom', 'io.micrometer:micrometer-registry-prometheus:1.10.3')
+            library('prometheus-httpserver', 'io.prometheus:simpleclient_httpserver:0.16.0')
         }
     }
 }

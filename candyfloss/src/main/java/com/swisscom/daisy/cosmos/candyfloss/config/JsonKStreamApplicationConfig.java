@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Properties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.kafka.streams.StreamsConfig;
 
 /***
  * The main class to parse and represent the application configs read from `application.$env.conf`
@@ -45,6 +46,8 @@ public class JsonKStreamApplicationConfig {
     for (var entry : kafkaConfig.entrySet()) {
       kafka.put(entry.getKey(), kafkaConfig.getString(entry.getKey()));
     }
+    kafka.put(StreamsConfig.METRIC_REPORTER_CLASSES_CONFIG, CFMetricReporter.class.getName());
+
     final String inputTopicName = config.getConfig("kstream").getString("input.topic.name");
     final InputType inputType;
     if (config.hasPath("kstream.input.type")) {
