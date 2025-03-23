@@ -49,8 +49,8 @@ public class FlattenProcessor
     handleRecord(key, value, ts).forEach(kv -> context.forward(new Record<>(kv.key, kv.value, ts)));
 
     timer.stop(
-            Metrics.globalRegistry.timer(
-                    timerMetric, metricTag, value.getTag() == null ? "" : value.getTag()));
+        Metrics.globalRegistry.timer(
+            timerMetric, metricTag, value.getTag() == null ? "" : value.getTag()));
   }
 
   public Iterable<KeyValue<String, ValueErrorMessage<FlattenedMessage>>> handleRecord(
@@ -75,13 +75,13 @@ public class FlattenProcessor
                 KeyValue.pair(
                     key, new ValueErrorMessage<>(new FlattenedMessage(x, value.getTag()))))
         .peek(
-                x -> {
-                  FlattenedMessage flatMsg = x.value.getValue();
-                  Counter.builder(CounterOutMetric)
-                          .tag(metricTag, flatMsg.getTag() == null ? "" : flatMsg.getTag())
-                          .register(Metrics.globalRegistry)
-                          .increment();
-                })
+            x -> {
+              FlattenedMessage flatMsg = x.value.getValue();
+              Counter.builder(CounterOutMetric)
+                  .tag(metricTag, flatMsg.getTag() == null ? "" : flatMsg.getTag())
+                  .register(Metrics.globalRegistry)
+                  .increment();
+            })
         .collect(Collectors.toList());
   }
 }

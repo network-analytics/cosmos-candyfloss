@@ -22,19 +22,19 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 
 public class FromJsonProcessor
-        implements Processor<String, String, String, ValueErrorMessage<DocumentContext>> {
+    implements Processor<String, String, String, ValueErrorMessage<DocumentContext>> {
   private static final Configuration configuration =
-          Configuration.builder().options(Option.SUPPRESS_EXCEPTIONS).build();
+      Configuration.builder().options(Option.SUPPRESS_EXCEPTIONS).build();
   private static final String metricTag = "partition";
   private static final String timerMetric = "latency_deserialization";
   private static final String timerErrorMetric = "latency_deserialization_error";
   private final Counter counterIn =
-          Counter.builder("json_streams_deserialization_in")
-                  .description("Number of message incoming to the json deserialization step")
-                  .register(Metrics.globalRegistry);
+      Counter.builder("json_streams_deserialization_in")
+          .description("Number of message incoming to the json deserialization step")
+          .register(Metrics.globalRegistry);
 
   private final ObjectMapper objectMapper =
-          new ObjectMapper(factory).configure(DeserializationFeature.USE_BIG_INTEGER_FOR_INTS, true);
+      new ObjectMapper(factory).configure(DeserializationFeature.USE_BIG_INTEGER_FOR_INTS, true);
   private ProcessorContext<String, ValueErrorMessage<DocumentContext>> context;
 
   @Override
@@ -43,7 +43,7 @@ public class FromJsonProcessor
   }
 
   private KeyValue<String, ValueErrorMessage<DocumentContext>> handleRecord(
-          String key, String value) throws JsonProcessingException {
+      String key, String value) throws JsonProcessingException {
     @SuppressWarnings("unchecked")
     Map<String, Object> jsonMap = objectMapper.readValue(value, Map.class);
     DocumentContext context = JsonPath.using(configuration).parse(jsonMap);
@@ -61,9 +61,9 @@ public class FromJsonProcessor
     long ts = record.timestamp();
 
     var partition =
-            context.recordMetadata().isPresent()
-                    ? String.valueOf(context.recordMetadata().get().partition())
-                    : "";
+        context.recordMetadata().isPresent()
+            ? String.valueOf(context.recordMetadata().get().partition())
+            : "";
 
     try {
       KeyValue<String, ValueErrorMessage<DocumentContext>> kv = handleRecord(key, value);

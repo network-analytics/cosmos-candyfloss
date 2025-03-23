@@ -22,14 +22,14 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 
 public class MessageProcessor
-        implements Processor<String, DocumentContext, String, ValueErrorMessage<TransformedMessage>> {
+    implements Processor<String, DocumentContext, String, ValueErrorMessage<TransformedMessage>> {
   private static final String metricTag = "pipeline";
   private static final String timerMetric = "latency_transform";
   private static final String timerErrorMetric = "latency_transform_error";
   private final Counter counterIn =
-          Counter.builder("json_streams_transformer_in")
-                  .description("Number of message incoming to the MessageTransformer step")
-                  .register(Metrics.globalRegistry);
+      Counter.builder("json_streams_transformer_in")
+          .description("Number of message incoming to the MessageTransformer step")
+          .register(Metrics.globalRegistry);
 
   private final PipelineConfig pipelineConfig;
   private final List<MatchTransformPair> matchTransformPairs;
@@ -38,12 +38,12 @@ public class MessageProcessor
   public MessageProcessor(PipelineConfig pipelineConfig) {
     this.pipelineConfig = pipelineConfig;
     this.matchTransformPairs =
-            this.pipelineConfig.getSteps().values().stream()
-                    .map(
-                            x ->
-                                    new MessageProcessor.MatchTransformPair(
-                                            x.getMatch(), new Transformer(x.getTransform())))
-                    .collect(Collectors.toList());
+        this.pipelineConfig.getSteps().values().stream()
+            .map(
+                x ->
+                    new MessageProcessor.MatchTransformPair(
+                        x.getMatch(), new Transformer(x.getTransform())))
+            .collect(Collectors.toList());
   }
 
   @Override

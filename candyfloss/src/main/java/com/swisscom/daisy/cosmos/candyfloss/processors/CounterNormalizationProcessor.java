@@ -398,7 +398,7 @@ public class CounterNormalizationProcessor
     context.forward(new Record<>(kv.key, kv.value, record.timestamp()));
 
     timer.stop(
-            Metrics.globalRegistry.timer(
-                    timerMetric, metricTag, value.getTag() == null ? "" : value.getTag()));
+        Metrics.globalRegistry.timer(
+            timerMetric, metricTag, value.getTag() == null ? "" : value.getTag()));
   }
 }

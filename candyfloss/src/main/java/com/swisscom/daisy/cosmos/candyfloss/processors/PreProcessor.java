@@ -47,9 +47,9 @@ public class PreProcessor
     var ts = record.timestamp();
 
     var partition =
-            context.recordMetadata().isPresent()
-                    ? String.valueOf(context.recordMetadata().get().partition())
-                    : "";
+        context.recordMetadata().isPresent()
+            ? String.valueOf(context.recordMetadata().get().partition())
+            : "";
 
     var kv = handleRecord(key, value, ts);
     context.forward(new Record<>(kv.key, kv.value, ts));
