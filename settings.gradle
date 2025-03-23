@@ -10,11 +10,11 @@ dependencyResolutionManagement {
     versionCatalogs {
         libs {
             // Kafka related
-            library('kafka-streams', 'org.apache.kafka:kafka-streams:7.4.4-ccs')
-            library('kafka-streams-test-utils', 'org.apache.kafka:kafka-streams-test-utils:7.4.4-ccs')
-            library('kafka-clients', 'org.apache.kafka:kafka-streams:7.4.4-ccs')
-            library('avro-serde', 'io.confluent:kafka-streams-avro-serde:7.4.4')
-            library('avro-serializer', 'io.confluent:kafka-avro-serializer:7.4.4')
+            library('kafka-streams', 'org.apache.kafka:kafka-streams:7.9.0-ccs')
+            library('kafka-streams-test-utils', 'org.apache.kafka:kafka-streams-test-utils:7.9.0-ccs')
+            library('kafka-clients', 'org.apache.kafka:kafka-clients:7.9.0-ccs')
+            library('avro-serde', 'io.confluent:kafka-streams-avro-serde:7.9.0')
+            library('avro-serializer', 'io.confluent:kafka-avro-serializer:7.9.0')
             // Json related
             library('jolt-core', 'com.bazaarvoice.jolt:jolt-core:0.1.7')
             library('jolt-json-utils', 'com.bazaarvoice.jolt:json-utils:0.1.7')
