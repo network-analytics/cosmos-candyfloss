@@ -6,6 +6,8 @@ import com.swisscom.daisy.cosmos.candyfloss.messages.ValueErrorMessage;
 import com.swisscom.daisy.cosmos.candyfloss.transformations.TransformedMessage;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.Timer.Sample;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.kafka.streams.KeyValue;
@@ -15,16 +17,13 @@ import org.apache.kafka.streams.processor.api.Record;
 
 public class FlattenProcessor
     implements Processor<String, TransformedMessage, String, ValueErrorMessage<FlattenedMessage>> {
+  private static final String metricTag = "pipeline";
+  private static final String timerMetric = "latency_flatten";
+  private static final String CounterOutMetric = "json_streams_flatten_out";
+
   private final Counter counterIn =
       Counter.builder("json_streams_flatten_in")
           .description("Number of message incoming to the Json Flatten step")
-          .register(Metrics.globalRegistry);
-  private final Counter counterOut =
-      Counter.builder("json_streams_flatten_out")
-          .description(
-              "Number of output messages after the flatten step. "
-                  + "Note: json_streams_flatten_out/(json_streams_flatten_in-json_streams_flatten_error)"
-                  + " is flatten message ration")
           .register(Metrics.globalRegistry);
   private final Counter counterError =
       Counter.builder("json_streams_flatten_error")
@@ -40,17 +39,23 @@ public class FlattenProcessor
 
   @Override
   public void process(Record<String, TransformedMessage> record) {
+    Sample timer = Timer.start(Metrics.globalRegistry);
+    counterIn.increment();
+
     var key = record.key();
     var value = record.value();
     var ts = record.timestamp();
 
     handleRecord(key, value, ts).forEach(kv -> context.forward(new Record<>(kv.key, kv.value, ts)));
+
+    timer.stop(
+        Metrics.globalRegistry.timer(
+            timerMetric, metricTag, value.getTag() == null ? "" : value.getTag()));
   }
 
   public Iterable<KeyValue<String, ValueErrorMessage<FlattenedMessage>>> handleRecord(
       String key, TransformedMessage value, long ts) {
     try {
-      counterIn.increment();
       return flattenMessage(key, value);
     } catch (Exception e) {
       counterError.increment();
@@ -69,7 +74,14 @@ public class FlattenProcessor
             x ->
                 KeyValue.pair(
                     key, new ValueErrorMessage<>(new FlattenedMessage(x, value.getTag()))))
-        .peek(x -> counterOut.increment())
+        .peek(
+            x -> {
+              FlattenedMessage flatMsg = x.value.getValue();
+              Counter.builder(CounterOutMetric)
+                  .tag(metricTag, flatMsg.getTag() == null ? "" : flatMsg.getTag())
+                  .register(Metrics.globalRegistry)
+                  .increment();
+            })
         .collect(Collectors.toList());
   }
 }

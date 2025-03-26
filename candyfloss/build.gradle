@@ -38,8 +38,9 @@ dependencies {
     implementation libs.slf4j
     implementation libs.vavr
     implementation libs.json.path
-    implementation libs.micrometer
+    implementation libs.micrometer.prom
     implementation libs.logback
+    implementation libs.prometheus.httpserver
     implementation project(":json-transformation")
     implementation project(":protobuf-decoder")
     implementation project(':test-utils')
@@ -65,11 +66,6 @@ test {
 
 jacocoTestReport {
     dependsOn test // tests are required to run before generating the report
-}
-
-task downloadPrometheusExporter(type: Download) {
-    src 'https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.16.1/jmx_prometheus_javaagent-0.16.1.jar'
-    dest new File("${project.projectDir}/src/main/jib", 'jmx_prometheus_javaagent.jar')
 }
 
 
@@ -101,15 +97,7 @@ jib {
         jvmFlags = [
                 '-Xms2048m',
                 '-Dconfig.override_with_env_vars=true',
-                '-Dcom.sun.management.jmxremote.port=5555',
-                '-Dcom.sun.management.jmxremote.local.only=true',
-                '-Dcom.sun.management.jmxremote.authenticate=false',
-                '-Dcom.sun.management.jmxremote.ssl=false',
-                '-javaagent:/jmx_prometheus_javaagent.jar=8090:/jmx_prometheus_exporter.yaml',
         ]
         mainClass = 'com.swisscom.daisy.cosmos.candyfloss.CandyflossKStreamsApplication'
     }
 }
-
-tasks.jibDockerBuild.dependsOn tasks.downloadPrometheusExporter
-tasks.jib.dependsOn tasks.downloadPrometheusExporter

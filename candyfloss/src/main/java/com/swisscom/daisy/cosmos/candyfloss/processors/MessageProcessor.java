@@ -9,6 +9,8 @@ import com.swisscom.daisy.cosmos.candyfloss.transformations.Transformer;
 import com.swisscom.daisy.cosmos.candyfloss.transformations.match.Match;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.Timer.Sample;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,13 +23,12 @@ import org.apache.kafka.streams.processor.api.Record;
 
 public class MessageProcessor
     implements Processor<String, DocumentContext, String, ValueErrorMessage<TransformedMessage>> {
-  private final Counter counterMsg =
+  private static final String metricTag = "pipeline";
+  private static final String timerMetric = "latency_transform";
+  private static final String timerErrorMetric = "latency_transform_error";
+  private final Counter counterIn =
       Counter.builder("json_streams_transformer_in")
           .description("Number of message incoming to the MessageTransformer step")
-          .register(Metrics.globalRegistry);
-  private final Counter counterError =
-      Counter.builder("json_streams_transformer_error")
-          .description("Number of error messages that are discarded to dlq topic")
           .register(Metrics.globalRegistry);
 
   private final PipelineConfig pipelineConfig;
@@ -67,18 +68,23 @@ public class MessageProcessor
 
   @Override
   public void process(Record<String, DocumentContext> record) {
+    counterIn.increment();
+
+    Sample timer = Timer.start(Metrics.globalRegistry);
+    String currPipeline = "";
+
     String key = record.key();
     DocumentContext value = record.value();
     long ts = record.timestamp();
 
     try {
-      counterMsg.increment();
       Iterator<KeyValue<String, ValueErrorMessage<TransformedMessage>>> pairs =
           handleRecord(key, value);
 
       var counter = 0;
       while (pairs.hasNext()) {
         KeyValue<String, ValueErrorMessage<TransformedMessage>> kv = pairs.next();
+        currPipeline = kv.value.getValue().getTag() == null ? "" : kv.value.getValue().getTag();
         context.forward(new Record<>(kv.key, kv.value, record.timestamp()));
         counter++;
       }
@@ -90,11 +96,16 @@ public class MessageProcessor
                 new ValueErrorMessage<>(new TransformedMessage(List.of(value), null)),
                 record.timestamp()));
       }
+
+      // TODO: from this processor, we use pipeline name as metric Tag.
+      //  However, "partition" can be also used (from context.recordMetadata().get().partition()).
+      timer.stop(Metrics.globalRegistry.timer(timerMetric, metricTag, currPipeline));
     } catch (Exception e) {
-      counterError.increment();
       var error =
           new ErrorMessage(context, getClass().getName(), key, value.json(), ts, e.getMessage());
       context.forward(new Record<>(key, new ValueErrorMessage<>(null, error), record.timestamp()));
+
+      timer.stop(Metrics.globalRegistry.timer(timerErrorMetric, metricTag, currPipeline));
     }
   }
 

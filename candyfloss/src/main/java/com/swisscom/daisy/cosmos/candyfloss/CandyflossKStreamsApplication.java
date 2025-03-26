@@ -1,6 +1,7 @@
 package com.swisscom.daisy.cosmos.candyfloss;
 
 import com.swisscom.daisy.cosmos.candyfloss.config.JsonKStreamApplicationConfig;
+import com.swisscom.daisy.cosmos.candyfloss.config.MetricRegistryConfig;
 import com.swisscom.daisy.cosmos.candyfloss.config.exceptions.InvalidConfigurations;
 import com.swisscom.daisy.cosmos.candyfloss.messages.ValueErrorMessage;
 import com.swisscom.daisy.cosmos.candyfloss.processors.*;
@@ -10,10 +11,6 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
-import io.micrometer.core.instrument.Clock;
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.jmx.JmxConfig;
-import io.micrometer.jmx.JmxMeterRegistry;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.Duration;
@@ -45,8 +42,8 @@ public class CandyflossKStreamsApplication {
   public static void main(String[] args)
       throws IOException, InvalidConfigurations, InvalidMatchConfiguration {
     // Setting up the metrics registry
-    var jmxMeterRegistry = new JmxMeterRegistry(JmxConfig.DEFAULT, Clock.SYSTEM);
-    Metrics.addRegistry(jmxMeterRegistry);
+    MetricRegistryConfig prometheusRegistry = new MetricRegistryConfig();
+    prometheusRegistry.bindJvm();
 
     logger.info("Loading configurations");
     Config conf = ConfigFactory.load();
@@ -65,12 +62,14 @@ public class CandyflossKStreamsApplication {
               @Override
               public void run() {
                 logger.info("Received shutdown signal, terminating Candyfloss");
+                prometheusRegistry.close();
                 kafkaStreams.close();
                 latch.countDown();
               }
             });
 
     try {
+      prometheusRegistry.start();
       kafkaStreams.start();
       latch.await();
       logger.info("Cosmos Candyfloss gracefully shutdown");
