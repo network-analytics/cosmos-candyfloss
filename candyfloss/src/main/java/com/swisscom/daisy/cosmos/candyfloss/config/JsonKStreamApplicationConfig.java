@@ -1,6 +1,7 @@
 package com.swisscom.daisy.cosmos.candyfloss.config;
 
 import com.swisscom.daisy.cosmos.candyfloss.config.exceptions.InvalidConfigurations;
+import com.swisscom.daisy.cosmos.candyfloss.monitors.MetricLogger;
 import com.swisscom.daisy.cosmos.candyfloss.testutils.JsonUtil;
 import com.swisscom.daisy.cosmos.candyfloss.transformations.match.exceptions.InvalidMatchConfiguration;
 import com.typesafe.config.Config;
@@ -46,7 +47,7 @@ public class JsonKStreamApplicationConfig {
     for (var entry : kafkaConfig.entrySet()) {
       kafka.put(entry.getKey(), kafkaConfig.getString(entry.getKey()));
     }
-    kafka.put(StreamsConfig.METRIC_REPORTER_CLASSES_CONFIG, CFMetricReporter.class.getName());
+    kafka.put(StreamsConfig.METRIC_REPORTER_CLASSES_CONFIG, MetricLogger.class.getName());
 
     final String inputTopicName = config.getConfig("kstream").getString("input.topic.name");
     final InputType inputType;
