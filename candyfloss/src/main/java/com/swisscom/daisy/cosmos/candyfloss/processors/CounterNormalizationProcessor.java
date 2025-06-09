@@ -49,6 +49,7 @@ public class CounterNormalizationProcessor
   private final long counterWrapAroundTimeMs;
   private final BigInteger maxUnsignedInt = new BigInteger(Integer.toUnsignedString(-1));
   private final BigInteger maxUnsignedLong = new BigInteger(Long.toUnsignedString(-1L));
+  private final BigInteger maxSignedLong = new BigInteger(String.valueOf(Long.MAX_VALUE));
 
   private final Timer timer =
       Timer.builder("json_streams_old_counter_cleaner_duration")
@@ -213,7 +214,12 @@ public class CounterNormalizationProcessor
           inWrapAroundRange =
               maxDiff.intValue() >= 0 && maxDiff.intValue() < intCounterWrapAroundLimit;
         } else if (counterConfig.getCounterType() == NormalizeCounterConfig.CounterType.U64) {
-          maxDiff = maxUnsignedLong.subtract(savedCounterValueBigInt).add(counterValue);
+          BigInteger upperLimit =
+              (savedCounterValueBigInt.compareTo(maxSignedLong) > 0)
+                  ? maxUnsignedLong
+                  : maxSignedLong;
+
+          maxDiff = upperLimit.subtract(savedCounterValueBigInt).add(counterValue);
           inWrapAroundRange =
               maxDiff.longValue() >= 0 && maxDiff.longValue() < longCounterWrapAroundLimit;
         } else {
