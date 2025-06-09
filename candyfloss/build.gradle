@@ -95,7 +95,7 @@ jib {
         user = "1000:1000"
         creationTime = "USE_CURRENT_TIMESTAMP"
         jvmFlags = [
-                '-Xms2048m',
+                '-XX:MaxRAMPercentage=90.0',
                 '-Dconfig.override_with_env_vars=true',
         ]
         mainClass = 'com.swisscom.daisy.cosmos.candyfloss.CandyflossKStreamsApplication'
