@@ -1,6 +1,6 @@
 package com.swisscom.daisy.cosmos.candyfloss.processors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +14,12 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -117,6 +122,26 @@ class CounterNormalizationProcessorTest {
         Produced.with(Serdes.String(), Serdes.String()));
 
     return builder.build();
+  }
+
+  List<Path> retrieveSortedFilenames(String resourcePath, String fileKeyword) throws IOException {
+    Path targetDir = Paths.get(getClass().getResource("/" + resourcePath).getPath());
+    List<Path> out = new ArrayList<>();
+
+    Files.walkFileTree(
+        targetDir,
+        new SimpleFileVisitor<>() {
+          @Override
+          public FileVisitResult visitFile(Path f, BasicFileAttributes attrs) {
+            if (f.getFileName().toString().startsWith(fileKeyword)) {
+              out.add(f);
+            }
+            return FileVisitResult.CONTINUE;
+          }
+        });
+    out.sort(Comparator.comparing(f -> f.getFileName().toString()));
+
+    return out;
   }
 
   @Test
@@ -287,34 +312,35 @@ class CounterNormalizationProcessorTest {
   void transformCounterUnexpectedReset()
       throws IOException, JSONException, InvalidConfigurations, InvalidMatchConfiguration {
     setup("counter-normalization/application.conf");
-    var input1String =
-        JsonUtil.readFromInputStream(
-            getClass()
-                .getClassLoader()
-                .getResourceAsStream("counter-normalization/reset/input1.json"));
-    var input2String =
-        JsonUtil.readFromInputStream(
-            getClass()
-                .getClassLoader()
-                .getResourceAsStream("counter-normalization/reset/input2.json"));
-    var expected1String =
-        JsonUtil.readFromInputStream(
-            getClass()
-                .getClassLoader()
-                .getResourceAsStream("counter-normalization/reset/output1.json"));
-    var expected2String =
-        JsonUtil.readFromInputStream(
-            getClass()
-                .getClassLoader()
-                .getResourceAsStream("counter-normalization/reset/output2.json"));
+    String resourcePath = "counter-normalization/reset/";
+    List<Path> inputFiles = retrieveSortedFilenames(resourcePath, "input");
+    List<Path> outputFiles = retrieveSortedFilenames(resourcePath, "output");
 
-    inputTopic.pipeInput("k1", input1String, 1647244800000L);
-    inputTopic.pipeInput("k1", input2String, 1647244860000L);
+    assertEquals(inputFiles.size(), outputFiles.size());
+    for (var i = 0; i < inputFiles.size(); i++) {
+      var input = inputFiles.get(i).getFileName();
+      var inputString =
+          JsonUtil.readFromInputStream(
+              getClass()
+                  .getClassLoader()
+                  .getResourceAsStream(String.format("%s/%s", resourcePath, input)));
+
+      inputTopic.pipeInput("k1", inputString, 1647244800000L + 60000L * i);
+    }
+
     var processed = outputTopic.readValuesToList();
+    assertEquals(inputFiles.size(), processed.size());
 
-    assertEquals(2, processed.size());
-    JSONAssert.assertEquals(expected1String, processed.get(0), true);
-    JSONAssert.assertEquals(expected2String, processed.get(1), true);
+    for (var i = 0; i < outputFiles.size(); i++) {
+      var output = outputFiles.get(i).getFileName();
+      var expectedString =
+          JsonUtil.readFromInputStream(
+              getClass()
+                  .getClassLoader()
+                  .getResourceAsStream(String.format("%s/%s", resourcePath, output)));
+
+      JSONAssert.assertEquals(expectedString, processed.get(i), true);
+    }
   }
 
   @Test
@@ -322,34 +348,35 @@ class CounterNormalizationProcessorTest {
   void transformCounterWrap()
       throws IOException, JSONException, InvalidConfigurations, InvalidMatchConfiguration {
     setup("counter-normalization/application.conf");
-    var input1String =
-        JsonUtil.readFromInputStream(
-            getClass()
-                .getClassLoader()
-                .getResourceAsStream("counter-normalization/wrap/input1.json"));
-    var input2String =
-        JsonUtil.readFromInputStream(
-            getClass()
-                .getClassLoader()
-                .getResourceAsStream("counter-normalization/wrap/input2.json"));
-    var expected1String =
-        JsonUtil.readFromInputStream(
-            getClass()
-                .getClassLoader()
-                .getResourceAsStream("counter-normalization/wrap/output1.json"));
-    var expected2String =
-        JsonUtil.readFromInputStream(
-            getClass()
-                .getClassLoader()
-                .getResourceAsStream("counter-normalization/wrap/output2.json"));
+    String resourcePath = "counter-normalization/wrap/";
+    List<Path> inputFiles = retrieveSortedFilenames(resourcePath, "input");
+    List<Path> outputFiles = retrieveSortedFilenames(resourcePath, "output");
 
-    inputTopic.pipeInput("k1", input1String, 1647244800000L);
-    inputTopic.pipeInput("k1", input2String, 1647244860000L);
+    assertEquals(inputFiles.size(), outputFiles.size());
+    for (var i = 0; i < inputFiles.size(); i++) {
+      var input = inputFiles.get(i).getFileName();
+      var inputString =
+          JsonUtil.readFromInputStream(
+              getClass()
+                  .getClassLoader()
+                  .getResourceAsStream(String.format("%s/%s", resourcePath, input)));
+
+      inputTopic.pipeInput("k1", inputString, 1647244800000L + 60000L * i);
+    }
+
     var processed = outputTopic.readValuesToList();
+    assertEquals(inputFiles.size(), processed.size());
 
-    assertEquals(2, processed.size());
-    JSONAssert.assertEquals(expected1String, processed.get(0), true);
-    JSONAssert.assertEquals(expected2String, processed.get(1), true);
+    for (var i = 0; i < outputFiles.size(); i++) {
+      var output = outputFiles.get(i).getFileName();
+      var expectedString =
+          JsonUtil.readFromInputStream(
+              getClass()
+                  .getClassLoader()
+                  .getResourceAsStream(String.format("%s/%s", resourcePath, output)));
+
+      JSONAssert.assertEquals(expectedString, processed.get(i), true);
+    }
   }
 
   @Test
