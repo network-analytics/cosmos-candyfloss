@@ -1,4 +1,4 @@
-package com.swisscom.daisy.cosmos.candyfloss.config;
+package com.swisscom.daisy.cosmos.candyfloss.monitors;
 
 import io.micrometer.core.instrument.*;
 import java.util.List;
@@ -7,7 +7,7 @@ import org.apache.kafka.common.MetricName;
 import org.apache.kafka.common.metrics.KafkaMetric;
 import org.apache.kafka.common.metrics.MetricsReporter;
 
-public class CFMetricReporter implements MetricsReporter {
+public class MetricLogger implements MetricsReporter {
   @Override
   public void init(List<KafkaMetric> metricList) {
     metricList.forEach(this::metricChange);

@@ -4,6 +4,8 @@ import com.swisscom.daisy.cosmos.candyfloss.config.JsonKStreamApplicationConfig;
 import com.swisscom.daisy.cosmos.candyfloss.config.MetricRegistryConfig;
 import com.swisscom.daisy.cosmos.candyfloss.config.exceptions.InvalidConfigurations;
 import com.swisscom.daisy.cosmos.candyfloss.messages.ValueErrorMessage;
+import com.swisscom.daisy.cosmos.candyfloss.monitors.RestoreLogger;
+import com.swisscom.daisy.cosmos.candyfloss.monitors.StateLogger;
 import com.swisscom.daisy.cosmos.candyfloss.processors.*;
 import com.swisscom.daisy.cosmos.candyfloss.transformations.Transformer;
 import com.swisscom.daisy.cosmos.candyfloss.transformations.match.exceptions.InvalidMatchConfiguration;
@@ -70,6 +72,10 @@ public class CandyflossKStreamsApplication {
 
     try {
       prometheusRegistry.start();
+
+      StateLogger.setListener(kafkaStreams, new StateLogger(kafkaStreams));
+      RestoreLogger.setListener(kafkaStreams, new RestoreLogger());
+
       kafkaStreams.start();
       latch.await();
       logger.info("Cosmos Candyfloss gracefully shutdown");
