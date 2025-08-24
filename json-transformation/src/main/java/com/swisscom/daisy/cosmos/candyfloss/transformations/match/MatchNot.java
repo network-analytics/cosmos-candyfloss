@@ -13,20 +13,20 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class MatchNot implements Match {
-    private final Match innerMatch;
-    private static final Configuration configuration =
-            Configuration.builder().options(Option.SUPPRESS_EXCEPTIONS).build();
+  private final Match innerMatch;
+  private static final Configuration configuration =
+      Configuration.builder().options(Option.SUPPRESS_EXCEPTIONS).build();
 
-    private final String tag;
+  private final String tag;
 
-    @Override
-    public boolean match(Object jsonObject) {
-        DocumentContext context = JsonPath.using(configuration).parse(jsonObject);
-        return !this.innerMatch.matchContext(context);
-    }
+  @Override
+  public boolean match(Object jsonObject) {
+    DocumentContext context = JsonPath.using(configuration).parse(jsonObject);
+    return !this.innerMatch.matchContext(context);
+  }
 
-    @Override
-    public boolean matchContext(DocumentContext context) {
-        return !this.innerMatch.matchContext(context);
-    }
+  @Override
+  public boolean matchContext(DocumentContext context) {
+    return !this.innerMatch.matchContext(context);
+  }
 }
