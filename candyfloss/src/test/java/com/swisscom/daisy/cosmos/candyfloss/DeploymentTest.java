@@ -23,7 +23,7 @@ class DeploymentTest extends AbstractDeploymentTest {
   }
 
   protected static Stream<Arguments> providerForAllYangModels()
-          throws IOException, URISyntaxException {
+      throws IOException, URISyntaxException {
     var outLegacy = providerForYangModels("legacy");
     var outIetf = providerForYangModels("ietf");
 
@@ -38,7 +38,7 @@ class DeploymentTest extends AbstractDeploymentTest {
     // Create a map from the discovered folders in the `test/resources/deployment` folder
     // The key is the sub-folder name and the value is a full path to the sub folder
     String deploymentFolder =
-            profile.equals("ietf") ? "deployment-ietf-telemetry-message" : "deployment";
+        profile.equals("ietf") ? "deployment-ietf-telemetry-message" : "deployment";
     var yangModels =
         Files.list(Path.of(Objects.requireNonNull(loader.getResource(deploymentFolder)).toURI()))
             .filter(Files::isDirectory)

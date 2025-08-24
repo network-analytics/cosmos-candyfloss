@@ -171,11 +171,11 @@ abstract class AbstractDeploymentTest {
       String inputString = objectMapper.writeValueAsString(inputMap);
       JsonNode rootNode = objectMapper.readTree(inputString);
       String path =
-              "ietf-telemetry-message:message."
-                      + "payload.ietf-yp-notification:envelope."
-                      + "contents."
-                      + "ietf-yang-push:push-update."
-                      + "ietf-yp-observation:timestamp";
+          "ietf-telemetry-message:message."
+              + "payload.ietf-yp-notification:envelope."
+              + "contents."
+              + "ietf-yang-push:push-update."
+              + "ietf-yp-observation:timestamp";
       dateTimeString = getValueByJsonPath(rootNode, path);
     }
 
