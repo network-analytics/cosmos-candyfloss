@@ -2,6 +2,7 @@ package com.swisscom.daisy.cosmos.candyfloss.testutils;
 
 import static com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.CustomFunctions.factory;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -58,5 +59,18 @@ public class JsonUtil {
       throw new NullPointerException("URL is null");
     }
     return readJsonArray(url.openStream());
+  }
+
+  public static String getValueByJsonPath(JsonNode rootNode, String path) {
+    String[] keys = path.split("\\.");
+    JsonNode currentNode = rootNode;
+
+    for (String k : keys) {
+      currentNode = currentNode.get(k);
+      if (currentNode == null) {
+        return null;
+      }
+    }
+    return currentNode.asText();
   }
 }

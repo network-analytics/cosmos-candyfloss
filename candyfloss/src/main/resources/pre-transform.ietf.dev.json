@@ -1,0 +1,22 @@
+[
+  {
+    /*
+    This transformation makes sure (door keeper) that we only process valid messages containing the leaf serialisation
+    with value containing "ietf-subscribed-notifications:encode-json"
+    */
+    "operation": "shift",
+    "spec": {
+      "ietf-telemetry-message:message": {
+        "telemetry-message-metadata": {
+          "ietf-yang-push-telemetry-message:yang-push-subscription": {
+            "encoding":{
+              "ietf-subscribed-notifications:encode-json": {
+                "@(5,ietf-telemetry-message:message)": "ietf-telemetry-message:message"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+]

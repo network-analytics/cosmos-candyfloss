@@ -57,6 +57,8 @@ dependencies {
     testImplementation libs.junit.jupiter.params
     testImplementation libs.jackson.databind
     testImplementation libs.jsonassert
+
+    testImplementation project(':test-utils')
 }
 
 test {
