@@ -43,6 +43,10 @@ public class MatchBuilder {
       } else {
         return new MatchFalse(tag);
       }
+    } else if (match.containsKey("not")) {
+      Map<String, Object> inner = (Map<String, Object>) match.get("not");
+      var notMatch = MatchBuilder.fromJson(inner, tag);
+      return new MatchNot(notMatch, tag);
     }
 
     throw new InvalidMatchConfiguration(
