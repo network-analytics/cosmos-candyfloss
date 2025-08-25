@@ -88,4 +88,34 @@ class MatchBuilderTest {
     assertTrue(matchTrue.match(input));
     assertFalse(matchFalse.match(input));
   }
+
+  @Test
+  public void testMatchNot() throws IOException, InvalidMatchConfiguration {
+    Map<String, Object> configFalse =
+        Map.of(
+            "not",
+            Map.of(
+                "and",
+                List.of(
+                    Map.of(
+                        "jsonpath",
+                        "$.telemetry_data.encoding_path",
+                        "value",
+                        "openconfig-interfaces:interfaces"))));
+    Map<String, Object> configTrue =
+        Map.of(
+            "not",
+            Map.of(
+                "jsonpath",
+                "$.telemetry_data.encoding_path1",
+                "value",
+                "openconfig-interfaces:interfaces"));
+    var matchTrue = MatchBuilder.fromJson(configFalse, "t1");
+    var matchFalse = MatchBuilder.fromJson(configTrue, "t1");
+    var input =
+        JsonUtil.readJson(
+            getClass().getClassLoader().getResource("openconfig-interfaces/input.json"));
+    assertFalse(matchTrue.match(input));
+    assertTrue(matchFalse.match(input));
+  }
 }
