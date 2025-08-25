@@ -12,7 +12,8 @@ public class TimeExtractorConfig {
   public enum TimestampType {
     RFC2822,
     EpochMilli,
-    EpochSeconds
+    EpochSeconds,
+    ISO8601
   }
 
   private final JsonPath jsonPath;
@@ -25,6 +26,8 @@ public class TimeExtractorConfig {
     final TimestampType timestampType;
     if (timestampTypeString.equals("RFC2822")) {
       timestampType = TimestampType.RFC2822;
+    } else if (timestampTypeString.equals("ISO8601")) {
+      timestampType = TimestampType.ISO8601;
     } else if (timestampTypeString.equals("EpochMilli")) {
       timestampType = TimestampType.EpochMilli;
     } else if (timestampTypeString.equals("EpochSeconds")) {

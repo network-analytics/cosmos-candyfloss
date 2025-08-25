@@ -16,21 +16,31 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class DeploymentTest extends AbstractDeploymentTest {
   @ParameterizedTest
-  @MethodSource("providerForYangModels")
+  @MethodSource("providerForAllYangModels")
   protected void test(String applicationConfigFileName, String env, String name, Path testCase)
       throws InvalidConfigurations, IOException, JSONException, InvalidMatchConfiguration {
     testImpl(applicationConfigFileName, env, name, testCase);
   }
 
+  protected static Stream<Arguments> providerForAllYangModels()
+      throws IOException, URISyntaxException {
+    var outLegacy = providerForYangModels("legacy");
+    var outIetf = providerForYangModels("ietf");
+
+    return Stream.concat(outLegacy, outIetf);
+  }
+
   /*** Discover YANG model test cases and provide them as arguments to the parametrized test */
-  protected static Stream<Arguments> providerForYangModels()
+  protected static Stream<Arguments> providerForYangModels(String profile)
       throws IOException, URISyntaxException {
     ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
     // Create a map from the discovered folders in the `test/resources/deployment` folder
     // The key is the sub-folder name and the value is a full path to the sub folder
+    String deploymentFolder =
+        profile.equals("ietf") ? "deployment-ietf-telemetry-message" : "deployment";
     var yangModels =
-        Files.list(Path.of(Objects.requireNonNull(loader.getResource("deployment")).toURI()))
+        Files.list(Path.of(Objects.requireNonNull(loader.getResource(deploymentFolder)).toURI()))
             .filter(Files::isDirectory)
             .collect(Collectors.toMap(k -> k.getFileName().toString(), v -> v));
 
@@ -47,14 +57,11 @@ class DeploymentTest extends AbstractDeploymentTest {
       var testFixtures = Files.list(path).filter(Files::isDirectory).toList();
       for (var testPath : testFixtures) {
         for (var env : List.of("dev", "test", "prod")) {
-          String applicationConfig = "application." + env + ".conf";
-          try (var stream =
-              DeploymentTest.class.getClassLoader().getResourceAsStream(applicationConfig)) {
-            if (stream == null) {
-              continue;
-            }
-          }
-          testCases.add(Arguments.of(applicationConfig, env, name, testPath));
+          String fileNamePrefix = profile.equals("ietf") ? "application.ietf." : "application.";
+
+          String applicationConfig = fileNamePrefix + env + ".conf";
+          if (loader.getResource(applicationConfig) != null)
+            testCases.add(Arguments.of(applicationConfig, env, name, testPath));
         }
       }
     }

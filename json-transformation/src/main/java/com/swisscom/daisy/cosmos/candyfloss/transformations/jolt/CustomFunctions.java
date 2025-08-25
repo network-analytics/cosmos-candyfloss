@@ -42,6 +42,14 @@ public class CustomFunctions {
     }
   }
 
+  public static final class getSysProperty extends Function.SingleFunction<String> {
+    @Override
+    protected Optional<String> applySingle(Object arg) {
+      String prop = (String) arg;
+      return Optional.of(System.getProperty(prop));
+    }
+  }
+
   public static final class multiply extends Function.ListFunction {
     @Override
     protected Optional<Object> applyList(List<Object> argList) {

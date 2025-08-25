@@ -270,6 +270,9 @@ public class CounterNormalizationProcessor
       var time = LocalDateTime.parse(dateTimeString, formatter);
       var zoned = time.atZone(ZoneId.of(ZoneId.SHORT_IDS.get("ECT")));
       return zoned.toInstant();
+    } else if (timeExtractorConfig.getValueType() == TimeExtractorConfig.TimestampType.ISO8601) {
+      var dateTimeString = (String) extractedTimestamp;
+      return Instant.parse(dateTimeString);
     } else {
       Long longTimestamp;
       if (extractedTimestamp instanceof String) {

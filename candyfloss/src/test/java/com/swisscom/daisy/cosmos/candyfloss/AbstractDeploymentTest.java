@@ -1,9 +1,11 @@
 package com.swisscom.daisy.cosmos.candyfloss;
 
+import static com.swisscom.daisy.cosmos.candyfloss.testutils.JsonUtil.getValueByJsonPath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swisscom.daisy.cosmos.candyfloss.config.JsonKStreamApplicationConfig;
 import com.swisscom.daisy.cosmos.candyfloss.config.PipelineStepConfig;
@@ -164,10 +166,25 @@ abstract class AbstractDeploymentTest {
     final String testKey = "testKey";
 
     var dateTimeString = (String) inputMap.get("timestamp");
+
+    if (dateTimeString == null && inputMap.containsKey("ietf-telemetry-message:message")) {
+      String inputString = objectMapper.writeValueAsString(inputMap);
+      JsonNode rootNode = objectMapper.readTree(inputString);
+      String path =
+          "ietf-telemetry-message:message."
+              + "payload.ietf-yp-notification:envelope."
+              + "contents."
+              + "ietf-yang-push:push-update."
+              + "ietf-yp-observation:timestamp";
+      dateTimeString = getValueByJsonPath(rootNode, path);
+    }
+
     final ZonedDateTime zoned;
     if (dateTimeString != null) {
       DateTimeFormatter formatter;
-      if (dateTimeString.contains("-")) {
+      if (dateTimeString.contains("T")) {
+        zoned = ZonedDateTime.parse(dateTimeString, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+      } else if (dateTimeString.contains("-")) {
         formatter =
             new DateTimeFormatterBuilder()
                 .append(DateTimeFormatter.ISO_LOCAL_DATE)

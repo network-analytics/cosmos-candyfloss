@@ -1,0 +1,13 @@
+{
+  "match": {
+    "jsonpath": "$.ietf-telemetry-message:message"
+  },
+  "transform": [
+    {
+      "operation": "shift",
+      "spec": {
+        "*": "&"
+      }
+    }
+  ]
+}
