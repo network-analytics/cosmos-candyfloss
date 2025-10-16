@@ -8,6 +8,7 @@ import com.jayway.jsonpath.Option;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Transformer {
   private static final Configuration configuration =
@@ -36,6 +37,9 @@ public class Transformer {
     var transformed = (List<Map<String, Object>>) chainr.transform(input.json());
     return transformed == null
         ? Collections.emptyList()
-        : transformed.stream().map(x -> JsonPath.using(configuration).parse(x)).toList();
+        : transformed.stream()
+            .filter(Objects::nonNull)
+            .map(x -> JsonPath.using(configuration).parse(x))
+            .toList();
   }
 }
