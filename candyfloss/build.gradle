@@ -19,6 +19,7 @@ configurations.configureEach {
     resolutionStrategy {
         force "com.fasterxml.jackson.core:jackson-core:2.14.2"
         force "com.fasterxml.jackson.core:jackson-annotations:2.14.2"
+        force "com.fasterxml.jackson.core:jackson-databind:2.14.2"
         force "org.apache.commons:commons-compress:1.22"
     }
 }
