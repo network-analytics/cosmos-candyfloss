@@ -96,6 +96,7 @@ class CounterNormalizationProcessorTest {
                         appConf.getPipeline(),
                         appConf.getStateStoreName(),
                         appConf.getMaxCounterCacheAge(),
+                        appConf.getStateStoreCutoffTime(),
                         appConf.getIntCounterWrapAroundLimit(),
                         appConf.getLongCounterWrapAroundLimit(),
                         appConf.getCounterWrapAroundTimeMs(),
@@ -429,33 +430,33 @@ class CounterNormalizationProcessorTest {
   void transformCounterOlderMilli()
       throws IOException, JSONException, InvalidConfigurations, InvalidMatchConfiguration {
     setup("counter-normalization/application-milli.conf");
-    var input1 =
-        JsonUtil.readFromInputStream(
-            getClass()
-                .getClassLoader()
-                .getResourceAsStream("counter-normalization/older/input1.json"));
-    var input2 =
-        JsonUtil.readFromInputStream(
-            getClass()
-                .getClassLoader()
-                .getResourceAsStream("counter-normalization/older/input2.json"));
-    var expected1 =
-        JsonUtil.readFromInputStream(
-            getClass()
-                .getClassLoader()
-                .getResourceAsStream("counter-normalization/older/output1.json"));
-    var expected2 =
-        JsonUtil.readFromInputStream(
-            getClass()
-                .getClassLoader()
-                .getResourceAsStream("counter-normalization/older/output2.json"));
+    String resourcePath = "counter-normalization/older/";
+    List<Path> inputFiles = retrieveSortedFilenames(resourcePath, "input");
+    List<Path> outputFiles = retrieveSortedFilenames(resourcePath, "output");
 
-    inputTopic.pipeInput("k1", input1);
-    inputTopic.pipeInput("k1", input2);
+    assertEquals(inputFiles.size(), outputFiles.size());
+    for (var i = 0; i < inputFiles.size(); i++) {
+      var input = inputFiles.get(i).getFileName();
+      var inputString =
+          JsonUtil.readFromInputStream(
+              getClass()
+                  .getClassLoader()
+                  .getResourceAsStream(String.format("%s/%s", resourcePath, input)));
+
+      inputTopic.pipeInput("k1", inputString);
+    }
 
     var processed = outputTopic.readValuesToList();
-    assertEquals(2, processed.size());
-    JSONAssert.assertEquals(expected1, processed.get(0), true);
-    JSONAssert.assertEquals(expected2, processed.get(1), true);
+    assertEquals(inputFiles.size(), processed.size());
+    for (var i = 0; i < outputFiles.size(); i++) {
+      var output = outputFiles.get(i).getFileName();
+      var expectedString =
+          JsonUtil.readFromInputStream(
+              getClass()
+                  .getClassLoader()
+                  .getResourceAsStream(String.format("%s/%s", resourcePath, output)));
+
+      JSONAssert.assertEquals(expectedString, processed.get(i), true);
+    }
   }
 }

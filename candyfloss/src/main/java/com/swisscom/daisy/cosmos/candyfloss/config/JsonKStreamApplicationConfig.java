@@ -32,6 +32,7 @@ public class JsonKStreamApplicationConfig {
   private final String discardTopicName;
   private final String dlqTopicName;
   private final String stateStoreName;
+  private final long stateStoreCutoffTime;
   private final long maxCounterCacheAge;
   private final int intCounterWrapAroundLimit;
   private final long longCounterWrapAroundLimit;
@@ -58,6 +59,8 @@ public class JsonKStreamApplicationConfig {
     }
     final String discardTopicName = config.getConfig("kstream").getString("discard.topic.name");
     final String dlqTopicName = config.getConfig("kstream").getString("dlq.topic.name");
+    final long stateStoreCutoffTime =
+        config.getConfig("kstream").getLong("normalization.statestore.cutoff.time.ms");
     final String stateStoreName = config.getConfig("kstream").getString("state.store.name");
     final long maxCounterCacheAge =
         config.getConfig("kstream").getLong("state.store.max.counter.cache.age");
@@ -90,6 +93,7 @@ public class JsonKStreamApplicationConfig {
         discardTopicName,
         dlqTopicName,
         stateStoreName,
+        stateStoreCutoffTime,
         maxCounterCacheAge,
         intCounterWrapAroundLimit,
         longCounterWrapAroundLimit,
