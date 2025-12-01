@@ -221,6 +221,7 @@ public class CandyflossKStreamsApplication {
                     new CounterNormalizationProcessor(
                         config.getPipeline(),
                         config.getStateStoreName(),
+                        config.getStateStoreCutoffTime(),
                         config.getMaxCounterCacheAge(),
                         config.getIntCounterWrapAroundLimit(),
                         config.getLongCounterWrapAroundLimit(),

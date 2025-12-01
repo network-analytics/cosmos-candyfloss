@@ -41,6 +41,7 @@ public class CounterNormalizationProcessor
           .description("Number of error messages that are discarded to dlq topic")
           .register(Metrics.globalRegistry);
   private final String stateStoreName;
+  private final long stateStoreCutoffTime;
   private final PipelineConfig pipelineConfig;
   private TimestampedKeyValueStore<Bytes, Bytes> stateStore;
   private final long maxCounterCacheAge;
@@ -67,6 +68,7 @@ public class CounterNormalizationProcessor
   public CounterNormalizationProcessor(
       PipelineConfig pipelineConfig,
       String stateStoreName,
+      long stateStoreCutoffTime,
       long maxCounterCacheAge,
       int intCounterWrapAroundLimit,
       long longCounterWrapAroundLimit,
@@ -75,6 +77,7 @@ public class CounterNormalizationProcessor
       Duration scanFrequency) {
     this.pipelineConfig = pipelineConfig;
     this.stateStoreName = stateStoreName;
+    this.stateStoreCutoffTime = stateStoreCutoffTime;
     this.maxCounterCacheAge = maxCounterCacheAge;
     this.intCounterWrapAroundLimit = intCounterWrapAroundLimit;
     this.longCounterWrapAroundLimit = longCounterWrapAroundLimit;
@@ -175,10 +178,17 @@ public class CounterNormalizationProcessor
       }
       if (timestamp.toEpochMilli() < savedCounterState.timestamp()) {
         logger.warn(
-            "Received a message with a timestamp {} older than saved in the counter store {}. Message: {}",
+            "Received a message with a timestamp {} older than saved in the counter store {} "
+                + "(timestamp difference: {} ms). Message: {}",
             timestamp.toEpochMilli(),
             savedCounterState.timestamp(),
+            (timestamp.toEpochMilli() - savedCounterState.timestamp()),
             flattenedMessage.getValue().json());
+
+        if (savedCounterState.timestamp() - timestamp.toEpochMilli() > stateStoreCutoffTime) {
+          stateStore.delete(counterKey);
+        }
+
         savedCounterState = null;
       } else {
         // Save the new counterValue to the store
