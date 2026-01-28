@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +64,39 @@ public class CustomFunctions {
         long nrLongValue = numerator.get().longValue();
         long result = java.lang.Math.multiplyExact(nrLongValue, drLongValue);
         return Optional.of(result);
+      }
+      return Optional.empty();
+    }
+  }
+
+  /*
+  "timestamp": "2026-03-03T16:03:40.020Z"
+  to
+  "timestamp": "1708954642.238116"
+
+    {
+      "operation": "com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.DaisyModifier$Overwritr",
+      "spec": {
+        "*": {
+          "extracted_timestamp": "=convert_iso_to_epoch(@(1,extracted_timestamp))"
+        }
+      }
+    }
+  */
+  public static final class convert_iso_to_epoch extends Function.SingleFunction<Object> {
+    @Override
+    protected Optional<Object> applySingle(Object arg) {
+      if (arg instanceof String) {
+        try {
+          Instant instant = Instant.parse((String) arg);
+          long seconds = instant.getEpochSecond();
+          int nanos = instant.getNano();
+          // Format as seconds.microseconds (6 decimal places)
+          String result = String.format("%d.%06d", seconds, nanos / 1000);
+          return Optional.of(result);
+        } catch (Exception e) {
+          return Optional.empty();
+        }
       }
       return Optional.empty();
     }

@@ -48,6 +48,7 @@ public class DaisyModifier implements ContextualTransform, SpecDriven {
     STOCK_FUNCTIONS.put("jsonStringToJson", new CustomFunctions.jsonStringToJson());
     STOCK_FUNCTIONS.put("multiply", new CustomFunctions.multiply());
     STOCK_FUNCTIONS.put("getSysProperty", new CustomFunctions.getSysProperty());
+    STOCK_FUNCTIONS.put("convert_iso_to_epoch", new CustomFunctions.convert_iso_to_epoch());
   }
 
   private DaisyModifier(Object spec, OpMode opMode, Map<String, Function> functionsMap) {
