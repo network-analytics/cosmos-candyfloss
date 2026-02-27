@@ -69,21 +69,7 @@ public class CustomFunctions {
     }
   }
 
-  /*
-  "timestamp": "2026-03-03T16:03:40.020Z"
-  to
-  "timestamp": "1708954642.238116"
-
-    {
-      "operation": "com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.DaisyModifier$Overwritr",
-      "spec": {
-        "*": {
-          "extracted_timestamp": "=convert_iso_to_epoch(@(1,extracted_timestamp))"
-        }
-      }
-    }
-  */
-  public static final class convert_iso_to_epoch extends Function.SingleFunction<Object> {
+  public static final class isoToEpochSecondsMicros extends Function.SingleFunction<Object> {
     @Override
     protected Optional<Object> applySingle(Object arg) {
       if (arg instanceof String) {

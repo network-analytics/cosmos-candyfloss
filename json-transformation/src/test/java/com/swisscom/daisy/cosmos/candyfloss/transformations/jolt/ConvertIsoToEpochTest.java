@@ -23,7 +23,7 @@ class ConvertIsoToEpochTest {
                             "operation",
                             operation,
                             "spec",
-                            Map.of(TIMESTAMP_KEY, "=convert_iso_to_epoch(@(1,timestamp))"))));
+                            Map.of(TIMESTAMP_KEY, "=isoToEpochSecondsMicros(@(1,timestamp))"))));
 
     return (Map<String, Object>) chainr.transform(in);
   }
