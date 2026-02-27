@@ -1,29 +1,30 @@
 package com.swisscom.daisy.cosmos.candyfloss.transformations.jolt;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.bazaarvoice.jolt.Chainr;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class ConvertIsoToEpochTest {
 
   private static final String TIMESTAMP_KEY = "timestamp";
-  
+
   private static final String operation =
       "com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.DaisyModifier$Overwritr";
 
   @SuppressWarnings("unchecked")
   private Map<String, Object> transform(Map<String, Object> in) {
-    var chainr = Chainr.fromSpec(
+    var chainr =
+        Chainr.fromSpec(
             List.of(
-                    Map.of(
-                            "operation",
-                            operation,
-                            "spec",
-                            Map.of(TIMESTAMP_KEY, "=isoToEpochSecondsMicros(@(1,timestamp))"))));
+                Map.of(
+                    "operation",
+                    operation,
+                    "spec",
+                    Map.of(TIMESTAMP_KEY, "=isoToEpochSecondsMicros(@(1,timestamp))"))));
 
     return (Map<String, Object>) chainr.transform(in);
   }
@@ -38,7 +39,8 @@ class ConvertIsoToEpochTest {
 
     var out = transform(input);
 
-    assertTrue(out.containsKey(TIMESTAMP_KEY), String.format("Output is missing %s key", TIMESTAMP_KEY));
+    assertTrue(
+        out.containsKey(TIMESTAMP_KEY), String.format("Output is missing %s key", TIMESTAMP_KEY));
 
     if (expectedEpoch == null) {
       if (inputTimestampValue == null) {
@@ -47,7 +49,7 @@ class ConvertIsoToEpochTest {
         assertEquals(inputTimestampValue, out.get(TIMESTAMP_KEY));
       }
     } else {
-        assertEquals(expectedEpoch, out.get(TIMESTAMP_KEY));
+      assertEquals(expectedEpoch, out.get(TIMESTAMP_KEY));
     }
   }
 
