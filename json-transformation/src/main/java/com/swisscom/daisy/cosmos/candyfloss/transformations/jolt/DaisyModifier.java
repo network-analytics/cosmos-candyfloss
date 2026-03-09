@@ -36,6 +36,15 @@ import java.util.Map;
  * ]
  * </pre>
  *
+ * <pre>
+ * [
+ *  {
+ *    "operation": "com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.DaisyModifier$Overwritr",
+ *    "spec": {"timestamp": "=isoToEpochSecondsMicros(@(1,timestamp))"}
+ *  }
+ * ]
+ * </pre>
+ *
  * This class is based on <a href="https://github.com/bazaarvoice/jolt/issues/1091">Jolt Issue #1091</a>
  */
 public class DaisyModifier implements ContextualTransform, SpecDriven {
@@ -48,6 +57,7 @@ public class DaisyModifier implements ContextualTransform, SpecDriven {
     STOCK_FUNCTIONS.put("jsonStringToJson", new CustomFunctions.jsonStringToJson());
     STOCK_FUNCTIONS.put("multiply", new CustomFunctions.multiply());
     STOCK_FUNCTIONS.put("getSysProperty", new CustomFunctions.getSysProperty());
+    STOCK_FUNCTIONS.put("isoToEpochSecondsMicros", new CustomFunctions.isoToEpochSecondsMicros());
   }
 
   private DaisyModifier(Object spec, OpMode opMode, Map<String, Function> functionsMap) {

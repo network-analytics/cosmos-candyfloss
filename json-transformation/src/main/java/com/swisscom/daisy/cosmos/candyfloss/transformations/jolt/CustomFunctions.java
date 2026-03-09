@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +64,25 @@ public class CustomFunctions {
         long nrLongValue = numerator.get().longValue();
         long result = java.lang.Math.multiplyExact(nrLongValue, drLongValue);
         return Optional.of(result);
+      }
+      return Optional.empty();
+    }
+  }
+
+  public static final class isoToEpochSecondsMicros extends Function.SingleFunction<Object> {
+    @Override
+    protected Optional<Object> applySingle(Object arg) {
+      if (arg instanceof String) {
+        try {
+          Instant instant = Instant.parse((String) arg);
+          long seconds = instant.getEpochSecond();
+          int nanos = instant.getNano();
+          // Format as seconds.microseconds (6 decimal places)
+          String result = String.format("%d.%06d", seconds, nanos / 1000);
+          return Optional.of(result);
+        } catch (Exception e) {
+          return Optional.empty();
+        }
       }
       return Optional.empty();
     }
