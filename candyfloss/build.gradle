@@ -104,3 +104,27 @@ jib {
         mainClass = 'com.swisscom.daisy.cosmos.candyfloss.CandyflossKStreamsApplication'
     }
 }
+
+/**
+ * usage:
+ * ./gradlew runPipelineRefinement --args="deployment application.dev.conf"
+ * or
+ * ./gradlew runPipelineRefinement --args="deployment-ietf-telemetry-message application.ietf.dev.conf"
+ */
+tasks.register('runPipelineRefinement', JavaExec) {
+    group = 'devtools'
+    description = 'Runs PipelineRefinement Helper'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.swisscom.daisy.cosmos.candyfloss.PipelineRefinementHelper'
+
+    dependsOn tasks.testClasses
+
+    systemProperty 'testResourcesDir', file('src/test/resources').absolutePath
+
+    if (System.getProperty('deployment')) {
+        systemProperty 'deployment', System.getProperty('deployment')
+    }
+    if (System.getProperty('config')) {
+        systemProperty 'config', System.getProperty('config')
+    }
+}
