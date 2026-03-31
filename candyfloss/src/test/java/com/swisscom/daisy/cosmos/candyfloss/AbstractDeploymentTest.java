@@ -11,8 +11,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.swisscom.daisy.cosmos.candyfloss.config.JsonKStreamApplicationConfig;
 import com.swisscom.daisy.cosmos.candyfloss.config.PipelineStepConfig;
 import com.swisscom.daisy.cosmos.candyfloss.config.exceptions.InvalidConfigurations;
-import com.swisscom.daisy.cosmos.candyfloss.testutils.OutputUpdaterUtils;
 import com.swisscom.daisy.cosmos.candyfloss.testutils.JsonUtil;
+import com.swisscom.daisy.cosmos.candyfloss.testutils.OutputUpdaterUtils;
 import com.swisscom.daisy.cosmos.candyfloss.transformations.match.exceptions.InvalidMatchConfiguration;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -42,7 +42,8 @@ abstract class AbstractDeploymentTest {
   private final Logger logger = LoggerFactory.getLogger(AbstractDeploymentTest.class);
   private static final String UPDATE_DEPLOYMENT_RESOURCE = "candyfloss.updateDeploymentResource";
   private static final String COMMENT_TRAILING_ANCHOR = "__COMMENT_TRAILING__";
-  private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^\"((?:\\\\.|[^\"\\\\])+)\"\\s*:");
+  private static final Pattern FIELD_NAME_PATTERN =
+      Pattern.compile("^\"((?:\\\\.|[^\"\\\\])+)\"\\s*:");
   protected final ObjectMapper objectMapper = new ObjectMapper(factory);
   protected static final String DISCARD_TEST = "discard";
   protected JsonKStreamApplicationConfig appConf;
@@ -96,7 +97,8 @@ abstract class AbstractDeploymentTest {
       return;
     }
 
-    final Optional<List<Map<String, Object>>> expectedOutput = getExpectedOutput(expectedOutputPath);
+    final Optional<List<Map<String, Object>>> expectedOutput =
+        getExpectedOutput(expectedOutputPath);
     if (expectedOutput.isPresent()) {
       var expected = expectedOutput.get();
       assertEquals(
@@ -122,17 +124,17 @@ abstract class AbstractDeploymentTest {
 
   // only update output files if it originally exists and flag is set
   protected boolean shouldUpdateDeployment(Path expectedOutputPath) {
-    return Boolean.parseBoolean(System.getProperty(UPDATE_DEPLOYMENT_RESOURCE, "false")) &&
-            Files.exists(expectedOutputPath);
+    return Boolean.parseBoolean(System.getProperty(UPDATE_DEPLOYMENT_RESOURCE, "false"))
+        && Files.exists(expectedOutputPath);
   }
 
-  private void writeExpectedOutput(Path expectedOutputPath,
-                                   List<KeyValue<String, String>> returned) throws IOException {
+  private void writeExpectedOutput(Path expectedOutputPath, List<KeyValue<String, String>> returned)
+      throws IOException {
     JsonNode currentOutputTree = null;
     String originalContent = "";
     if (Files.exists(expectedOutputPath)) {
-        originalContent = Files.readString(expectedOutputPath);
-        currentOutputTree = objectMapper.readTree(originalContent);
+      originalContent = Files.readString(expectedOutputPath);
+      currentOutputTree = objectMapper.readTree(originalContent);
     }
 
     JsonNode outputToWrite;
@@ -152,7 +154,7 @@ abstract class AbstractDeploymentTest {
     }
 
     OutputUpdaterUtils.writeExpectedOutput(
-            expectedOutputPath, originalContent, currentOutputTree, outputToWrite, objectMapper);
+        expectedOutputPath, originalContent, currentOutputTree, outputToWrite, objectMapper);
   }
 
   /*** For a given path, extract all files that their name ends with an `ending`, used for automatic test files discovery.*/
@@ -166,7 +168,8 @@ abstract class AbstractDeploymentTest {
   }
 
   /*** Read the expected JSON output and convert it to List of JSON objects, for easier compare during testing */
-  protected Optional<List<Map<String, Object>>> getExpectedOutput(Path resourcePath) throws IOException {
+  protected Optional<List<Map<String, Object>>> getExpectedOutput(Path resourcePath)
+      throws IOException {
     if (!Files.exists(resourcePath)) {
       return Optional.empty();
     }

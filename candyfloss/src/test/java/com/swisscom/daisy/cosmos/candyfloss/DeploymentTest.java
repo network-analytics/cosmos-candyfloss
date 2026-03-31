@@ -77,8 +77,9 @@ class DeploymentTest extends AbstractDeploymentTest {
   }
 
   /**
-   * Traverses up the directory tree from the compiled class location (e.g. build/resources/test/...)
-   * to local "src/test/resources" directory for physical file read/write operations.
+   * Traverses up the directory tree from the compiled class location (e.g.
+   * build/resources/test/...) to local "src/test/resources" directory for physical file read/write
+   * operations.
    */
   private static Path resolveTestResourcesPath() throws IOException, URISyntaxException {
     Path location =
