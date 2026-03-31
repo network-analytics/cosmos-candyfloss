@@ -1,15 +1,17 @@
 package com.swisscom.daisy.cosmos.candyfloss;
 
 import static com.swisscom.daisy.cosmos.candyfloss.testutils.JsonUtil.getValueByJsonPath;
+import static com.swisscom.daisy.cosmos.candyfloss.transformations.jolt.CustomFunctions.factory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.swisscom.daisy.cosmos.candyfloss.config.JsonKStreamApplicationConfig;
 import com.swisscom.daisy.cosmos.candyfloss.config.PipelineStepConfig;
 import com.swisscom.daisy.cosmos.candyfloss.config.exceptions.InvalidConfigurations;
+import com.swisscom.daisy.cosmos.candyfloss.testutils.OutputUpdaterUtils;
 import com.swisscom.daisy.cosmos.candyfloss.testutils.JsonUtil;
 import com.swisscom.daisy.cosmos.candyfloss.transformations.match.exceptions.InvalidMatchConfiguration;
 import com.typesafe.config.Config;
@@ -27,6 +29,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
@@ -37,7 +40,10 @@ import org.slf4j.LoggerFactory;
 
 abstract class AbstractDeploymentTest {
   private final Logger logger = LoggerFactory.getLogger(AbstractDeploymentTest.class);
-  protected final ObjectMapper objectMapper = new ObjectMapper();
+  private static final String UPDATE_DEPLOYMENT_RESOURCE = "candyfloss.updateDeploymentResource";
+  private static final String COMMENT_TRAILING_ANCHOR = "__COMMENT_TRAILING__";
+  private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^\"((?:\\\\.|[^\"\\\\])+)\"\\s*:");
+  protected final ObjectMapper objectMapper = new ObjectMapper(factory);
   protected static final String DISCARD_TEST = "discard";
   protected JsonKStreamApplicationConfig appConf;
   protected TestInputTopic<String, String> inputTopic;
@@ -78,14 +84,19 @@ abstract class AbstractDeploymentTest {
   }
 
   /*** Auxiliary method to check that topic produced the expected output*/
-  protected void checkOutput(
-      TestOutputTopic<String, String> topic, Optional<List<Map<String, Object>>> expectedOutput)
-      throws JSONException, JsonProcessingException {
+  protected void checkOutput(TestOutputTopic<String, String> topic, Path expectedOutputPath)
+      throws IOException, JSONException {
     List<KeyValue<String, String>> returned =
         topic == null ? List.of() : topic.readKeyValuesToList();
     returned.stream()
         .map(x -> x.value)
         .forEach(y -> logger.info("Produced message on topic {}: {}", topic, y));
+    if (shouldUpdateDeployment(expectedOutputPath)) {
+      writeExpectedOutput(expectedOutputPath, returned);
+      return;
+    }
+
+    final Optional<List<Map<String, Object>>> expectedOutput = getExpectedOutput(expectedOutputPath);
     if (expectedOutput.isPresent()) {
       var expected = expectedOutput.get();
       assertEquals(
@@ -109,6 +120,41 @@ abstract class AbstractDeploymentTest {
     }
   }
 
+  // only update output files if it originally exists and flag is set
+  protected boolean shouldUpdateDeployment(Path expectedOutputPath) {
+    return Boolean.parseBoolean(System.getProperty(UPDATE_DEPLOYMENT_RESOURCE, "false")) &&
+            Files.exists(expectedOutputPath);
+  }
+
+  private void writeExpectedOutput(Path expectedOutputPath,
+                                   List<KeyValue<String, String>> returned) throws IOException {
+    JsonNode currentOutputTree = null;
+    String originalContent = "";
+    if (Files.exists(expectedOutputPath)) {
+        originalContent = Files.readString(expectedOutputPath);
+        currentOutputTree = objectMapper.readTree(originalContent);
+    }
+
+    JsonNode outputToWrite;
+    if (currentOutputTree != null && !currentOutputTree.isArray()) {
+      // original output was a single JSON Object (not an array)
+      if (returned.isEmpty()) {
+        outputToWrite = objectMapper.createObjectNode();
+      } else {
+        outputToWrite = objectMapper.readTree(returned.get(0).value);
+      }
+    } else {
+      ArrayNode arrayOutput = objectMapper.createArrayNode();
+      for (var item : returned) {
+        arrayOutput.add(objectMapper.readTree(item.value));
+      }
+      outputToWrite = arrayOutput;
+    }
+
+    OutputUpdaterUtils.writeExpectedOutput(
+            expectedOutputPath, originalContent, currentOutputTree, outputToWrite, objectMapper);
+  }
+
   /*** For a given path, extract all files that their name ends with an `ending`, used for automatic test files discovery.*/
   private Map<Integer, Path> extractFiles(Path path, String ending) throws IOException {
     try (var files = Files.list(path).filter(p -> !Files.isDirectory(p))) {
@@ -120,35 +166,28 @@ abstract class AbstractDeploymentTest {
   }
 
   /*** Read the expected JSON output and convert it to List of JSON objects, for easier compare during testing */
-  protected Optional<List<Map<String, Object>>> getExpectedOutput(Optional<Path> resourcePath)
-      throws IOException {
-    final Optional<InputStream> outputResource =
-        resourcePath.map(
-            x -> {
-              try {
-                return new FileInputStream(x.toFile());
-              } catch (FileNotFoundException e) {
-                fail(
-                    String.format(
-                        "Couldn't load file resource '%s', raised exception: %s",
-                        x, e.getMessage()));
-              }
-              return null;
-            });
-    if (outputResource.isPresent()) {
-      return Optional.of(JsonUtil.readJsonArray(outputResource.get()));
-    } else {
+  protected Optional<List<Map<String, Object>>> getExpectedOutput(Path resourcePath) throws IOException {
+    if (!Files.exists(resourcePath)) {
       return Optional.empty();
     }
+    try (InputStream outputResource = new FileInputStream(resourcePath.toFile())) {
+      return Optional.of(JsonUtil.readJsonArray(outputResource));
+    } catch (FileNotFoundException e) {
+      fail(
+          String.format(
+              "Couldn't load file resource '%s', raised exception: %s",
+              resourcePath, e.getMessage()));
+    }
+    return Optional.empty();
   }
 
   /*** Run test on a single input files and expected outputs to the normal output topic, dlq topic and discard */
   protected void testCase(
       TestOutputTopic<String, String> outputTopic,
       Path inputResourcePath,
-      Optional<Path> outputResourcePath,
-      Optional<Path> dlqResourcePath,
-      Optional<Path> discardResourcePath)
+      Path outputResourcePath,
+      Path dlqResourcePath,
+      Path discardResourcePath)
       throws IOException, JSONException {
     logger.info(
         "Running test on files: input='{}', output='{}', dlq='{}', discard='{}'",
@@ -158,11 +197,6 @@ abstract class AbstractDeploymentTest {
         discardResourcePath);
     var input = JsonUtil.readFromInputStream(new FileInputStream(inputResourcePath.toFile()));
     var inputMap = JsonUtil.readJson(new FileInputStream(inputResourcePath.toFile()));
-    final Optional<List<Map<String, Object>>> expectedOutput =
-        getExpectedOutput(outputResourcePath);
-    final Optional<List<Map<String, Object>>> expectedDlq = getExpectedOutput(dlqResourcePath);
-    final Optional<List<Map<String, Object>>> expectedDiscard =
-        getExpectedOutput(discardResourcePath);
     final String testKey = "testKey";
 
     var dateTimeString = (String) inputMap.get("timestamp");
@@ -210,10 +244,10 @@ abstract class AbstractDeploymentTest {
 
     inputTopic.pipeInput(testKey, input, zoned.toInstant());
 
-    checkOutput(outputTopic, expectedOutput);
+    checkOutput(outputTopic, outputResourcePath);
     checkOtherOutput(inputResourcePath, outputTopic);
-    checkOutput(discardTopic, expectedDiscard);
-    checkOutput(dlqTopic, expectedDlq);
+    checkOutput(discardTopic, discardResourcePath);
+    checkOutput(dlqTopic, dlqResourcePath);
   }
 
   private void checkOtherOutput(
@@ -258,18 +292,15 @@ abstract class AbstractDeploymentTest {
               .sorted(Comparator.comparingInt(Map.Entry::getKey))
               .toList();
       for (var inputEntry : inputList) {
-        Optional<Path> outputFile =
-            outputFiles.containsKey(inputEntry.getKey())
-                ? Optional.of(outputFiles.get(inputEntry.getKey()))
-                : Optional.empty();
-        Optional<Path> dlqFile =
-            dlqFiles.containsKey(inputEntry.getKey())
-                ? Optional.of(dlqFiles.get(inputEntry.getKey()))
-                : Optional.empty();
-        Optional<Path> discardFile =
-            discardFiles.containsKey(inputEntry.getKey())
-                ? Optional.of(discardFiles.get(inputEntry.getKey()))
-                : Optional.empty();
+        Path outputFile =
+            outputFiles.getOrDefault(
+                inputEntry.getKey(), testCase.resolve(inputEntry.getKey() + "-output.json"));
+        Path dlqFile =
+            dlqFiles.getOrDefault(
+                inputEntry.getKey(), testCase.resolve(inputEntry.getKey() + "-dlq.json"));
+        Path discardFile =
+            discardFiles.getOrDefault(
+                inputEntry.getKey(), testCase.resolve(inputEntry.getKey() + "-discard.json"));
         testCase(
             name == null
                 ? null
