@@ -64,7 +64,20 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    systemProperty 'candyfloss.updateDeploymentResource', project.findProperty('updateDeploymentResource') ?: 'false'
     finalizedBy jacocoTestReport
+}
+
+tasks.register('updateDeploymentResource', Test) {
+    group = 'verification'
+    description = 'Runs deployment tests and rewrites existing output files'
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    systemProperty 'candyfloss.updateDeploymentResource', 'true'
+    filter {
+        includeTestsMatching 'com.swisscom.daisy.cosmos.candyfloss.DeploymentTest'
+    }
 }
 
 jacocoTestReport {
