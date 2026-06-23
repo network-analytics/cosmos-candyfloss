@@ -104,22 +104,22 @@ public class CandyflossKStreamsApplication {
     genericAvroSerde.configure(
         Collections.singletonMap(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, url),
         false);
+    var consumed = Consumed.with(Serdes.String(), genericAvroSerde);
     KStream<String, GenericRecord> avroStream =
-        builder.stream(
-            config.getInputTopicName(), Consumed.with(Serdes.String(), genericAvroSerde));
-    var inputStream =
-        avroStream.mapValues(
-            value -> {
-              try {
-                return serializeAvroToJsonString(value);
-              } catch (Exception ex) {
-                logger.error("Error converting AVRO message to JSON: {}", ex.getMessage());
-                ex.printStackTrace();
-                throw new RuntimeException(ex);
-                // return null;
-              }
-            });
-    return inputStream;
+        config
+            .getInputTopicPattern()
+            .map(pattern -> builder.stream(pattern, consumed))
+            .orElseGet(() -> builder.stream(config.getInputTopicName(), consumed));
+    return avroStream.mapValues(
+        value -> {
+          try {
+            return serializeAvroToJsonString(value);
+          } catch (Exception ex) {
+            logger.error("Error converting AVRO message to JSON: {}", ex.getMessage());
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+          }
+        });
   }
 
   public Topology buildTopology() {
@@ -138,8 +138,12 @@ public class CandyflossKStreamsApplication {
 
     KStream<String, String> inputStream;
     if (config.getInputType().equals(JsonKStreamApplicationConfig.InputType.JSON)) {
+      var consumed = Consumed.with(stringSerde, stringSerde);
       inputStream =
-          builder.stream(config.getInputTopicName(), Consumed.with(stringSerde, stringSerde));
+          config
+              .getInputTopicPattern()
+              .map(pattern -> builder.stream(pattern, consumed))
+              .orElseGet(() -> builder.stream(config.getInputTopicName(), consumed));
     } else {
       inputStream = getAvroInput(builder);
     }

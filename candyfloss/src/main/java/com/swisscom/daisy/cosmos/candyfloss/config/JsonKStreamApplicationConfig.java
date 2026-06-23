@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.kafka.streams.StreamsConfig;
@@ -27,6 +29,7 @@ public class JsonKStreamApplicationConfig {
   }
 
   private final Properties kafkaProperties;
+  private final Optional<Pattern> inputTopicPattern;
   private final String inputTopicName;
   private final InputType inputType;
   private final String discardTopicName;
@@ -50,6 +53,11 @@ public class JsonKStreamApplicationConfig {
     }
     kafka.put(StreamsConfig.METRIC_REPORTER_CLASSES_CONFIG, MetricLogger.class.getName());
 
+    final Optional<Pattern> inputTopicPattern =
+        config.getConfig("kstream").hasPath("input.topic.pattern")
+            ? Optional.of(
+                Pattern.compile(config.getConfig("kstream").getString("input.topic.pattern")))
+            : Optional.empty();
     final String inputTopicName = config.getConfig("kstream").getString("input.topic.name");
     final InputType inputType;
     if (config.hasPath("kstream.input.type")) {
@@ -88,6 +96,27 @@ public class JsonKStreamApplicationConfig {
     var pipeline = PipelineConfig.fromConfig(pipelineConfigs);
     return new JsonKStreamApplicationConfig(
         kafka,
+        inputTopicPattern,
+        inputTopicName,
+        inputType,
+        discardTopicName,
+        dlqTopicName,
+        stateStoreName,
+        stateStoreCutoffTime,
+        maxCounterCacheAge,
+        intCounterWrapAroundLimit,
+        longCounterWrapAroundLimit,
+        counterWrapAroundTimeMs,
+        oldCountersScanFrequency,
+        preTransform,
+        pipeline);
+  }
+
+  /** used by TopologyTestDriver and in deployment test, it only pick up topicName. */
+  public JsonKStreamApplicationConfig withoutInputTopicPattern() {
+    return new JsonKStreamApplicationConfig(
+        kafkaProperties,
+        Optional.empty(),
         inputTopicName,
         inputType,
         discardTopicName,
