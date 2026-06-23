@@ -32,9 +32,9 @@ dependencyResolutionManagement {
             library('slf4j', 'org.slf4j:slf4j-api:2.0.6')
             library('logback', 'ch.qos.logback:logback-classic:1.4.5')
             // Testing
-            library('junit-jupiter-api', 'org.junit.jupiter:junit-jupiter-api:5.9.2')
-            library('junit-jupiter-engine', 'org.junit.jupiter:junit-jupiter-engine:5.9.2')
-            library('junit-jupiter-params', 'org.junit.jupiter:junit-jupiter-params:5.9.2')
+            library('junit-jupiter-api', 'org.junit.jupiter:junit-jupiter-api:5.10.1')
+            library('junit-jupiter-engine', 'org.junit.jupiter:junit-jupiter-engine:5.10.1')
+            library('junit-jupiter-params', 'org.junit.jupiter:junit-jupiter-params:5.10.1')
             library('jsonassert', 'org.skyscreamer:jsonassert:1.5.1')
             library('mockito', 'org.mockito:mockito-core:5.10.0')
             library('mockito-jupiter', 'org.mockito:mockito-junit-jupiter:5.10.0')
