@@ -25,9 +25,9 @@ class DeploymentTest extends AbstractDeploymentTest {
   protected static Stream<Arguments> providerForAllYangModels()
       throws IOException, URISyntaxException {
     var outLegacy = providerForYangModels("legacy");
-    var outIetf = providerForYangModels("ietf");
+    var outItm = providerForYangModels("itm");
 
-    return Stream.concat(outLegacy, outIetf);
+    return Stream.concat(outLegacy, outItm);
   }
 
   /*** Discover YANG model test cases and provide them as arguments to the parametrized test */
@@ -38,7 +38,7 @@ class DeploymentTest extends AbstractDeploymentTest {
     // Create a map from the discovered folders in the `test/resources/deployment` folder
     // The key is the sub-folder name and the value is a full path to the sub folder
     String deploymentFolder =
-        profile.equals("ietf") ? "deployment-ietf-telemetry-message" : "deployment";
+        profile.equals("itm") ? "deployment-ietf-telemetry-message" : "deployment";
     var yangModels =
         Files.list(Path.of(Objects.requireNonNull(loader.getResource(deploymentFolder)).toURI()))
             .filter(Files::isDirectory)
@@ -57,7 +57,7 @@ class DeploymentTest extends AbstractDeploymentTest {
       var testFixtures = Files.list(path).filter(Files::isDirectory).toList();
       for (var testPath : testFixtures) {
         for (var env : List.of("dev", "test", "prod")) {
-          String fileNamePrefix = profile.equals("ietf") ? "application.ietf." : "application.";
+          String fileNamePrefix = profile.equals("itm") ? "application.itm." : "application.";
 
           String applicationConfig = fileNamePrefix + env + ".conf";
           if (loader.getResource(applicationConfig) != null)

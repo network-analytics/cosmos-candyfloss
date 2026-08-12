@@ -49,7 +49,9 @@ abstract class AbstractDeploymentTest {
       throws IOException, InvalidConfigurations, InvalidMatchConfiguration {
     Config config = ConfigFactory.load(applicationConfigFileName);
     appConf = JsonKStreamApplicationConfig.fromConfig(config);
-    CandyflossKStreamsApplication app = new CandyflossKStreamsApplication(appConf);
+    // in deployment unittest, use inputTopicName regardless of pattern subscription configuration.
+    CandyflossKStreamsApplication app =
+        new CandyflossKStreamsApplication(appConf.withoutInputTopicPattern());
     final Topology topology = app.buildTopology();
     var kafkaConfig = appConf.getKafkaProperties();
     kafkaConfig.setProperty("application.id", UUID.randomUUID().toString());
